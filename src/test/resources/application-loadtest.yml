@@ -1,0 +1,40 @@
+# Load Test Configuration
+# 使用实际的 MySQL 数据库进行负载测试
+
+server:
+  port: 8080
+
+spring:
+  datasource:
+    # 使用实际 MySQL 数据库 (端口 3306)
+    url: jdbc:mysql://localhost:3306/chongwufuwu?serverTimezone=GMT%2B8&useSSL=false&allowPublicKeyRetrieval=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: Acx20050624
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 10
+      connection-timeout: 30000
+
+  # 禁用 Redis 避免测试干扰
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
+  sql:
+    init:
+      mode: never
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.javaPro.myProject.modules.*.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    com.javaPro.myProject: INFO
+    org.springframework.web: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

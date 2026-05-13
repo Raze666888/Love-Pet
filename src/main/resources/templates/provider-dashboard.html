@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>服务商数据统计</title>
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    
+    <link href="/static/hAdmin/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="/static/hAdmin/css/animate.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/plugins/morris/morris.css" rel="stylesheet">
+    <script src="/static/DemoBootStrap/js/vue.js"></script>
+    
+    <style>
+        .dashboard-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body class="gray-bg">
+<div id="app">
+    <span id="gloUrl" style="display: none"></span>
+    <div class="wrapper wrapper-content animated fadeInRight">
+        
+        <!-- 页面标题 -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="text-center">
+                    <h1 style="color: #333; margin-bottom: 30px;">服务商数据统计</h1>
+                </div>
+            </div>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="dashboard-card">
+                    <div class="stat-number">{{dashboardData.totalOrders || 0}}</div>
+                    <div class="stat-label">总订单数</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="dashboard-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <div class="stat-number">{{dashboardData.totalRevenue || 0}}</div>
+                    <div class="stat-label">总收入 (元)</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="dashboard-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <div class="stat-number">{{(dashboardData.avgRating || 0).toFixed(1)}}</div>
+                    <div class="stat-label">平均评分</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="dashboard-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                    <div class="stat-number">{{dashboardData.totalServices || 0}}</div>
+                    <div class="stat-label">服务数量</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 图表区域 -->
+        <div class="row">
+            <!-- 服务类型饼图 -->
+            <div class="col-lg-6">
+                <div class="chart-container">
+                    <div class="chart-title">服务类型分布</div>
+                    <div id="service-type-chart" style="height: 300px;"></div>
+                </div>
+            </div>
+            
+            <!-- 评分分布图 -->
+            <div class="col-lg-6">
+                <div class="chart-container">
+                    <div class="chart-title">评分分布</div>
+                    <div id="rating-chart" style="height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- 订单趋势图 -->
+            <div class="col-lg-12">
+                <div class="chart-container">
+                    <div class="chart-title">订单趋势 (最近30天)</div>
+                    <div id="order-trend-chart" style="height: 350px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 最近订单列表 -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="chart-container">
+                    <div class="chart-title">最近订单</div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>订单ID</th>
+                                    <th>用户</th>
+                                    <th>服务</th>
+                                    <th>金额</th>
+                                    <th>状态</th>
+                                    <th>时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="order in recentOrders" :key="order.id">
+                                    <td>{{order.id}}</td>
+                                    <td>{{order.username}}</td>
+                                    <td>{{order.serviceName}}</td>
+                                    <td>¥{{order.amount}}</td>
+                                    <td>
+                                        <span class="label label-primary">{{order.status}}</span>
+                                    </td>
+                                    <td>{{order.createtime}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- 全局js -->
+<script src="/static/hAdmin/js/jquery.min.js?v=2.1.4"></script>
+<script src="/static/hAdmin/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="/static/hAdmin/js/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="/static/hAdmin/js/plugins/toastr/toastr.min.js"></script>
+
+<!-- ECharts -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js"></script>
+
+<script src="/static/js/GloJs.js"></script>
+
+<script>
+new Vue({
+    el: "#app",
+    data() {
+        return {
+            baseUrl: gloRequestUrl,
+            userId: localStorage.getItem("userId"),
+            companyId: null, // 服务商ID
+            dashboardData: {
+                totalOrders: 0,
+                totalRevenue: 0,
+                avgRating: 0,
+                totalServices: 0
+            },
+            recentOrders: [],
+            serviceTypeData: [],
+            ratingData: [],
+            orderTrendData: []
+        }
+    },
+    methods: {
+        // 获取服务商ID
+        getCompanyId() {
+            let that = this;
+
+            // 检查用户ID是否存在
+            if (!that.userId) {
+                toastr.error("用户未登录，请先登录", '提示');
+                setTimeout(() => {
+                    window.location.href = "/web/login";
+                }, 2000);
+                return;
+            }
+
+            $.ajax({
+                url: that.baseUrl + "/company/byCreateId",
+                type: "GET",
+                data: { createid: that.userId },
+                success: function (data) {
+                    console.log("获取服务商信息响应:", data);
+                    if (data.code === 200) {
+                        if (data.Data && data.Data.id) {
+                            that.companyId = data.Data.id;
+                            console.log("找到服务商ID:", that.companyId);
+                            that.getDashboardData();
+                        } else {
+                            console.log("用户不是服务商，Data为:", data.Data);
+                            toastr.error("您还不是服务商，请先注册成为服务商", '提示');
+                            // 可以添加跳转到注册服务商页面的逻辑
+                            setTimeout(() => {
+                                window.location.href = "/web/userindex";
+                            }, 3000);
+                        }
+                    } else {
+                        console.error("获取服务商信息失败，响应码:", data.code);
+                        toastr.error("获取服务商信息失败: " + (data.msg || "未知错误"), '提示');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("获取服务商信息失败:", xhr, status, error);
+                    toastr.error("网络请求失败: " + error, '提示');
+                }
+            });
+        },
+
+        // 获取仪表板数据
+        getDashboardData() {
+            let that = this;
+            if (!that.companyId) {
+                toastr.error("服务商ID获取失败", '提示');
+                return;
+            }
+
+            $.ajax({
+                url: that.baseUrl + "/provider/dashboard",
+                type: "GET",
+                data: { providerId: that.companyId },
+                success: function (data) {
+                    console.log("获取仪表板数据响应:", data);
+                    if (data.code === 200) {
+                        if (data.data) {
+                            // 修复数据结构匹配问题
+                            that.dashboardData = data.data.data || {
+                                totalOrders: 0,
+                                totalRevenue: 0,
+                                avgRating: 0,
+                                totalServices: 0
+                            };
+                            that.serviceTypeData = data.data.serviceTypeData || [];
+                            that.ratingData = data.data.ratingData || [];
+                            that.orderTrendData = data.data.orderTrendData || [];
+                            that.recentOrders = data.data.recentOrders || [];
+
+                            console.log("仪表板数据加载成功:", that.dashboardData);
+
+                            // 初始化图表
+                            that.$nextTick(() => {
+                                that.initCharts();
+                            });
+                        } else {
+                            console.warn("仪表板数据为空");
+                            // 设置默认数据
+                            that.dashboardData = {
+                                totalOrders: 0,
+                                totalRevenue: 0,
+                                avgRating: 0,
+                                totalServices: 0
+                            };
+                            that.serviceTypeData = [];
+                            that.ratingData = [];
+                            that.orderTrendData = [];
+                            that.recentOrders = [];
+
+                            that.$nextTick(() => {
+                                that.initCharts();
+                            });
+                        }
+                    } else {
+                        console.error("获取仪表板数据失败，响应码:", data.code);
+                        toastr.error("获取仪表板数据失败: " + (data.msg || "服务器错误"), '提示');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("获取仪表板数据网络错误:", xhr, status, error);
+                    toastr.error("网络请求失败: " + error, '提示');
+                }
+            });
+        },
+
+        // 初始化图表
+        initCharts() {
+            this.initServiceTypeChart();
+            this.initRatingChart();
+            this.initOrderTrendChart();
+        },
+
+        // 服务类型饼图
+        initServiceTypeChart() {
+            const chart = echarts.init(document.getElementById('service-type-chart'));
+            const option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b}: {c} ({d}%)'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left'
+                },
+                series: [
+                    {
+                        name: '服务类型',
+                        type: 'pie',
+                        radius: '50%',
+                        data: this.serviceTypeData,
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            chart.setOption(option);
+        },
+
+        // 评分分布图
+        initRatingChart() {
+            const chart = echarts.init(document.getElementById('rating-chart'));
+            const option = {
+                tooltip: {
+                    trigger: 'axis'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['1星', '2星', '3星', '4星', '5星']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: '评分数量',
+                        type: 'bar',
+                        data: this.ratingData,
+                        itemStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: '#83bff6' },
+                                { offset: 0.5, color: '#188df0' },
+                                { offset: 1, color: '#188df0' }
+                            ])
+                        }
+                    }
+                ]
+            };
+            chart.setOption(option);
+        },
+
+        // 订单趋势图
+        initOrderTrendChart() {
+            const chart = echarts.init(document.getElementById('order-trend-chart'));
+            const option = {
+                tooltip: {
+                    trigger: 'axis'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: this.orderTrendData.map(item => item.date)
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: '订单数量',
+                        type: 'line',
+                        data: this.orderTrendData.map(item => item.count),
+                        smooth: true,
+                        itemStyle: {
+                            color: '#5470c6'
+                        },
+                        areaStyle: {
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: 'rgba(84, 112, 198, 0.3)' },
+                                { offset: 1, color: 'rgba(84, 112, 198, 0.1)' }
+                            ])
+                        }
+                    }
+                ]
+            };
+            chart.setOption(option);
+        }
+    },
+    mounted() {
+        this.getCompanyId();
+    }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Filter - Pet Service Platform</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- jQuery UI CSS (for slider) -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/jqueryui/1.13.2/themes/ui-lightness/jquery-ui.min.css" rel="stylesheet">
+    
+    <style>
+        .filter-card {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .service-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 20px;
+        }
+        .service-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .price-range-slider {
+            margin: 20px 0;
+        }
+        .rating-stars {
+            color: #ffc107;
+        }
+        .time-slot {
+            display: inline-block;
+            margin: 5px;
+            padding: 8px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .time-slot.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .time-slot:hover {
+            border-color: #007bff;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+        }
+        .no-results {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        .filter-section {
+            margin-bottom: 25px;
+        }
+        .filter-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Filter Sidebar -->
+            <div class="col-md-3">
+                <div class="card filter-card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-filter"></i> Filter Criteria</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Time Slot Filter -->
+                        <div class="filter-section">
+                            <div class="filter-title">Service Time</div>
+                            <div class="time-slots">
+                                <div class="time-slot" data-start="08:00" data-end="12:00">Morning (8:00-12:00)</div>
+                                <div class="time-slot" data-start="12:00" data-end="18:00">Afternoon (12:00-18:00)</div>
+                                <div class="time-slot" data-start="18:00" data-end="22:00">Evening (18:00-22:00)</div>
+                                <div class="time-slot" data-start="08:00" data-end="22:00">All Day (8:00-22:00)</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Price Range Filter -->
+                        <div class="filter-section">
+                            <div class="filter-title">Price Range</div>
+                            <div class="price-range-slider">
+                                <div id="price-slider"></div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <span>¥<span id="min-price-display">0</span></span>
+                                    <span>¥<span id="max-price-display">1000</span></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Rating Filter -->
+                        <div class="filter-section">
+                            <div class="filter-title">Minimum Rating</div>
+                            <div class="rating-filter">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="rating" id="rating-all" value="" checked>
+                                    <label class="form-check-label" for="rating-all">All</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="rating" id="rating-4" value="4">
+                                    <label class="form-check-label" for="rating-4">
+                                        <span class="rating-stars">★★★★☆</span> 4+ Stars
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="rating" id="rating-4.5" value="4.5">
+                                    <label class="form-check-label" for="rating-4.5">
+                                        <span class="rating-stars">★★★★★</span> 4.5+ Stars
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Service Type Filter -->
+                        <div class="filter-section">
+                            <div class="filter-title">Service Type</div>
+                            <select class="form-select" id="service-type">
+                                <option value="">All Types</option>
+                                <!-- Dynamically load service types -->
+                            </select>
+                        </div>
+                        
+                        <!-- Keyword Search -->
+                        <div class="filter-section">
+                            <div class="filter-title">Keyword Search</div>
+                            <input type="text" class="form-control" id="keyword" placeholder="Enter service name keyword">
+                        </div>
+                        
+                        <!-- Sort By -->
+                        <div class="filter-section">
+                            <div class="filter-title">Sort By</div>
+                            <select class="form-select" id="sort-by">
+                                <option value="">Default Sort</option>
+                                <option value="price_asc">Price: Low to High</option>
+                                <option value="price_desc">Price: High to Low</option>
+                                <option value="rating_desc">Rating: High to Low</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Filter Buttons -->
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" id="apply-filter">
+                                <i class="fas fa-search"></i> Apply Filters
+                            </button>
+                            <button class="btn btn-outline-secondary" id="reset-filter">
+                                <i class="fas fa-undo"></i> Reset Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Results Display Area -->
+            <div class="col-md-9">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4>Service Filter Results</h4>
+                    <div class="result-count">
+                        Total <span id="total-count">0</span> services found
+                    </div>
+                </div>
+                
+                <!-- Loading State -->
+                <div id="loading" class="loading" style="display: none;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Searching for suitable services...</p>
+                </div>
+                
+                <!-- Results List -->
+                <div id="results-container">
+                    <!-- Dynamically load service list -->
+                </div>
+                
+                <!-- No Results Prompt -->
+                <div id="no-results" class="no-results" style="display: none;">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h5>No services found matching your criteria</h5>
+                    <p>Please try adjusting your filters</p>
+                </div>
+                
+                <!-- Pagination -->
+                <nav aria-label="Pagination Navigation" id="pagination-container" style="display: none;">
+                    <ul class="pagination justify-content-center" id="pagination">
+                        <!-- Dynamically generate pagination -->
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <!-- jQuery UI -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // Initialize price slider
+            $("#price-slider").slider({
+                range: true,
+                min: 0,
+                max: 1000,
+                values: [0, 1000],
+                slide: function(event, ui) {
+                    $("#min-price-display").text(ui.values[0]);
+                    $("#max-price-display").text(ui.values[1]);
+                }
+            });
+            
+            // Time slot selection
+            $('.time-slot').click(function() {
+                $('.time-slot').removeClass('active');
+                $(this).addClass('active');
+            });
+            
+            // Load service types
+            loadServiceTypes();
+            
+            // Initial load of service list
+            loadServices();
+            
+            // Apply filters
+            $('#apply-filter').click(function() {
+                loadServices();
+            });
+            
+            // Reset filters
+            $('#reset-filter').click(function() {
+                resetFilters();
+                loadServices();
+            });
+            
+            // Keyword search enter key event
+            $('#keyword').keypress(function(e) {
+                if (e.which == 13) {
+                    loadServices();
+                }
+            });
+        });
+        
+        // Load service types
+        function loadServiceTypes() {
+            $.get('/producttype', function(data) {
+                if (data.code === 200 && data.list) {
+                    const select = $('#service-type');
+                    data.list.forEach(function(type) {
+                        select.append(`<option value="${type.id}">${type.typeName}</option>`);
+                    });
+                }
+            });
+        }
+        
+        // Load service list
+        function loadServices(page = 1) {
+            $('#loading').show();
+            $('#results-container').empty();
+            $('#no-results').hide();
+            $('#pagination-container').hide();
+            
+            const filterData = getFilterData();
+            filterData.pageNum = page;
+            filterData.pageSize = 12;
+            
+            $.ajax({
+                url: '/product/filterServices',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(filterData),
+                success: function(response) {
+                    $('#loading').hide();
+                    if (response.code === 200 && response.data) {
+                        displayResults(response.data);
+                    } else {
+                        showNoResults();
+                    }
+                },
+                error: function() {
+                    $('#loading').hide();
+                    showNoResults();
+                }
+            });
+        }
+        
+        // Get filter criteria
+        function getFilterData() {
+            const activeTimeSlot = $('.time-slot.active');
+            const priceRange = $("#price-slider").slider("values");
+            
+            return {
+                serviceStartTime: activeTimeSlot.length ? activeTimeSlot.data('start') : null,
+                serviceEndTime: activeTimeSlot.length ? activeTimeSlot.data('end') : null,
+                minPrice: priceRange[0] > 0 ? priceRange[0] : null,
+                maxPrice: priceRange[1] < 1000 ? priceRange[1] : null,
+                minRating: $('input[name="rating"]:checked').val() || null,
+                productType: $('#service-type').val() || null,
+                keyword: $('#keyword').val().trim() || null,
+                sortBy: $('#sort-by').val() || null
+            };
+        }
+        
+        // Display results
+        function displayResults(data) {
+            const container = $('#results-container');
+            const services = data.list || [];
+            
+            $('#total-count').text(data.total || 0);
+            
+            if (services.length === 0) {
+                showNoResults();
+                return;
+            }
+            
+            services.forEach(function(service) {
+                const serviceCard = createServiceCard(service);
+                container.append(serviceCard);
+            });
+            
+            // Show pagination
+            if (data.total > data.pageSize) {
+                showPagination(data);
+            }
+        }
+        
+        // Create service card
+        function createServiceCard(service) {
+            const rating = service.companyRating || 0;
+            const ratingStars = '★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating));
+            
+            return `
+                <div class="service-card p-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <img src="${service.img || '/static/img/noPhoto.png'}" 
+                                 class="img-fluid rounded" alt="${service.productname}">
+                        </div>
+                        <div class="col-md-9">
+                            <h5>${service.productname}</h5>
+                            <p class="text-muted">${service.productdes || 'No description available'}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="text-primary h5">¥${service.kedanjia}</span>
+                                    <small class="text-muted">/${service.fahuotianshu || 'time'}</small>
+                                </div>
+                                <div>
+                                    <span class="rating-stars">${ratingStars}</span>
+                                    <small class="text-muted">(${service.companyRatingCount || 0} reviews)</small>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <small class="text-muted">
+                                    <i class="fas fa-chart-line"></i> Sales: ${service.spare1 || 0} |
+                                    <i class="fas fa-clock"></i>
+                                    ${service.serviceStartTime || '08:00'} - ${service.serviceEndTime || '18:00'}
+                                </small>
+                                <small class="text-muted ms-3">
+                                    <i class="fas fa-store"></i> 
+                                    ${service.companyName || 'Unknown Provider'}
+                                </small>
+                            </div>
+                            <div class="mt-2">
+                                <button class="btn btn-primary btn-sm" onclick="viewService(${service.id})">
+                                    View Details
+                                </button>
+                                <button class="btn btn-outline-primary btn-sm ms-2" onclick="addToCart(${service.id})">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Show no results
+        function showNoResults() {
+            $('#no-results').show();
+            $('#total-count').text(0);
+        }
+        
+        // Reset filter criteria
+        function resetFilters() {
+            $('.time-slot').removeClass('active');
+            $("#price-slider").slider("values", [0, 1000]);
+            $("#min-price-display").text(0);
+            $("#max-price-display").text(1000);
+            $('input[name="rating"]').prop('checked', false);
+            $('#rating-all').prop('checked', true);
+            $('#service-type').val('');
+            $('#keyword').val('');
+            $('#sort-by').val('');
+        }
+        
+        // View service details
+        function viewService(serviceId) {
+            window.open(`/web/usersingle?id=${serviceId}`, '_blank');
+        }
+        
+        // Add to cart
+        function addToCart(serviceId) {
+            // Cart functionality to be implemented
+            alert('Add to Cart functionality pending implementation');
+        }
+    </script>
+</body>
+</html>

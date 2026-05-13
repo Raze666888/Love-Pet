@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Details</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link rel="stylesheet" href="/static/webSite/css/swiper-bundle.min.css">
+    <script src="/static/DemoBootStrap/js/vue.js"></script>
+
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/webSite/css/vendor.css">
+    <link rel="stylesheet" type="text/css" href="/static/webSite/style.css">
+    <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+
+    <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="/static/element/element.css" rel="stylesheet">
+
+    <!-- 高德地图配置 -->
+    <script src="/static/js/map-config.js"></script>
+    <!-- 高德地图API - 请在map-config.js中配置你的API Key -->
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=e4ba17441f45301a0d054097d3e9b933"></script>
+
+  </head>
+  <body>
+  <div id="app">
+
+    <header>
+
+      <div class="container-fluid">
+        <div class="row py-3 border-bottom">
+
+          <div class="col-sm-4 col-lg-2 text-center text-sm-start d-flex gap-3 justify-content-center justify-content-md-start">
+            <div class="d-flex align-items-center my-3 my-sm-0">
+              <a href="/web/userindex">
+                <img src="/static/webSite/images/logo.png" style="width: 50px;height: 50px;" alt="logo" class="img-fluid">
+              </a>
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                    aria-controls="offcanvasNavbar">
+              <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
+            </button>
+          </div>
+
+          <div class="col-md-2 ">
+            <div class="search-bar row bg-light p-2 rounded-4">
+
+              <div class="col-11 col-md-10" style="text-align: center">
+                Pet Service Booking Platform
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-md-8">
+            <ul class="navbar-nav list-unstyled d-flex flex-row gap-3 gap-lg-5 justify-content-center flex-wrap align-items-center mb-0 fw-bold text-uppercase text-dark">
+              <li class="nav-item ">
+                <a href="/web/userindex" class="nav-link">Home</a>
+              </li>
+
+              <li class="nav-item">
+                <a href="/web/userproductlist"  class="nav-link  ">Pet Service List</a>
+              </li>
+              <li class="nav-item ">
+                <a href="/web/usercart"  class="nav-link ">Shopping Cart</a>
+              </li>
+              <li class="nav-item">
+                <a href="/web/usercontact"  class="nav-link ">Contact Us</a>
+              </li>
+              <li class="nav-item">
+                <a href="/web/userblog"  class="nav-link ">News/Announcements</a>
+              </li>
+              <li class="nav-item">
+                <a href="/web/chongzhi"  class="nav-link " title="Recharge">Recharge Center</a>
+              </li>
+              <li class="nav-item">
+                <a href="/web/personal"  class="nav-link " title="Personal Center"><i class="fa fa-user"></i></a>
+              </li>
+            </ul>
+          </div>
+
+
+
+        </div>
+      </div>
+    </header>
+    <section class="jarallax py-5">
+      <img src="/static/webSite/images/banner-1.jpg" class="jarallax-img">
+      <div class="hero-content py-0 py-md-5">
+        <div class="container-lg d-flex flex-column d-md-block align-items-center">
+          <nav class="breadcrumb">
+            <a class="breadcrumb-item nav-link" href="/web/userindex">Home</a>
+            <span  class="breadcrumb-item active" aria-current="page">Pet Service Details</span>
+          </nav>
+          <h1 style="color: whitesmoke">Pet Service Details</h1>
+        </div>
+      </div>
+    </section>
+    <section id="selling-product" class="single-product mt-0 mt-md-5">
+      <div class="container-lg">
+        <nav class="breadcrumb">
+          <a class="breadcrumb-item" href="/web/userproductlist">上一页</a>
+          <span class="breadcrumb-item active" aria-current="page">宠物服务详情</span>
+        </nav>
+        <div class="row g-5">
+          <div class="col-lg-7">
+            <div class="row flex-column-reverse flex-lg-row">
+              <div class="col-md-12 col-lg-2">
+                <!-- product-thumbnail-slider -->
+                <div class="swiper product-thumbnail-slider">
+                  <div class="swiper-wrapper">
+                    <div class="swiper-slide" v-for="item in productInfo.detailImgList" @click="currentImg(item)">
+                      <img :src="item" alt="" style="width: 120px;height: 120px;" class="thumb-image img-fluid">
+                    </div>
+
+                  </div>
+                </div>
+                <!-- / product-thumbnail-slider -->
+              </div>
+              <div class="col-md-12 col-lg-10">
+                <!-- product-large-slider -->
+                <div class="swiper product-large-slider">
+                  <div class="swiper-wrapper">
+
+                    <div class="swiper-slide" >
+                      <div class="image-zoom" v-if="productInfo" data-scale="2.5" :data-image="currentImgInfo">
+
+                        <img
+                                v-if="currentImgInfo"
+                          :src="currentImgInfo" alt="product-large" class="img-fluid">
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="swiper-pagination"></div>
+                </div>
+                <!-- / product-large-slider -->
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="product-info">
+              <div class="element-header">
+                <h2 itemprop="name">{{productInfo.productname}}</h2>
+                <div class="rating-container d-flex gap-0 align-items-center">
+                  <span class="rating-count" v-if="productInfo.spare2 && !isNaN(parseFloat(productInfo.spare2)) && parseFloat(productInfo.spare2) < 10">
+                    折扣： <strong style="color: red"> {{productInfo.spare2}}</strong>  折
+                  </span>
+                  <span class="rating-count" v-else>
+                    <strong style="color: green">原价销售</strong>
+                  </span>
+                </div>
+              </div>
+              <div class="product-price pt-3 pb-3">
+                <strong class="text-primary display-6 fw-bold">￥{{calculateDiscountPrice()}}</strong>
+                <del class="ms-2" v-if="productInfo.spare2 && parseFloat(productInfo.spare2) < 10">￥{{productInfo.kedanjia}}</del>
+              </div>
+
+              <div class="cart-wrap py-4">
+                <div class="color-options pb-3">
+                  <div class="color-toggle" data-option-index="0">
+                    <h6 class="item-title text-uppercase text-dark">服务质量:</h6>
+
+                    <input type="radio" class="btn-check" name="options-color" id="option5" autocomplete="off" checked>
+                    <label class="btn" for="option5">{{productInfo.guige}}</label>
+
+                  </div>
+                </div>
+                <div class="swatch" data-option-index="1">
+                  <h6 class="item-title text-uppercase text-dark">当日可约数量:</h6>
+                    <input type="radio" class="btn-check" name="options-size" id="option9" autocomplete="off" checked>
+                    <label class="btn" for="option9">{{productInfo.kucun}}</label>
+
+                </div>
+                <div class="product-quantity pt-3">
+                  <div class="stock-number text-dark"><em>数量</em></div>
+                  <div class="stock-button-wrap">
+
+                    <div class="input-group product-qty" style="max-width: 150px;">
+
+                      <el-form :model="form" >
+                        <el-form-item prop="number">
+
+                          <el-input-number v-model="form.number"  :min="1" :max="10" label="数量"></el-input-number>
+                        </el-form-item>
+                      </el-form>
+
+
+                    </div>
+                    <div class="qty-button d-flex flex-wrap pt-3">
+                      <button type="submit"  @click="handleAddCart" name="add-to-cart" value="1269" class="btn btn-dark py-3 px-4 text-uppercase mt-3">+ 购物车</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="meta-product py-2">
+                <div class="meta-item d-flex align-items-baseline">
+                  <h6 class="item-title no-margin pe-2">Sales Volume:</h6>
+                  <span class="text-success fw-bold">{{productInfo.spare1 || 0}}</span>
+                </div>
+                <div class="meta-item d-flex align-items-baseline">
+                  <h6 class="item-title no-margin pe-2">Service Days:</h6>
+                  <span>{{productInfo.fahuotianshu}}</span>
+                </div>
+                <div class="meta-item d-flex align-items-baseline">
+                  <h6 class="item-title no-margin pe-2">服务时间:</h6>
+                  <span class="text-success">
+                    <i class="fa fa-clock-o me-1"></i>
+                    {{productInfo.serviceStartTime && productInfo.serviceEndTime ?
+                      productInfo.serviceStartTime + ' - ' + productInfo.serviceEndTime :
+                      '时间待定'}}
+                  </span>
+                </div>
+                <div class="meta-item d-flex align-items-baseline">
+                  <h6 class="item-title no-margin pe-2">商品分类:</h6>
+                  <span>{{productInfo.typeName}}</span>
+                </div>
+
+              </div>
+
+              <!-- 服务商信息 -->
+              <div class="service-provider-info py-4 border-top">
+                <h5 class="text-dark mb-3">服务商信息</h5>
+                <div class="provider-details">
+                  <div class="meta-item d-flex align-items-baseline mb-2">
+                    <h6 class="item-title no-margin pe-2">服务商名称:</h6>
+                    <span class="text-primary fw-bold">{{productInfo.companyName || '暂无信息'}}</span>
+                    <button v-if="productInfo.companyName" @click="showProviderDetail" class="btn btn-sm btn-outline-primary ms-2">查看详情</button>
+                  </div>
+                  <div class="meta-item d-flex align-items-baseline mb-2">
+                    <h6 class="item-title no-margin pe-2">服务评分:</h6>
+                    <span class="text-warning">
+                      <i v-for="n in 5" :key="n" class="fa" :class="n <= Math.floor(productInfo.companyRating || 0) ? 'fa-star' : 'fa-star-o'"></i>
+                      {{(productInfo.companyRating || 0).toFixed(1)}}分 ({{productInfo.companyRatingCount || 0}}条评价)
+                    </span>
+                  </div>
+                  <div class="meta-item d-flex align-items-baseline mb-2">
+                    <h6 class="item-title no-margin pe-2">服务区域:</h6>
+                    <span>{{productInfo.companyServiceArea || '暂无信息'}}</span>
+                  </div>
+                  <div class="meta-item d-flex align-items-baseline mb-2">
+                    <h6 class="item-title no-margin pe-2">服务时间:</h6>
+                    <span>{{productInfo.serviceStartTime || '暂无'}} - {{productInfo.serviceEndTime || '暂无'}}</span>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class=" products-carousel">
+      <div class="container-lg">
+        <div class="row">
+          <div>
+
+            <div class="tab-content py-4" id="v-pills-tabContent">
+              <div class="tab-pane fade show active" id="v-pills-description" role="tabpanel" aria-labelledby="v-pills-description-tab" tabindex="0">
+                <h5>宠物服务描述</h5>
+                <p>{{productInfo.productdes}}</p>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <section id="related" class="products-carousel">
+      <div class="container-lg overflow-hidden py-5">
+        <div class="row">
+          <div class="col-md-12">
+
+            <div class="section-header d-flex flex-wrap justify-content-between my-4">
+
+              <h2 class="section-title">评论</h2>
+
+              <div class="d-flex align-items-center">
+
+                <div class="swiper-buttons">
+                  <button class="swiper-prev products-carousel-prev btn btn-primary">❮</button>
+                  <button class="swiper-next products-carousel-next btn btn-primary">❯</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+
+            <div class="swiper">
+              <div class="swiper-wrapper">
+                <div v-for="item in dataList" class="col-lg-6 d-flex flex-wrap gap-3 swiper-slide">
+                  <div class="col-md-2">
+                    <div class="image-holder">
+                      <img :src="item.sysuser.img" alt="review" class="img-fluid rounded-circle">
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="review-content">
+                      <div class="rating-container d-flex align-items-center">
+                          <span class="rating me-2">
+                            <svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>
+                            <svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>
+                            <svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>
+                            <svg width="24" height="24" class="text-warning"><use xlink:href="#star-full"></use></svg>
+                            <svg width="24" height="24" class="text-warning"><use xlink:href="#star-half"></use></svg>
+                          </span>
+
+                      </div>
+                      <span >{{item.sysuser.username}}</span>
+                      <div class="review-header">
+                        <span class="review-date">{{item.createtime}}</span>
+                      </div>
+                      <p>{{item.content}}</p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <!-- / products-carousel -->
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+
+
+
+
+    <section class="pb-4 my-4">
+      <div class="container-lg" >
+
+        <div class="bg-warning pt-5 rounded-5" >
+          <div class="container" style="background-image: url('/static/webSite/images/bottomBanner.jpg')">
+            <div class="row justify-content-center align-items-center">
+              <div class="col-md-4">
+                <h2 class="mt-5">加入购物车进行购买</h2>
+                <p>如果遇到问题，请联系我们留言</p>
+                <div class="d-flex gap-2 flex-wrap mb-5">
+                  <a class="btn btn-danger" href="/web/usercart" title="前往购物车">前往购物车 <i class="fa fa-shopping-cart"></i></a>
+                  <a class="btn btn-primary" href="/web/personal?activeName=third" title="前往订单">前往订单 <i class="fa fa-list"></i></a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+    <section class="py-5">
+      <div class="container-lg">
+        <div class="row row-cols-1 row-cols-sm-3 row-cols-lg-5">
+          <div class="col">
+            <div class="card mb-3 border border-dark-subtle p-3">
+              <div class="text-dark mb-3">
+                <i class="fa fa-battery-4"></i>
+              </div>
+              <div class="card-body p-0">
+                <h5>宠物服务保证</h5>
+                <p class="card-text">渠道正规，审核合格.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card mb-3 border border-dark-subtle p-3">
+              <div class="text-dark mb-3">
+                <i class="fa fa-bell"></i>              </div>
+              <div class="card-body p-0">
+                <h5>100% 真实</h5>
+                <p class="card-text">活动与折扣真实有效.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card mb-3 border border-dark-subtle p-3">
+              <div class="text-dark mb-3">
+                <i class="fa fa-shopping-cart"></i>
+              </div>
+              <div class="card-body p-0">
+                <h5>购物车一件选购</h5>
+                <p class="card-text">灵活自如，快捷下单.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card mb-3 border border-dark-subtle p-3">
+              <div class="text-dark mb-3">
+                <i class="fa fa-bar-chart"></i>
+              </div>
+              <div class="card-body p-0">
+                <h5>遇到问题请留言</h5>
+                <p class="card-text">后台全天回复.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card mb-3 border border-dark-subtle p-3">
+              <div class="text-dark mb-3">
+                <i class="fa fa-user"></i>
+              </div>
+              <div class="card-body p-0">
+                <h5>个性展示</h5>
+                <p class="card-text">更改个人信息，彰显个性.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="footer-bottom">
+      <div class="container-lg">
+        <div class="row">
+          <div class="col-md-6 copyright">
+            <p>@  2024 - 宠物服务订购平台.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+
+    <!-- 服务商详情弹窗 -->
+    <el-dialog title="服务商详情" :visible.sync="providerDialogVisible" width="70%" @opened="initProviderMap">
+      <div v-if="providerInfo">
+        <el-descriptions :column="2" title="基本信息" border>
+          <el-descriptions-item label="服务商名称">{{providerInfo.username || '服务商' + providerInfo.id}}</el-descriptions-item>
+          <el-descriptions-item label="联系电话">{{providerInfo.phonenumber}}</el-descriptions-item>
+          <el-descriptions-item label="服务地址" :span="2">{{providerInfo.address}}</el-descriptions-item>
+          <el-descriptions-item label="服务区域">{{providerInfo.serviceArea || '暂无信息'}}</el-descriptions-item>
+          <el-descriptions-item label="服务时间">{{providerInfo.serviceTime || '暂无信息'}}</el-descriptions-item>
+          <el-descriptions-item label="平均评分">
+            <span class="text-warning">
+              <i v-for="n in 5" :key="n" class="fa" :class="n <= Math.floor(providerInfo.avgRating || 0) ? 'fa-star' : 'fa-star-o'"></i>
+              {{(providerInfo.avgRating || 0).toFixed(1)}}分
+            </span>
+          </el-descriptions-item>
+          <el-descriptions-item label="评价总数">{{providerInfo.ratingCount || 0}}条</el-descriptions-item>
+          <el-descriptions-item label="注册时间">{{providerInfo.zhuceshijian}}</el-descriptions-item>
+          <el-descriptions-item label="状态">
+            <el-tag :type="providerInfo.status === '1' ? 'success' : 'danger'">
+              {{providerInfo.status === '1' ? '正常营业' : '暂停服务'}}
+            </el-tag>
+          </el-descriptions-item>
+        </el-descriptions>
+
+        <!-- 地图显示 -->
+        <div class="mt-4" v-if="providerInfo.address">
+          <h5>服务商位置</h5>
+          <div id="providerMapContainer" style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 4px;"></div>
+          <div class="mt-2 text-muted" style="font-size: 14px;">
+            <i class="fa fa-map-marker"></i> {{providerInfo.address}}
+          </div>
+        </div>
+
+        <!-- 用户评价列表 -->
+        <div class="mt-4">
+          <h5>用户评价</h5>
+          <el-table :data="providerEvaluations" style="width: 100%" v-loading="evaluationLoading">
+            <el-table-column prop="sysuser.username" label="用户" width="120"></el-table-column>
+            <el-table-column prop="rating" label="评分" width="100">
+              <template slot-scope="scope">
+                <span class="text-warning">
+                  <i v-for="n in 5" :key="n" class="fa fa-star" :class="n <= scope.row.rating ? 'text-warning' : 'text-muted'"></i>
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="content" label="评价内容"></el-table-column>
+            <el-table-column prop="createtime" label="评价时间" width="180">
+              <template slot-scope="scope">
+                {{new Date(scope.row.createtime).toLocaleString()}}
+              </template>
+            </el-table-column>
+          </el-table>
+          <div v-if="!providerEvaluations || providerEvaluations.length === 0" class="text-center py-4 text-muted">
+            暂无评价
+          </div>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="providerDialogVisible = false">关闭</el-button>
+        <el-button v-if="userId && role === '2'" type="primary" @click="contactProvider">联系服务商</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 联系服务商对话框 -->
+    <el-dialog title="联系服务商" :visible.sync="contactDialogVisible" width="50%">
+      <div v-if="providerInfo">
+        <div class="mb-3">
+          <strong>服务商：</strong>{{providerInfo.username || '服务商' + providerInfo.id}}
+        </div>
+
+        <!-- 聊天消息区域 -->
+        <div class="chat-messages" ref="chatMessages" style="height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 15px; background-color: #f9f9f9;">
+          <div v-for="msg in chatMessages" :key="msg.id" class="message-item" :class="msg.senderid == userId ? 'sent' : 'received'" style="margin-bottom: 10px;">
+            <div class="message-header" style="font-size: 12px; color: #666; margin-bottom: 5px;">
+              <span>{{msg.senderid == userId ? '我' : (providerInfo.username || '服务商' + providerInfo.id)}}</span>
+              <span style="float: right;">{{new Date(msg.createtime).toLocaleString()}}</span>
+            </div>
+            <div class="message-content" :style="msg.senderid == userId ? 'background-color: #007bff; color: white; padding: 8px 12px; border-radius: 10px; display: inline-block; max-width: 70%; float: right; clear: both;' : 'background-color: white; color: #333; padding: 8px 12px; border-radius: 10px; display: inline-block; max-width: 70%; float: left; clear: both;'">
+              {{msg.content}}
+            </div>
+            <div style="clear: both;"></div>
+          </div>
+          <div v-if="!chatMessages || chatMessages.length === 0" class="text-center text-muted py-4">
+            暂无聊天记录，开始对话吧！
+          </div>
+        </div>
+
+        <!-- 消息输入区域 -->
+        <div class="message-input">
+          <el-input
+            type="textarea"
+            :rows="3"
+            placeholder="请输入您要发送的消息..."
+            v-model="newMessage"
+            maxlength="500"
+            show-word-limit>
+          </el-input>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="contactDialogVisible = false">关闭</el-button>
+        <el-button type="primary" @click="sendMessageToProvider" :disabled="!newMessage.trim()">发送消息</el-button>
+      </div>
+    </el-dialog>
+
+  </div>
+    <script src="/static/webSite/js/jquery-1.11.0.min.js"></script>
+<!--    <script src="https://cdn.bootcdn.net/ajax/libs/Swiper/9.4.1/swiper-bundle.min.js"></script>-->
+    <script src="/static/webSite/js/swiper-bundle.js"></script>
+
+
+    <script src="/static/webSite/js/plugins.js"></script>
+    <script src="/static/webSite/js/script.js"></script>
+    <script src="/static/hAdmin/js/plugins/toastr/toastr.min.js"></script>
+  <script src="/static/element/element.js"></script>
+
+    <script src="/static/js/GloJs.js"></script>
+  <script>
+
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          baseUrl: gloRequestUrl,
+          productInfo: [],
+          id: "",
+          fileList: [],
+          dataList: [],
+          fileStr: [],
+          total: 0,
+          searchKey: "",
+          loading: true,
+          userId: localStorage.getItem("userId"),
+          role: localStorage.getItem("role"),
+          form: {
+            number:1
+          },
+          currentImgInfo: "",
+          open: false,
+          openDetail: false,
+          providerDialogVisible: false,
+          providerInfo: null,
+          providerEvaluations: [],
+          evaluationLoading: false,
+          contactDialogVisible: false,
+          chatMessages: [],
+          newMessage: '',
+
+          queryParams: {
+            pageSize: 10,
+            pageNum: 1,
+          },
+          title: "",
+          rules: {
+            title: [
+              {required: true, message: '请输入', trigger: 'blur'},
+
+            ],
+
+          }
+        }
+      },
+      methods: {
+        //添加购物车
+        handleAddCart(){
+          let that = this
+          if (that.form.number === null || that.form.number === 0 || that.form.number == undefined){
+            toastr.error("数量不能为空", '提示')
+            return false
+          }
+
+          let param = {
+            productid:that.id,
+            userid:that.userId,
+            number:that.form.number,
+          }
+          $.ajax({
+            url: that.baseUrl + "/shopcart",
+            type: "post",
+            data: JSON.stringify(param),
+            contentType: "application/json",
+            // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+            success: function (data) {
+              that.open = false
+              if (data.code === 200) {
+                toastr.success(data.msg, '提示')
+
+              } else {
+
+                toastr.error(data.msg, '提示')
+              }
+
+            },
+            error: function () {
+              alert("服务器异常！network error！")
+            }
+          })
+        },
+        currentImg(item){
+          this.currentImgInfo = item
+        },
+        // 获取
+        getDetail() {
+          let that = this;
+          $.ajax({
+            url: that.baseUrl + "/product/detail",
+            type: "GET",
+            data:  {
+              id:that.id
+            },
+            success: function (data) {
+              console.log("Product Detail API Response:", data);
+              if (data.code !== 500) {
+                that.productInfo = data.data
+                console.log("Product Info:", that.productInfo);
+                // 安全检查detailImgList是否存在且不为空
+                if (data.data.detailImgList && data.data.detailImgList.length > 0) {
+                  that.currentImgInfo = data.data.detailImgList[0]
+                } else {
+                  // 如果detailImgList为空，使用主图片
+                  that.currentImgInfo = data.data.img
+                }
+                that.getList()
+
+                // 获取最新的服务商评分统计
+                that.updateCompanyRating();
+              } else {
+                console.error("Product Detail API returned error:", data.msg);
+              }
+            },
+            error: function () {
+              windowsAuto(500, "服务器异常！network error！")
+            }
+          });
+        },
+
+        // 更新服务商评分统计
+        updateCompanyRating() {
+          let that = this;
+          if (that.productInfo && that.productInfo.companyid) {
+            $.ajax({
+              url: that.baseUrl + "/orderEvalute/ratingStats",
+              type: "GET",
+              data: {
+                companyid: that.productInfo.companyid
+              },
+              success: function (data) {
+                if (data.code === 200) {
+                  // 更新产品信息中的评分数据
+                  that.productInfo.companyRating = data.avgRating;
+                  that.productInfo.companyRatingCount = data.ratingCount;
+                }
+              },
+              error: function () {
+                console.error("获取评分统计失败");
+              }
+            });
+          }
+        },
+        // 获取列表
+        getList() {
+          let that = this;
+          that.loading = true
+          $.ajax({
+            url: that.baseUrl + "/orderEvalute",
+            type: "GET",
+            data: {
+              pageNum: 1,
+              pageSize: 1111,
+              companyid:that.productInfo.companyid
+            },
+            success: function (data) {
+              if (data.code !== 500) {
+                that.loading = false
+                that.dataList = data.list
+
+              }
+            },
+            error: function () {
+              windowsAuto(500, "服务器异常！network error！")
+            }
+          });
+        },
+        // 显示服务商详情
+        showProviderDetail() {
+          let that = this;
+          if (!that.productInfo.companyid) {
+            toastr.error("服务商信息不完整", '提示');
+            return;
+          }
+
+          that.providerDialogVisible = true;
+          that.evaluationLoading = true;
+
+          // 获取服务商详细信息
+          $.ajax({
+            url: that.baseUrl + "/company/detail",
+            type: "GET",
+            data: {
+              id: that.productInfo.companyid
+            },
+            success: function (data) {
+              if (data.code === 200) {
+                that.providerInfo = data.data;
+              } else {
+                toastr.error("获取服务商信息失败", '提示');
+              }
+            },
+            error: function () {
+              toastr.error("服务器异常", '提示');
+            }
+          });
+
+          // 获取服务商评价
+          $.ajax({
+            url: that.baseUrl + "/orderEvalute",
+            type: "GET",
+            data: {
+              pageNum: 1,
+              pageSize: 50,
+              companyid: that.productInfo.companyid
+            },
+            success: function (data) {
+              that.evaluationLoading = false;
+              if (data.code !== 500) {
+                that.providerEvaluations = data.list || [];
+              } else {
+                that.providerEvaluations = [];
+              }
+            },
+            error: function () {
+              that.evaluationLoading = false;
+              that.providerEvaluations = [];
+              toastr.error("获取评价信息失败", '提示');
+            }
+          });
+        },
+
+        // 联系服务商
+        contactProvider() {
+          let that = this;
+          if (!that.userId) {
+            toastr.error("请先登录", '提示');
+            return;
+          }
+
+          if (that.role !== '2') {
+            toastr.error("只有用户可以联系服务商", '提示');
+            return;
+          }
+
+          that.contactDialogVisible = true;
+          that.loadChatWithProvider();
+        },
+
+        // 初始化服务商地图
+        initProviderMap() {
+          let that = this;
+          if (!that.providerInfo || !that.providerInfo.address) {
+            return;
+          }
+
+          // 延迟执行以确保DOM已渲染
+          setTimeout(() => {
+            // 创建地图实例
+            const map = new AMap.Map('providerMapContainer', {
+              zoom: 15,
+              resizeEnable: true
+            });
+
+            // 使用地理编码服务将地址转换为坐标
+            AMap.plugin('AMap.Geocoder', function() {
+              const geocoder = new AMap.Geocoder();
+
+              // 如果有经纬度，直接使用
+              if (that.providerInfo.longitude && that.providerInfo.latitude) {
+                const position = [that.providerInfo.longitude, that.providerInfo.latitude];
+                map.setCenter(position);
+
+                // 添加标记
+                const marker = new AMap.Marker({
+                  position: position,
+                  title: that.providerInfo.username || '服务商位置'
+                });
+                map.add(marker);
+
+                // 添加信息窗体
+                const infoWindow = new AMap.InfoWindow({
+                  content: `<div style="padding: 10px;">
+                    <h6>${that.providerInfo.username || '服务商'}</h6>
+                    <p style="margin: 5px 0;">${that.providerInfo.address}</p>
+                    <p style="margin: 5px 0;">电话: ${that.providerInfo.phonenumber || '暂无'}</p>
+                  </div>`
+                });
+
+                marker.on('click', function() {
+                  infoWindow.open(map, position);
+                });
+              } else {
+                // 使用地址进行地理编码
+                geocoder.getLocation(that.providerInfo.address, function(status, result) {
+                  if (status === 'complete' && result.info === 'OK') {
+                    const location = result.geocodes[0].location;
+                    map.setCenter([location.lng, location.lat]);
+
+                    // 添加标记
+                    const marker = new AMap.Marker({
+                      position: [location.lng, location.lat],
+                      title: that.providerInfo.username || '服务商位置'
+                    });
+                    map.add(marker);
+
+                    // 添加信息窗体
+                    const infoWindow = new AMap.InfoWindow({
+                      content: `<div style="padding: 10px;">
+                        <h6>${that.providerInfo.username || '服务商'}</h6>
+                        <p style="margin: 5px 0;">${that.providerInfo.address}</p>
+                        <p style="margin: 5px 0;">电话: ${that.providerInfo.phonenumber || '暂无'}</p>
+                      </div>`
+                    });
+
+                    marker.on('click', function() {
+                      infoWindow.open(map, [location.lng, location.lat]);
+                    });
+                  } else {
+                    console.error('地理编码失败:', result);
+                  }
+                });
+              }
+            });
+          }, 300);
+        },
+
+        // 加载与服务商的聊天记录
+        loadChatWithProvider() {
+          let that = this;
+          if (!that.providerInfo || !that.providerInfo.createid) {
+            toastr.error("服务商信息不完整", '提示');
+            return;
+          }
+
+          console.log("加载聊天记录 - 用户ID:", that.userId, "服务商用户ID:", that.providerInfo.createid);
+
+          $.ajax({
+            url: that.baseUrl + "/message/chat",
+            type: "GET",
+            data: {
+              userId: parseInt(that.userId),
+              partnerId: parseInt(that.providerInfo.createid)
+            },
+            success: function (data) {
+              console.log("聊天记录响应:", data);
+              if (data.code === 200) {
+                that.chatMessages = data.list || [];
+                that.$nextTick(() => {
+                  that.scrollChatToBottom();
+                });
+              } else {
+                console.error("获取聊天记录失败:", data.msg);
+                that.chatMessages = [];
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error("加载聊天记录失败:", error);
+              toastr.error("加载聊天记录失败", '提示');
+              that.chatMessages = [];
+            }
+          });
+        },
+
+        // 发送消息给服务商
+        sendMessageToProvider() {
+          let that = this;
+          if (!that.newMessage.trim()) {
+            toastr.warning("请输入消息内容", '提示');
+            return;
+          }
+
+          if (!that.providerInfo || !that.providerInfo.createid) {
+            toastr.error("服务商信息不完整", '提示');
+            return;
+          }
+
+          console.log("发送消息 - 发送者ID:", that.userId, "接收者ID:", that.providerInfo.createid, "内容:", that.newMessage);
+
+          $.ajax({
+            url: that.baseUrl + "/message/form",
+            type: "POST",
+            data: {
+              content: that.newMessage,
+              senderid: parseInt(that.userId),
+              receiveid: parseInt(that.providerInfo.createid),
+              status: "0"
+            },
+            success: function (data) {
+              console.log("发送消息响应:", data);
+              if (data.code === 200) {
+                that.newMessage = '';
+                that.loadChatWithProvider(); // 重新加载消息
+                toastr.success("消息发送成功", '提示');
+              } else {
+                console.error("发送消息失败:", data.msg);
+                toastr.error(data.msg || "发送失败", '提示');
+              }
+            },
+            error: function (xhr, status, error) {
+              console.error("发送消息网络错误:", error);
+              toastr.error("发送消息失败", '提示');
+            }
+          });
+        },
+
+        // 滚动聊天区域到底部
+        scrollChatToBottom() {
+          if (this.$refs.chatMessages) {
+            this.$refs.chatMessages.scrollTop = this.$refs.chatMessages.scrollHeight;
+          }
+        },
+
+        // 计算折扣价格
+        calculateDiscountPrice() {
+          if (!this.productInfo || !this.productInfo.kedanjia) {
+            return '0.00';
+          }
+
+          const originalPrice = parseFloat(this.productInfo.kedanjia);
+          if (isNaN(originalPrice)) {
+            return '0.00';
+          }
+
+          // 如果有折扣且折扣有效
+          if (this.productInfo.spare2 && !isNaN(parseFloat(this.productInfo.spare2))) {
+            const discount = parseFloat(this.productInfo.spare2);
+            if (discount > 0 && discount < 10) {
+              return (originalPrice * discount / 10).toFixed(2);
+            }
+          }
+
+          // 没有折扣或折扣无效时，返回原价
+          return originalPrice.toFixed(2);
+        },
+
+      },
+      watch: {},
+      mounted() {
+        let that = this;
+
+        let id = new URLSearchParams(window.location.search).get('id')
+        if (id){
+          that.id = id
+          that.getDetail()
+        }
+
+        // 监听评分更新事件
+        window.addEventListener('storage', function(e) {
+          if (e.key === 'ratingUpdate' && e.newValue) {
+            try {
+              const ratingData = JSON.parse(e.newValue);
+              // 如果更新的是当前产品的服务商，则更新评分显示
+              if (that.productInfo && that.productInfo.companyid === ratingData.companyid) {
+                that.productInfo.companyRating = ratingData.avgRating;
+                that.productInfo.companyRatingCount = ratingData.ratingCount;
+
+                // 如果服务商详情对话框是打开的，也更新对话框中的评分
+                if (that.providerDialogVisible && that.providerInfo) {
+                  that.providerInfo.avgRating = ratingData.avgRating;
+                  that.providerInfo.ratingCount = ratingData.ratingCount;
+                }
+
+                console.log('评分已实时更新:', ratingData);
+              }
+            } catch (error) {
+              console.error('解析评分更新数据失败:', error);
+            }
+          }
+        });
+
+        // 监听同页面内的评分更新（用于处理同一页面内的评分更新）
+        window.addEventListener('ratingUpdated', function(e) {
+          if (that.productInfo && that.productInfo.companyid === e.detail.companyid) {
+            that.productInfo.companyRating = e.detail.avgRating;
+            that.productInfo.companyRatingCount = e.detail.ratingCount;
+
+            if (that.providerDialogVisible && that.providerInfo) {
+              that.providerInfo.avgRating = e.detail.avgRating;
+              that.providerInfo.ratingCount = e.detail.ratingCount;
+            }
+          }
+        });
+
+      }
+    })
+
+  </script>
+  </body>
+</html>

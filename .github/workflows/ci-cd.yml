@@ -1,0 +1,62 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-java@v4
+      with:
+        java-version: '8'
+        distribution: 'temurin'
+        cache: maven
+    - name: Run unit tests
+      run: mvn clean test -DskipITs
+
+  integration-and-api-tests:
+    name: Integration & API Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-java@v4
+      with:
+        java-version: '8'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Run all tests
+      run: mvn test -Dspring.profiles.active=test -e
+
+  # 新增：打包并上传 jar 包
+  build:
+    name: Build & Package
+    runs-on: ubuntu-latest
+    needs: integration-and-api-tests # 等测试跑完再打包
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-java@v4
+      with:
+        java-version: '8'
+        distribution: 'temurin'
+        cache: maven
+
+    # 1. 打包项目，跳过测试（前面已经跑过了）
+    - name: Package with Maven
+      run: mvn clean package -DskipTests
+
+    # 2. 上传 jar 包到 CI 产物，方便下载
+    - name: Upload JAR artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: my-java-project-jar
+        path: target/*.jar

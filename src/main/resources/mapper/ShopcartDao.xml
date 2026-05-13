@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javaPro.myProject.modules.shopcart.dao.ShopcartDao">
+
+    <resultMap type="com.javaPro.myProject.modules.shopcart.entity.Shopcart" id="ShopcartMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="productid" column="productid" jdbcType="INTEGER"/>
+        <result property="userid" column="userid" jdbcType="INTEGER"/>
+        <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+        <result property="number" column="number" jdbcType="INTEGER"/>
+        <result property="spare1" column="spare1" jdbcType="VARCHAR"/>
+        <result property="spare2" column="spare2" jdbcType="VARCHAR"/>
+        <association property="product" javaType="com.javaPro.myProject.modules.product.entity.Product">
+            <result property="id" column="product_id" jdbcType="INTEGER"/>
+            <result property="productname" column="productname" jdbcType="VARCHAR"/>
+            <result property="productdes" column="productdes" jdbcType="VARCHAR"/>
+            <result property="img" column="img" jdbcType="VARCHAR"/>
+            <result property="chengben" column="chengben" jdbcType="VARCHAR"/>
+            <result property="kedanjia" column="kedanjia" jdbcType="VARCHAR"/>
+            <result property="kucun" column="kucun" jdbcType="VARCHAR"/>
+            <result property="fahuotianshu" column="fahuotianshu" jdbcType="VARCHAR"/>
+            <result property="chandi" column="chandi" jdbcType="VARCHAR"/>
+            <result property="guige" column="guige" jdbcType="VARCHAR"/>
+            <result property="companyid" column="companyid" jdbcType="INTEGER"/>
+            <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+            <result property="status" column="status" jdbcType="VARCHAR"/>
+            <result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
+            <result property="producttype" column="producttype" jdbcType="INTEGER"/>
+            <result property="spare1" column="spare1" jdbcType="VARCHAR"/>
+            <result property="spare2" column="productspare2" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ShopcartMap">
+        select
+          id, productid, userid, createtime, number, spare1, spare2
+        from shopcart
+        where id = #{id}
+    </select>
+    <select id="queryProductByCartId" resultMap="ShopcartMap">
+        select
+          s.id, s.productid, s.userid, s.createtime, s.number,
+               p.id as product_id, p.productname, p.productdes, p.img, p.chengben, p.kedanjia, p.kucun, p.fahuotianshu, p.chandi, p.guige,
+               p.companyid,  p.status, p.producttype, p.spare1, p.spare2 as productspare2
+        from shopcart s
+        left join product p on p.id = s.productid
+        where s.id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ShopcartMap">
+        select
+          s.id, s.productid, userid, s.createtime, number, s.spare1,
+               s.spare2, p.id as product_id, p.productname, p.productdes, p.img, p.chengben, p.kedanjia,
+               p.kucun, p.fahuotianshu, p.chandi, p.guige, p.companyid,
+               p.status, p.updatetime, p.producttype,p.spare2 as productspare2
+        from shopcart s
+        left join product p on p.id = s.productid
+<where>
+    <if test="productid != null">
+        and s.productid = #{productid}
+    </if>
+    <if test="userid != null">
+        and s.userid = #{userid}
+    </if>
+    <if test="spare1 != null">
+        and s.spare1 = #{spare1}
+    </if>
+</where>
+        order by s.createtime desc
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from shopcart
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="productid != null">
+                and productid = #{productid}
+            </if>
+            <if test="userid != null">
+                and userid = #{userid}
+            </if>
+            <if test="createtime != null">
+                and createtime = #{createtime}
+            </if>
+            <if test="number != null">
+                and number = #{number}
+            </if>
+            <if test="spare1 != null and spare1 != ''">
+                and spare1 = #{spare1}
+            </if>
+            <if test="spare2 != null and spare2 != ''">
+                and spare2 = #{spare2}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into shopcart(productid, userid, createtime, number, spare1, spare2)
+        values (#{productid}, #{userid}, now(), #{number}, '0', #{spare2})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into shopcart(productid, userid, createtime, number, spare1, spare2)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.productid}, #{entity.userid}, #{entity.createtime}, #{entity.number}, #{entity.spare1}, #{entity.spare2})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into shopcart(productid, userid, createtime, number, spare1, spare2)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.productid}, #{entity.userid}, #{entity.createtime}, #{entity.number}, #{entity.spare1}, #{entity.spare2})
+        </foreach>
+        on duplicate key update
+        productid = values(productid),
+        userid = values(userid),
+        createtime = values(createtime),
+        number = values(number),
+        spare1 = values(spare1),
+        spare2 = values(spare2)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update shopcart
+        <set>
+            <if test="productid != null">
+                productid = #{productid},
+            </if>
+            <if test="userid != null">
+                userid = #{userid},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime},
+            </if>
+            <if test="number != null">
+                number = #{number},
+            </if>
+            <if test="spare1 != null and spare1 != ''">
+                spare1 = #{spare1},
+            </if>
+            <if test="spare2 != null and spare2 != ''">
+                spare2 = #{spare2},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from shopcart where id = #{id}
+    </delete>
+
+</mapper>
+

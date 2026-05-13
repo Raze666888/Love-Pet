@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>简单编辑功能测试</title>
+    <link href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
+    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div style="padding: 20px;">
+            <h1>个人信息编辑功能测试</h1>
+
+            <el-button type="primary" @click="testSimpleEdit">测试简单编辑</el-button>
+            <el-button type="success" @click="testComplexEdit">测试复杂编辑（带省市区）</el-button>
+
+            <div style="margin-top: 20px;">
+                <p>当前用户信息：{{userInfo}}</p>
+                <p>编辑状态：{{open ? '打开' : '关闭'}}</p>
+                <p>对话框标题：{{title}}</p>
+            </div>
+        </div>
+
+        <!-- 简单编辑对话框 -->
+        <el-dialog
+            :title="title"
+            :visible.sync="open"
+            width="50%">
+            <el-form :model="form" label-width="80px">
+                <el-form-item label="用户名">
+                    <el-input v-model="form.username" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="昵称">
+                    <el-input v-model="form.nickname"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱">
+                    <el-input v-model="form.email"></el-input>
+                </el-form-item>
+                <el-form-item label="手机">
+                    <el-input v-model="form.phone"></el-input>
+                </el-form-item>
+                <el-form-item label="地址">
+                    <el-input v-model="form.address"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="open = false">取 消</el-button>
+                <el-button type="primary" @click="saveUserInfo">确 定</el-button>
+            </div>
+        </el-dialog>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    userInfo: {
+                        id: 1,
+                        username: 'testuser',
+                        nickname: '测试用户',
+                        email: 'test@example.com',
+                        phone: '13800138000',
+                        address: '测试地址'
+                    },
+                    form: {},
+                    open: false,
+                    title: ''
+                };
+            },
+            methods: {
+                // 简单编辑方法 - 模拟原始的简单版本
+                testSimpleEdit() {
+                    console.log('=== 测试简单编辑方法 ===');
+                    this.form = Object.assign({}, this.userInfo);
+                    this.open = true;
+                    this.title = "编辑";
+                    console.log('✓ 简单编辑对话框已打开');
+                },
+
+                // 复杂编辑方法 - 模拟当前修改后的版本
+                testComplexEdit() {
+                    console.log('=== 测试复杂编辑方法 ===');
+                    console.log('当前用户信息:', this.userInfo);
+
+                    try {
+                        // 模拟复杂的省市区检查逻辑
+                        if (this.provinceList && this.provinceList.length === 0) {
+                            console.log('省份数据未加载，先加载数据...');
+                            // 模拟回调
+                            setTimeout(() => {
+                                this.openEditDialog();
+                            }, 1000);
+                        } else {
+                            console.log('省份数据已加载，直接打开对话框');
+                            this.openEditDialog();
+                        }
+                    } catch (error) {
+                        console.error('复杂编辑方法执行出错:', error);
+                        this.open = true;
+                        this.title = "编辑";
+                        this.form = Object.assign({}, this.userInfo);
+                    }
+                },
+
+                // 模拟openEditDialog方法
+                openEditDialog() {
+                    console.log('=== 开始打开编辑对话框 ===');
+                    this.form = Object.assign({}, this.userInfo);
+                    this.open = true;
+                    this.title = "编辑";
+                    console.log('✓ 复杂编辑对话框已成功打开');
+                },
+
+                // 保存用户信息
+                saveUserInfo() {
+                    console.log('保存用户信息:', this.form);
+                    this.userInfo = Object.assign({}, this.form);
+                    this.open = false;
+                    this.$message.success('保存成功');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

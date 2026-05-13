@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javaPro.myProject.modules.orderEvalute.dao.OrderEvaluteDao">
+
+    <resultMap type="com.javaPro.myProject.modules.orderEvalute.entity.OrderEvalute" id="OrderEvaluteMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+        <result property="userid" column="userid" jdbcType="INTEGER"/>
+        <result property="orderid" column="orderid" jdbcType="INTEGER"/>
+        <result property="companyid" column="companyid" jdbcType="INTEGER"/>
+        <result property="rating" column="rating" jdbcType="DOUBLE"/>
+        <association property="sysuser" javaType="com.javaPro.myProject.modules.sysuser.entity.Sysuser">
+            <result property="id" column="id" jdbcType="INTEGER"/>
+            <result property="username" column="username" jdbcType="VARCHAR"/>
+            <result property="sex" column="sex" jdbcType="VARCHAR"/>
+            <result property="phonenumber" column="phonenumber" jdbcType="VARCHAR"/>
+            <result property="account" column="account" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="idcard" column="idcard" jdbcType="VARCHAR"/>
+            <result property="address" column="address" jdbcType="VARCHAR"/>
+            <result property="img" column="img" jdbcType="VARCHAR"/>
+            <result property="role" column="role" jdbcType="VARCHAR"/>
+            <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+            <result property="age" column="age" jdbcType="VARCHAR"/>
+            <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="OrderEvaluteMap">
+        select
+          id, content, createtime, userid, orderid
+        from order_evalute
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="OrderEvaluteMap">
+        select
+          oe.id, content, oe.createtime, oe.userid, orderid,oe.companyid, s.*
+        from order_evalute oe
+        left join `order` o on o.id = oe.orderid
+        left join sysuser s on s.id = oe.userid
+        <where>
+            <if test="id != null">
+                and oe.id = #{id}
+            </if>
+            <if test="content != null and content != ''">
+                and content = #{content}
+            </if>
+            <if test="createtime != null">
+                and oe.createtime = #{createtime}
+            </if>
+            <if test="userid != null">
+                and oe.userid = #{userid}
+            </if>
+            <if test="orderid != null">
+                and orderid = #{orderid}
+            </if>
+            <if test="companyid != null">
+                and oe.companyid = #{companyid}
+            </if>
+        </where>
+order by oe.createtime desc
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from order_evalute
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="content != null and content != ''">
+                and content = #{content}
+            </if>
+            <if test="createtime != null">
+                and createtime = #{createtime}
+            </if>
+            <if test="userid != null">
+                and userid = #{userid}
+            </if>
+            <if test="orderid != null">
+                and orderid = #{orderid}
+            </if>
+            <if test="companyid != null">
+                and companyid = #{companyid}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into order_evalute(content, createtime, userid, orderid, companyid, rating)
+        values (#{content}, now(), #{userid}, #{orderid}, #{companyid}, #{rating})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into order_evalute(content, createtime, userid, orderid)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.content}, #{entity.createtime}, #{entity.userid}, #{entity.orderid})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into order_evalute(content, createtime, userid, orderid)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.content}, #{entity.createtime}, #{entity.userid}, #{entity.orderid})
+        </foreach>
+        on duplicate key update
+        content = values(content),
+        createtime = values(createtime),
+        userid = values(userid),
+        orderid = values(orderid)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update order_evalute
+        <set>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime},
+            </if>
+            <if test="userid != null">
+                userid = #{userid},
+            </if>
+            <if test="orderid != null">
+                orderid = #{orderid},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from order_evalute where id = #{id}
+    </delete>
+
+    <!--计算服务商的平均评分-->
+    <select id="getAvgRatingByCompanyId" resultType="java.lang.Double">
+        select AVG(rating) from order_evalute where companyid = #{companyid} and rating is not null
+    </select>
+
+    <!--获取服务商的评价总数-->
+    <select id="getRatingCountByCompanyId" resultType="java.lang.Integer">
+        select COUNT(*) from order_evalute where companyid = #{companyid} and rating is not null
+    </select>
+
+    <!--根据服务商ID查询评价列表-->
+    <select id="queryByCompanyId" resultMap="OrderEvaluteMap">
+        select
+          oe.id, content, oe.createtime, oe.userid, orderid, oe.companyid, oe.rating, s.*
+        from order_evalute oe
+        left join sysuser s on s.id = oe.userid
+        where oe.companyid = #{companyid}
+        order by oe.createtime desc
+    </select>
+
+    <!-- 根据服务商ID获取评分分布统计 -->
+    <select id="getRatingDistributionByCompanyId" resultType="java.util.Map">
+        select
+            rating,
+            count(1) as count
+        from order_evalute
+        where companyid = #{companyId} and rating is not null
+        group by rating
+        order by rating
+    </select>
+
+</mapper>
+

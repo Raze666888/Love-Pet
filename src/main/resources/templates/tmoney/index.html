@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+
+    <title> Recharge</title>
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <link href="favicon.ico" rel="shortcut icon">
+    <script src="/static/DemoBootStrap/js/vue.js"></script>
+    <!--    <link href="/static/hAdmin/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">-->
+    <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <!-- Sweet Alert -->
+    <link href="/static/hAdmin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/animate.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
+    <style>
+        .addList {
+            padding: 10px 30px 10px 30px;
+            height: 90px;
+            margin-top: 3px
+        }
+    </style>
+
+</head>
+
+<body class="gray-bg animated bounceInDown">
+<div id="app">
+    <div id="block"
+         style="width: 100%;height: 100%;background: #171717;opacity: 0.7;position: fixed;top: 0;left: 0;z-index: 999;text-align: center;display: none">
+        <div style="margin-top: 300px">
+            <span style="color: #ffffff;font-size: 20px;font-weight: 700">Submitting operation, please do not perform any actions...</span>
+        </div>
+    </div>
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <span id="gloUrl" style="display: none"></span>
+
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="ibox">
+                    <div class="ibox-title" style="height: 55px;">
+                        <h5>All Records</h5>
+                        <div class="ibox-tools">
+                            <div class="text-center">
+                                <el-button
+                                        @click="handleAdd"
+                                        v-if="role === '1'"
+                                        type="primary">
+                                    Add
+                                </el-button>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row m-b-sm m-t-sm">
+
+                            <div class="col-md-11 form-inline">
+                                <el-form :inline="true" :model="queryParams" class="demo-form-inline">
+                                    <el-form-item label="Recharge Amount">
+                                        <el-input placeholder="Recharge Amount" v-model="queryParams.money"></el-input>
+                                    </el-form-item>
+                                    <el-form-item>
+                                        <el-button @click="getList" type="primary"><i class="fa fa-search"></i> Search
+                                        </el-button>
+                                        <el-button @click="handleResetQuery" type="info"><i class="fa fa-circle"></i> Reset
+                                        </el-button>
+                                    </el-form-item>
+                                </el-form>
+                            </div>
+                        </div>
+                        <!--            列表          -->
+                        <div class="project-list">
+                            <div class="ibox-content">
+                                <el-table
+                                        :data="dataList"
+                                        style="width: 100%"
+                                        v-loading="loading">
+                                    <el-table-column
+                                            align="center"
+                                            label="ID"
+                                            prop="id"
+                                    >
+                                    </el-table-column>
+
+                                    <el-table-column
+                                            align="center"
+                                            label="Recharge Amount"
+                                            prop="money"
+                                    >
+                                    </el-table-column>
+
+
+                                    <el-table-column
+                                            align="center"
+                                            label="创建时间"
+                                            prop="createtime">
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="审核时间"
+                                            prop="audittime">
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="审核状态"
+                                            prop="auditstatus">
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="审核备注"
+                                            prop="cause">
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="操作"
+                                            width="350px"
+                                    >
+                                        <template slot-scope="scope">
+
+                                            <el-button @click="handleEdit(scope.row)" round size="small" type="warning"
+                                                       v-if="role === '1' && scope.row.auditstatus == '待审核'">
+                                                <i class="fa fa-pencil"></i> 编辑
+                                            </el-button>
+                                            <el-button @click="handleDel(scope.row.id)" round size="small"
+                                                       v-if="role === '1'"
+                                                       type="danger"><i class="fa fa-trash"></i> 删除
+                                            </el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                        <div style="width: 100%;text-align: center">
+                            <el-pagination
+                                    :current-page.sync="queryParams.pageNum"
+                                    :page-size="queryParams.pageSize"
+                                    :total="total"
+                                    @current-change="handleCurrentChange"
+                                    background
+                                    layout="total, prev, pager, next">
+                            </el-pagination>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <el-dialog :title="title" :visible.sync="open" width="50%">
+        <el-form :model="form" :rules="rules" label-width="150px" ref="form">
+
+            <el-form-item label="充值金额" prop="money">
+                <el-input v-model="form.money"></el-input>
+            </el-form-item>
+            <el-form-item label="审核状态">
+                <el-select v-model="form.auditstatus" placeholder="请选择">
+                    <el-option
+                            label="待审核"
+                            value="待审核">
+                    </el-option>
+                    <el-option
+                            label="已审核"
+                            value="已审核">
+                    </el-option>
+                    <el-option
+                            label="驳回"
+                            value="驳回">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+
+
+            <el-form-item label="审核备注">
+                <el-input type="textarea" v-model="form.cause"></el-input>
+            </el-form-item>
+
+            <el-form-item>
+                <el-button @click="submitEdit" type="primary">保存</el-button>
+                <el-button @click="open = false">取消</el-button>
+            </el-form-item>
+        </el-form>
+    </el-dialog>
+    <el-dialog :visible.sync="openDetail" width="50%">
+        <el-descriptions :column="4" :title="title" border>
+            <el-descriptions-item :span="4" label="图片">
+                <el-image :src="form.img"
+                          style="width: 100px;height: 100px;"></el-image>
+            </el-descriptions-item>
+            <el-descriptions-item :span="2" label="充值金额">{{form.money}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="营业执照统一信贷码">{{form.yingyezhizhaohao}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="联系方式">{{form.phonenumber}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="法人">{{form.faren}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="注册地址">{{form.address}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="注册时间">{{form.zhuceshijian}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="创建时间">{{form.createtime}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="创建时间">{{form.createtime}}</el-descriptions-item>
+            <el-descriptions-item :span="4" label="经营范围">{{form.jingyingfanwei}}</el-descriptions-item>
+        </el-descriptions>
+    </el-dialog>
+</div>
+
+
+<!-- 全局js -->
+<script src="/static/hAdmin/js/jquery.min.js?v=2.1.4"></script>
+<!--<script src="/static/hAdmin/js/bootstrap.min.js?v=3.3.6"></script>-->
+<!-- Sweet alert -->
+<script src="/static/hAdmin/js/plugins/sweetalert/sweetalert.min.js"></script>
+
+<!-- 自定义js -->
+<script src="/static/hAdmin/js/content.js?v=1.0.0"></script>
+
+
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+<!--    分页js -->
+<!--<script src="/static/wmmJs/public/PageHelper.js"></script>-->
+<script src="/static/hAdmin/js/plugins/toastr/toastr.min.js"></script>
+<script src="/static/js/GloJs.js"></script>
+<script>
+
+    new Vue({
+        el: "#app",
+        data() {
+            return {
+                baseUrl: gloRequestUrl,
+                dataList: [],
+                selectList: [],
+                fileList: [],
+                fileStr: [],
+                total: 0,
+                searchKey: "",
+                loading: true,
+                userId: localStorage.getItem("userId"),
+                role: localStorage.getItem("role"),
+                form: {},
+                open: false,
+                openDetail: false,
+                queryParams: {
+                    pageSize: 3,
+                    pageNum: 1,
+                },
+                title: "",
+                rules: {
+                    title: [
+                        {required: true, message: '请输入', trigger: 'blur'},
+
+                    ],
+
+                }
+            }
+        },
+        methods: {
+            handleResetQuery() {
+                this.queryParams = {
+                    pageSize: 3,
+                    pageNum: 1,
+                }
+                this.getList()
+            },
+            removeElement(arr, elem) {
+                return arr.filter(item => item !== elem);
+            },
+            handleRemove(file, fileList) {
+                this.fileStr = this.removeElement(this.fileStr, file.response.msg)
+            },
+            handlePreview(file) {
+                window.open(this.baseUrl + file.response.msg)
+            },
+            handleExceed(files, fileList) {
+                this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+            },
+            beforeRemove(file, fileList) {
+                return this.$confirm(`确定移除 ${file.name}？`);
+            },
+            handleFileSuccess(res) {
+                let that = this
+                that.fileStr.push(res.msg)
+            },
+            getSelectList() {
+                let that = this;
+                let param = {
+                    "pageSize": 999,
+                    "pageNum": that.queryParams.pageNum,
+
+                }
+                $.ajax({
+                    url: that.baseUrl + "/tType/list",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        if (data.code !== 500) {
+
+                            that.selectList = data.list
+
+                        }
+                    },
+                    error: function () {
+                        windowsAuto(500, "服务器异常！network error！")
+                    }
+                });
+            },
+            // 获取列表
+            getList() {
+                let that = this;
+                that.loading = true
+                $.ajax({
+                    url: that.baseUrl + "/tmoney",
+                    type: "GET",
+                    data: that.queryParams,
+                    success: function (data) {
+                        if (data.code !== 500) {
+                            that.loading = false
+                            that.dataList = data.list
+                            that.total = data.total
+                        }
+                    },
+                    error: function () {
+                        windowsAuto(500, "服务器异常！network error！")
+                    }
+                });
+            },
+            submitEdit() {
+                let that = this
+                this.$refs['form'].validate((valid) => {
+                    if (valid) {
+                        if (that.fileStr && that.fileStr.length > 0) {
+                            that.form.img = that.fileStr.join(",")
+
+                        }
+                        that.form.createid = that.userId
+                        if (that.form.id == undefined) {
+
+                            $.ajax({
+                                url: that.baseUrl + "/tmoney",
+                                type: "post",
+                                data: JSON.stringify(that.form),
+                                contentType: "application/json",
+                                // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                                success: function (data) {
+                                    that.open = false
+                                    if (data.code === 200) {
+                                        toastr.success(data.msg, '提示')
+
+                                    } else {
+
+                                        toastr.error(data.msg, '提示')
+                                    }
+                                    that.getList()
+                                },
+                                error: function () {
+                                    alert("服务器异常！network error！")
+                                }
+                            })
+                        } else {
+
+                            $.ajax({
+                                url: that.baseUrl + "/tmoney",
+                                type: "PUT",
+                                data: JSON.stringify(that.form),
+                                contentType: "application/json",
+                                // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                                success: function (data) {
+                                    that.open = false
+                                    if (data.code === 200) {
+                                        toastr.success(data.msg, '提示')
+
+                                    } else {
+
+                                        toastr.error(data.msg, '提示')
+                                    }
+                                    that.getList()
+                                },
+                                error: function () {
+                                    alert("服务器异常！network error！")
+                                }
+                            })
+                        }
+
+                    }
+                })
+            },
+            reset() {
+                this.form = {}
+                this.fileStr = []
+                this.fileList = []
+            },
+            //打开详情
+            handleDetail(row) {
+                let that = this;
+                that.form = row
+                that.title = "详情"
+                that.openDetail = true
+
+            },
+            handleDel(id) {
+                let that = this;
+                swal({
+                    title: "您确定要删除该信息吗",
+                    text: "删除后不可恢复！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "删除",
+                    cancelButtonText: "我再想想",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        url: that.baseUrl + "/tmoney",
+                        type: "DELETE",
+                        data: {
+                            id: id,
+                        },
+                        success: function (data) {
+                            windowsAuto(data.code, data.msg)
+                            that.getList()
+                        },
+                        error: function () {
+                            alert("服务器异常！network error！")
+                        }
+                    })
+
+                });
+            },
+            handleEdit(row) {
+                let that = this
+                that.form = row
+                that.open = true
+                that.title = "编辑"
+            },
+            handleAdd() {
+                let that = this
+                that.reset()
+                that.open = true
+                that.title = "新增"
+            },
+
+            handleCurrentChange() {
+                let that = this;
+                that.getList()
+            },
+
+
+        },
+        watch: {},
+        mounted() {
+            let that = this;
+            if (that.queryParams) {
+                that.getList()
+                that.getSelectList()
+            }
+
+
+        }
+    })
+
+</script>
+</body>
+</html>

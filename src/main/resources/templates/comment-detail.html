@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcement Details - Comment Display</title>
+    <link href="/static/hAdmin/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="/static/hAdmin/css/animate.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="/static/element/element.css" rel="stylesheet">
+    <style>
+        .comment-item {
+            border: 1px solid #e7eaec;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #fff;
+        }
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .comment-user {
+            font-weight: bold;
+            color: #337ab7;
+        }
+        .comment-time {
+            color: #999;
+            font-size: 12px;
+        }
+        .comment-content {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+        .comment-actions {
+            margin-top: 10px;
+            border-top: 1px solid #f5f5f5;
+            padding-top: 10px;
+        }
+        .reply-item {
+            margin-left: 30px;
+            padding-left: 15px;
+            border-left: 3px solid #e7eaec;
+            margin-top: 10px;
+        }
+        .reply-item.odd-level {
+            border-left-color: #5cb85c;
+        }
+        .reply-item.even-level {
+            border-left-color: #5bc0de;
+        }
+        .nested-reply {
+            margin-left: 30px;
+            padding-left: 15px;
+            border-left: 3px solid #e7eaec;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        .nested-reply:hover {
+            background-color: #f8f9fa;
+        }
+        .reply-level-1 { border-left-color: #5cb85c; }
+        .reply-level-2 { border-left-color: #5bc0de; }
+        .reply-level-3 { border-left-color: #f0ad4e; }
+        .reply-level-4 { border-left-color: #d9534f; }
+        .reply-level-5 { border-left-color: #777; }
+        .expand-btn {
+            background: none;
+            border: none;
+            color: #337ab7;
+            cursor: pointer;
+            padding: 5px 0;
+            margin-left: 30px;
+        }
+        .expand-btn:hover {
+            text-decoration: underline;
+        }
+        .reply-form {
+            margin-left: 30px;
+            margin-top: 10px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            display: none;
+        }
+        .badge-current-user {
+            background-color: #5cb85c;
+            margin-left: 5px;
+        }
+        .notice-detail {
+            background: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border: 1px solid #e7eaec;
+        }
+        .comment-stats {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8f8f8;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+<div id="app">
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <!-- Loading Mask -->
+        <div id="block" v-show="loading"
+             style="position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                    background: rgba(0,0,0,0.5); z-index: 9999; display: flex;
+                    align-items: center; justify-content: center;">
+            <div style="color: white; font-size: 18px;">
+                <i class="fa fa-spinner fa-spin"></i> Loading...
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <!-- Back Button -->
+                <div class="text-left mb-3">
+                    <el-button @click="goBack" type="default" icon="el-icon-back">
+                        Back to Announcement List
+                    </el-button>
+                </div>
+
+                <!-- Announcement Details -->
+                <div v-if="notice" class="notice-detail">
+                    <h2>{{ notice.title }}</h2>
+                    <div class="comment-stats">
+                        <span><i class="fa fa-clock-o"></i> Publish Time: {{ notice.createTime }}</span>
+                        <span class="ml-3"><i class="fa fa-comments"></i> Comments: {{ totalComments }}</span>
+                        <span class="ml-3"><i class="fa fa-tag"></i> Type: {{ notice.typeName }}</span>
+                    </div>
+                    <div class="mt-3" v-html="notice.content"></div>
+                    <div v-if="notice.img" class="text-center mt-3">
+                        <img :src="notice.img" style="max-width: 100%; max-height: 400px;" class="img-thumbnail">
+                    </div>
+                </div>
+
+                <!-- Post Comment -->
+                <div class="comment-item">
+                    <h5><i class="fa fa-edit"></i> Post Comment</h5>
+                    <textarea v-model="newComment" class="form-control" rows="3"
+                              placeholder="Please enter your comment..." maxlength="500"></textarea>
+                    <div class="text-right mt-2">
+                        <small class="text-muted">{{ newComment.length }} / 500 characters</small>
+                        <el-button @click="submitComment" type="primary" size="small"
+                                   :disabled="!newComment.trim() || submitting" class="ml-2">
+                            <i class="fa fa-send"></i> Post Comment
+                        </el-button>
+                    </div>
+                </div>
+
+                <!-- Comment List -->
+                <div>
+                    <h4><i class="fa fa-comments"></i> All Comments ({{ comments.length }} items)</h4>
+
+                    <div v-if="comments.length > 0">
+                        <!-- Top Level Comments -->
+                        <div v-for="comment in comments" :key="comment.id" class="comment-item">
+                            <div class="comment-header">
+                                <div>
+                                    <span class="comment-user">
+                                        <i class="fa fa-user-circle"></i> {{ comment.username || 'Anonymous User' }}
+                                    </span>
+                                    <span v-if="comment.isCurrentUser" class="badge badge-current-user">My Comment</span>
+                                </div>
+                                <small class="comment-time">{{ comment.createTimeFormatted || comment.createTime }}</small>
+                            </div>
+                            <div class="comment-content">{{ comment.content }}</div>
+
+                            <div class="comment-actions">
+                                <el-button @click="showReplyForm(comment.id)" type="text" size="small">
+                                    <i class="fa fa-reply"></i> Reply
+                                </el-button>
+                                <el-button v-if="comment.isCurrentUser" @click="deleteComment(comment.id)"
+                                           type="text" size="small" style="color: #f56c6c;">
+                                    <i class="fa fa-trash"></i> Delete
+                                </el-button>
+                            </div>
+
+                            <!-- Reply Form -->
+                            <div v-if="replyFormVisible[comment.id]" class="reply-form">
+                                <textarea v-model="replyContent[comment.id]" class="form-control" rows="2"
+                                          placeholder="Reply to @{{ comment.username }}..." maxlength="500"></textarea>
+                                <div class="text-right mt-2">
+                                    <small class="text-muted">{{ (replyContent[comment.id] || '').length }} / 500 characters</small>
+                                    <el-button @click="submitReply(comment.id)" type="primary" size="mini"
+                                               :disabled="!replyContent[comment.id] || !replyContent[comment.id].trim()" class="ml-2">
+                                        Post Reply
+                                    </el-button>
+                                    <el-button @click="hideReplyForm(comment.id)" type="default" size="mini" class="ml-1">
+                                        Cancel
+                                    </el-button>
+                                </div>
+                            </div>
+
+                            <!-- Display Nested Replies -->
+                            <div v-if="comment.replies && comment.replies.length > 0">
+                                <div v-for="reply in comment.replies" :key="reply.id">
+                                    <reply-component :reply="reply" :level="1"></reply-component>
+                                </div>
+
+                                <!-- Expand More Replies Button -->
+                                <button v-if="comment.replyCount > comment.replies.length"
+                                        @click="loadMoreReplies(comment.id)"
+                                        class="expand-btn">
+                                    <i class="fa fa-chevron-down"></i>
+                                    Show more {{ comment.replyCount - comment.replies.length }} replies
+                                </button>
+                            </div>
+
+                            <!-- If There Are Replies But Not Loaded Yet -->
+                            <div v-if="comment.replyCount > 0 && (!comment.replies || comment.replies.length === 0)">
+                                <button @click="loadMoreReplies(comment.id)" class="expand-btn">
+                                    <i class="fa fa-chevron-down"></i>
+                                    Show {{ comment.replyCount }} replies
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div v-else class="text-center text-muted py-5">
+                        <i class="fa fa-comment-o fa-3x mb-3"></i>
+                        <p>No comments yet. Be the first to comment!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Global JS -->
+<script src="/static/hAdmin/js/jquery.min.js?v=2.1.4"></script>
+<script src="/static/hAdmin/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="/static/hAdmin/js/plugins/toastr/toastr.min.js"></script>
+<script src="/static/hAdmin/js/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="/static/js/GloJs.js"></script>
+<script src="/static/element/element.js"></script>
+
+<script>
+    let app;
+
+    // Define Recursive Reply Component
+    const ReplyComponent = {
+        name: 'ReplyComponent',
+        props: ['reply', 'level'],
+        template: `
+            <div :style="getReplyStyle(level)" :class="'nested-reply reply-level-' + (level > 5 ? 5 : level)">
+                <div class="comment-header">
+                    <div>
+                        <span class="comment-user">
+                            <i class="fa fa-user-circle-o"></i> {{ reply.username || 'Anonymous User' }}
+                        </span>
+                        <span class="text-muted"> replies to @{{ reply.replyToUser || 'Original Commenter' }}</span>
+                        <span v-if="reply.isCurrentUser" class="badge badge-current-user">My Reply</span>
+                    </div>
+                    <small class="comment-time">{{ reply.createTimeFormatted || reply.createTime }}</small>
+                </div>
+                <div class="comment-content">{{ reply.content }}</div>
+
+                <div class="comment-actions">
+                    <el-button @click="$root.showReplyForm(reply.id)" type="text" size="small">
+                        <i class="fa fa-reply"></i> Reply
+                    </el-button>
+                    <el-button v-if="reply.isCurrentUser" @click="$root.deleteComment(reply.id)"
+                               type="text" size="small" style="color: #f56c6c;">
+                        <i class="fa fa-trash"></i> Delete
+                    </el-button>
+                </div>
+
+                <!-- Reply Form -->
+                <div v-if="$root.replyFormVisible[reply.id]" class="reply-form">
+                    <textarea v-model="$root.replyContent[reply.id]" class="form-control" rows="2"
+                              placeholder="Reply to @{{ reply.username }}..." maxlength="500"></textarea>
+                    <div class="text-right mt-2">
+                        <small class="text-muted">{{ ($root.replyContent[reply.id] || '').length }} / 500 characters</small>
+                        <el-button @click="$root.submitReply(reply.id)" type="primary" size="mini"
+                                   :disabled="!$root.replyContent[reply.id] || !$root.replyContent[reply.id].trim()" class="ml-2">
+                            Post Reply
+                        </el-button>
+                        <el-button @click="$root.hideReplyForm(reply.id)" type="default" size="mini" class="ml-1">
+                            Cancel
+                        </el-button>
+                    </div>
+                </div>
+
+                <!-- Recursively Display Child Replies -->
+                <div v-if="reply.replies && reply.replies.length > 0">
+                    <reply-component v-for="childReply in reply.replies"
+                                   :key="childReply.id"
+                                   :reply="childReply"
+                                   :level="level + 1">
+                    </reply-component>
+                </div>
+            </div>
+        `,
+        methods: {
+            getReplyStyle(level) {
+                const colors = {
+                    1: '#5cb85c',
+                    2: '#5bc0de',
+                    3: '#f0ad4e',
+                    4: '#d9534f',
+                    5: '#777'
+                };
+                return {
+                    marginLeft: `${level * 30}px`,
+                    paddingLeft: '15px',
+                    borderLeft: `3px solid ${colors[level] || colors[5]}`,
+                    marginTop: '10px'
+                };
+            }
+        }
+    };
+
+    new Vue({
+        el: '#app',
+        data: {
+            baseUrl: gloRequestUrl,
+            loading: false,
+            submitting: false,
+            noticeId: null,
+            notice: null,
+            comments: [],
+            newComment: '',
+            totalComments: 0,
+            currentUserId: parseInt(localStorage.getItem("userId")) || null,
+            replyFormVisible: {},
+            replyContent: {},
+            expandLimit: 2
+        },
+        components: {
+            'reply-component': ReplyComponent
+        },
+        mounted() {
+            // Set Global Reference for onclick Calls in HTML
+            app = this;
+
+            this.noticeId = this.getNoticeIdFromUrl();
+            if (this.noticeId) {
+                this.loadNoticeDetail();
+                this.loadComments();
+            } else {
+                toastr.error('Announcement ID not found');
+                this.goBack();
+            }
+        },
+        methods: {
+            getNoticeIdFromUrl() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const id = urlParams.get('id');
+                return id ? parseInt(id) : null;
+            },
+
+            goBack() {
+                window.location.href = '/web/notice';
+            },
+
+            // Get Reply Style
+            getReplyStyle(level) {
+                const marginLeft = level * 30;
+                const levelClass = level > 5 ? 'reply-level-5' : `reply-level-${level}`;
+                return {
+                    marginLeft: `${marginLeft}px`,
+                    paddingLeft: '15px',
+                    borderLeft: '3px solid',
+                    borderLeftColor: this.getLevelColor(level),
+                    marginTop: '10px'
+                };
+            },
+
+            // Get Level Color
+            getLevelColor(level) {
+                const colors = {
+                    1: '#5cb85c',
+                    2: '#5bc0de',
+                    3: '#f0ad4e',
+                    4: '#d9534f',
+                    5: '#777'
+                };
+                return colors[level] || colors[5];
+            },
+
+            // Recursively Render Reply HTML
+            renderReplies(replies, level = 1) {
+                if (!replies || replies.length === 0) return '';
+
+                let html = '';
+                const levelClass = level > 5 ? 'reply-level-5' : `reply-level-${level}`;
+
+                replies.forEach(reply => {
+                    const currentUserClass = reply.isCurrentUser ? 'badge-current-user' : '';
+                    const replyFormClass = this.replyFormVisible[reply.id] ? '' : 'display: none;';
+
+                    html += `
+                        <div class="nested-reply ${levelClass}" style="${this.getStyleString(level)}">
+                            <div class="comment-header">
+                                <div>
+                                    <span class="comment-user">
+                                        <i class="fa fa-user-circle-o"></i> ${reply.username || 'Anonymous User'}
+                                    </span>
+                                    <span class="text-muted"> replies to @${reply.replyToUser || 'Original Commenter'}</span>
+                                    ${currentUserClass ? '<span class="badge ' + currentUserClass + '">My Reply</span>' : ''}
+                                </div>
+                                <small class="comment-time">${reply.createTimeFormatted || reply.createTime}</small>
+                            </div>
+                            <div class="comment-content">${reply.content}</div>
+                            <div class="comment-actions">
+                                <button onclick="app.showReplyForm(${reply.id})" class="el-button el-button--text el-button--small">
+                                    <i class="fa fa-reply"></i> Reply
+                                </button>
+                                ${reply.isCurrentUser ? `
+                                    <button onclick="app.deleteComment(${reply.id})" class="el-button el-button--text el-button--small" style="color: #f56c6c;">
+                                        <i class="fa fa-trash"></i> Delete
+                                    </button>
+                                ` : ''}
+                            </div>
+                            <div class="reply-form" style="${replyFormClass}">
+                                <textarea v-model="replyContent[${reply.id}]" class="form-control" rows="2"
+                                          placeholder="Reply to @${reply.username}..." maxlength="500"></textarea>
+                                <div class="text-right mt-2">
+                                    <small class="text-muted">${(replyContent[${reply.id}] || '').length} / 500 characters</small>
+                                    <button onclick="app.submitReply(${reply.id})" class="el-button el-button--primary el-button--mini ml-2">
+                                        Post Reply
+                                    </button>
+                                    <button onclick="app.hideReplyForm(${reply.id})" class="el-button el-button--default el-button--mini ml-1">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                            ${reply.replies ? this.renderReplies(reply.replies, level + 1) : ''}
+                        </div>
+                    `;
+                });
+
+                return html;
+            },
+
+            // Get Style String
+            getStyleString(level) {
+                return `margin-left: ${level * 30}px; padding-left: 15px; border-left: 3px solid ${this.getLevelColor(level)}; margin-top: 10px;`;
+            },
+
+            loadNoticeDetail() {
+                this.loading = true;
+                const that = this;
+                $.ajax({
+                    url: that.baseUrl + "/webnotice/detail",
+                    type: "GET",
+                    data: { id: that.noticeId },
+                    success: function (data) {
+                        that.loading = false;
+                        if (data.code === 200) {
+                            that.notice = data.data;
+                        } else {
+                            toastr.error(data.msg || 'Failed to load announcement details');
+                        }
+                    },
+                    error: function () {
+                        that.loading = false;
+                        toastr.error('Network error, please try again later');
+                    }
+                });
+            },
+
+            loadComments() {
+                this.loading = true;
+                const that = this;
+                $.ajax({
+                    url: that.baseUrl + "/comment/tree-expand/" + that.noticeId,
+                    type: "GET",
+                    data: {
+                        currentUserId: that.currentUserId,
+                        expandLimit: that.expandLimit
+                    },
+                    success: function (data) {
+                        that.loading = false;
+                        if (data.code === 200) {
+                            that.comments = data.data || [];
+                            that.totalComments = that.calculateTotalComments(that.comments);
+                        } else {
+                            toastr.error(data.msg || 'Failed to load comments');
+                        }
+                    },
+                    error: function () {
+                        that.loading = false;
+                        toastr.error('Network error, please try again later');
+                    }
+                });
+            },
+
+            calculateTotalComments(comments) {
+                let total = comments.length;
+                comments.forEach(comment => {
+                    if (comment.replyCount) {
+                        total += comment.replyCount;
+                    }
+                });
+                return total;
+            },
+
+            submitComment() {
+                if (!this.newComment.trim()) {
+                    toastr.warning('Please enter comment content');
+                    return;
+                }
+
+                this.submitting = true;
+                const that = this;
+                $.ajax({
+                    url: that.baseUrl + "/comment/submit",
+                    type: "POST",
+                    data: {
+                        noticeId: that.noticeId,
+                        userId: that.currentUserId,
+                        content: that.newComment.trim()
+                    },
+                    success: function (data) {
+                        that.submitting = false;
+                        if (data.code === 200) {
+                            toastr.success('Comment posted successfully');
+                            that.newComment = '';
+                            that.loadComments();
+                        } else {
+                            toastr.error(data.msg || 'Failed to post comment');
+                        }
+                    },
+                    error: function () {
+                        that.submitting = false;
+                        toastr.error('Network error, please try again later');
+                    }
+                });
+            },
+
+            showReplyForm(commentId) {
+                this.$set(this.replyFormVisible, commentId, true);
+                this.$set(this.replyContent, commentId, '');
+            },
+
+            hideReplyForm(commentId) {
+                this.$set(this.replyFormVisible, commentId, false);
+                this.$set(this.replyContent, commentId, '');
+            },
+
+            submitReply(parentId) {
+                const content = this.replyContent[parentId];
+                if (!content || !content.trim()) {
+                    toastr.warning('Please enter reply content');
+                    return;
+                }
+
+                this.submitting = true;
+                const that = this;
+                $.ajax({
+                    url: that.baseUrl + "/comment/reply",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        noticeId: that.noticeId,
+                        userId: that.currentUserId,
+                        parentId: parentId,
+                        content: content.trim()
+                    }),
+                    success: function (data) {
+                        that.submitting = false;
+                        if (data.code === 200) {
+                            toastr.success('Reply posted successfully');
+                            that.hideReplyForm(parentId);
+                            that.loadComments();
+                        } else {
+                            toastr.error(data.msg || 'Failed to post reply');
+                        }
+                    },
+                    error: function () {
+                        that.submitting = false;
+                        toastr.error('Network error, please try again later');
+                    }
+                });
+            },
+
+            loadMoreReplies(commentId) {
+                this.loading = true;
+                const that = this;
+
+                // Find Corresponding Comment
+                const comment = that.comments.find(c => c.id === commentId);
+                if (!comment) return;
+
+                const currentRepliesCount = comment.replies ? comment.replies.length : 0;
+
+                $.ajax({
+                    url: that.baseUrl + "/comment/replies/" + commentId,
+                    type: "GET",
+                    data: {
+                        offset: currentRepliesCount,
+                        limit: 10,
+                        currentUserId: that.currentUserId
+                    },
+                    success: function (data) {
+                        that.loading = false;
+                        if (data.code === 200) {
+                            const newReplies = data.data || [];
+                            if (!comment.replies) {
+                                that.$set(comment, 'replies', []);
+                            }
+                            comment.replies.push(...newReplies);
+                        } else {
+                            toastr.error(data.msg || 'Failed to load replies');
+                        }
+                    },
+                    error: function () {
+                        that.loading = false;
+                        toastr.error('Network error, please try again later');
+                    }
+                });
+            },
+
+            deleteComment(commentId) {
+                const that = this;
+                swal({
+                    title: "Confirm Deletion",
+                    text: "Are you sure you want to delete this comment? It cannot be recovered after deletion!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Confirm Delete",
+                    cancelButtonText: "Cancel"
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            url: that.baseUrl + "/comment/del",
+                            type: "DELETE",
+                            data: { id: commentId },
+                            success: function (data) {
+                                if (data.code === 200) {
+                                    toastr.success('Comment deleted successfully');
+                                    that.loadComments();
+                                } else {
+                                    toastr.error(data.msg || 'Failed to delete comment');
+                                }
+                            },
+                            error: function () {
+                                toastr.error('Network error, please try again later');
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    });
+</script>
+</body>
+</html>

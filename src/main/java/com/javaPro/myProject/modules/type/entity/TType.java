@@ -1,0 +1,87 @@
+package com.javaPro.myProject.modules.type.entity;
+
+import java.util.Date;
+import java.io.Serializable;
+
+/**
+ * 文章标签表(TType)实体类
+ *
+ * @author 
+ * @since  14:21:01
+ */
+public class TType implements Serializable {
+    private static final long serialVersionUID = -30182536516459945L;
+    
+    private Integer id;
+    /**
+     * 名称
+     */
+    private String typeName;
+    /**
+     * 创建时间
+     */
+    private Date createTime;
+    /**
+     * 更新时间
+     */
+    private Date updateTime;
+    /**
+     * 状态 0停用 1 启用
+     */
+    private String status;
+    /**
+     * 描述
+     */
+    private String describe;
+
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getDescribe() {
+        return describe;
+    }
+
+    public void setDescribe(String describe) {
+        this.describe = describe;
+    }
+
+}
+

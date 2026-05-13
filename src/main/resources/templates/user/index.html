@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+
+    <title> Users</title>
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <link href="favicon.ico" rel="shortcut icon">
+    <script src="/static/DemoBootStrap/js/vue.js"></script>
+    <!--    <link href="/static/hAdmin/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">-->
+    <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <!-- Sweet Alert -->
+    <link href="/static/hAdmin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/animate.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
+    <style>
+        .addList {
+            padding: 10px 30px 10px 30px;
+            height: 90px;
+            margin-top: 3px
+        }
+    </style>
+
+</head>
+
+<body class="gray-bg animated bounceInDown">
+<div id="app">
+    <div id="block"
+         style="width: 100%;height: 100%;background: #171717;opacity: 0.7;position: fixed;top: 0;left: 0;z-index: 999;text-align: center;display: none">
+        <div style="margin-top: 300px">
+            <span style="color: #ffffff;font-size: 20px;font-weight: 700">Submitting operation, please do not perform any actions...</span>
+        </div>
+    </div>
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <span id="gloUrl" style="display: none"></span>
+
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="ibox">
+                    <div class="ibox-title" style="height: 55px;">
+                        <h5>All Records</h5>
+                        <div class="ibox-tools">
+                            <div class="text-center">
+                                <el-button
+                                        @click="handleAdd"
+                                        v-if="role === '1'"
+                                        type="primary">
+                                    Add
+                                </el-button>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row m-b-sm m-t-sm">
+
+                            <div class="col-md-11 form-inline">
+                                <el-form :inline="true" :model="queryParams" class="demo-form-inline">
+                                    <el-form-item label="Username">
+                                        <el-input placeholder="Username" v-model="queryParams.username"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="Role">
+                                        <el-select placeholder="Role" v-model="queryParams.role">
+                                            <el-option label="User" :value="2"></el-option>
+                                            <el-option label="Merchant" :value="3"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                    <el-form-item>
+                                        <el-button @click="getList" type="primary"><i class="fa fa-search"></i> Search
+                                        </el-button>
+                                        <el-button @click="handleResetQuery" type="info"><i class="fa fa-circle"></i> Reset
+                                        </el-button>
+                                    </el-form-item>
+                                </el-form>
+                            </div>
+                        </div>
+                        <!--            List          -->
+                        <div class="project-list">
+                            <div class="ibox-content">
+                                <el-table
+                                        :data="dataList"
+                                        style="width: 100%"
+                                        v-loading="loading">
+                                    <el-table-column
+                                            align="center"
+                                            label="ID"
+                                            prop="id"
+                                    >
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Image"
+                                            prop="img"
+                                    >
+                                        <template slot-scope="scope">
+                                            <el-image :src="scope.row.img"
+                                                      style="width: 100px;height: 100px;"></el-image>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Username"
+                                            prop="username"
+                                    >
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Gender"
+                                            prop="sex">
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Contact"
+                                            prop="phonenumber">
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Age"
+                                            prop="age">
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Account"
+                                            prop="account">
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Role"
+                                           >
+                                        <template slot-scope="scope">
+                                            <el-tag v-if="scope.row.role === '1'">Administrator</el-tag>
+                                            <el-tag type="success" v-if="scope.row.role === '2'">User</el-tag>
+                                            <el-tag type="danger" v-if="scope.row.role === '3'">Merchant</el-tag>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Create Time"
+                                            prop="createtime">
+                                    </el-table-column>
+
+                                    <el-table-column
+                                            align="center"
+                                            label="Actions"
+                                            width="350px"
+                                    >
+                                        <template slot-scope="scope">
+                                            <el-button @click="handleDetail(scope.row)" round
+                                                       size="small" type="primary"
+                                            ><i
+                                                    class="fa fa-eye"></i> View
+                                            </el-button>
+                                            <el-button @click="handleEdit(scope.row)" round size="small" type="warning"
+                                                       v-if="role === '1'">
+                                                <i
+                                                        class="fa fa-pencil"></i> Edit
+                                            </el-button>
+                                            <el-button @click="handleDel(scope.row.id)" round size="small"
+
+                                                       v-if="role === '1'&&  scope.row.id !== 1"
+                                                       type="danger"><i
+                                                    class="fa fa-trash"></i> Delete
+                                            </el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                        <div style="width: 100%;text-align: center">
+                            <el-pagination
+                                    :current-page.sync="queryParams.pageNum"
+                                    :page-size="queryParams.pageSize"
+                                    :total="total"
+                                    @current-change="handleCurrentChange"
+                                    background
+                                    layout="total, prev, pager, next">
+                            </el-pagination>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <el-dialog :title="title" :visible.sync="open" width="50%">
+        <el-form :model="form" :rules="rules" label-width="80px" ref="form">
+            <el-form-item label="Image">
+                <el-upload
+                        :action="baseUrl+'/common/upload'"
+                        :before-remove="beforeRemove"
+                        :file-list="fileList"
+                        :limit="3"
+                        :on-exceed="handleExceed"
+                        :on-preview="handlePreview"
+                        :on-remove="handleRemove"
+                        :on-success="handleFileSuccess"
+                        class="upload-demo"
+                        multiple>
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">Drag image here, or <em>click to upload</em></div>
+
+                    <el-button size="small" type="primary">Click to Upload</el-button>
+
+                </el-upload>
+            </el-form-item>
+            <el-form-item label="Username" prop="username">
+                <el-input v-model="form.username"></el-input>
+            </el-form-item>
+            <el-form-item label="Gender">
+                <el-input type="text" v-model="form.sex"></el-input>
+            </el-form-item>
+            <el-form-item label="Contact">
+                <el-input v-model="form.phonenumber"></el-input>
+            </el-form-item>
+            <el-form-item label="Account">
+                <el-input v-model="form.account"></el-input>
+            </el-form-item>
+            <el-form-item label="Password">
+                <el-input v-model="form.password"></el-input>
+            </el-form-item>
+            <el-form-item label="ID Number">
+                <el-input v-model="form.idcard"></el-input>
+            </el-form-item>
+            <el-form-item label="Address">
+                <el-input v-model="form.address"></el-input>
+            </el-form-item>
+            <el-form-item label="Age">
+                <el-input v-model="form.age"></el-input>
+            </el-form-item>
+            <el-form-item label="Remarks">
+                <el-input type="textarea" v-model="form.remark"></el-input>
+            </el-form-item>
+
+            <el-form-item>
+                <el-button @click="submitEdit" type="primary">Save</el-button>
+                <el-button @click="open = false">Cancel</el-button>
+            </el-form-item>
+        </el-form>
+    </el-dialog>
+    <el-dialog :visible.sync="openDetail" width="50%">
+        <el-descriptions :column="4" :title="title" border>
+            <el-descriptions-item :span="4" label="Image">
+                <el-image :src="form.img"
+                          style="width: 100px;height: 100px;"></el-image>
+            </el-descriptions-item>
+            <el-descriptions-item :span="2" label="Username">{{form.username}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="Gender">{{form.sex}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="Contact">{{form.phonenumber}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="Account">{{form.account}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="Password">{{form.password}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="ID Number">{{form.idcard}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="Address">{{form.address}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="Age">{{form.age}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="Create Time">{{form.createtime}}</el-descriptions-item>
+        </el-descriptions>
+    </el-dialog>
+</div>
+
+
+<!-- 全局js -->
+<script src="/static/hAdmin/js/jquery.min.js?v=2.1.4"></script>
+<!--<script src="/static/hAdmin/js/bootstrap.min.js?v=3.3.6"></script>-->
+<!-- Sweet alert -->
+<script src="/static/hAdmin/js/plugins/sweetalert/sweetalert.min.js"></script>
+
+<!-- 自定义js -->
+<script src="/static/hAdmin/js/content.js?v=1.0.0"></script>
+
+
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+<!--    分页js -->
+<!--<script src="/static/wmmJs/public/PageHelper.js"></script>-->
+<script src="/static/hAdmin/js/plugins/toastr/toastr.min.js"></script>
+<script src="/static/js/GloJs.js"></script>
+<script>
+
+    new Vue({
+        el: "#app",
+        data() {
+            return {
+                baseUrl: gloRequestUrl,
+                dataList: [],
+                selectList: [],
+                fileList: [],
+                fileStr: [],
+                total: 0,
+                searchKey: "",
+                loading: true,
+                userId: localStorage.getItem("userId"),
+                role: localStorage.getItem("role"),
+                form: {},
+                open: false,
+                openDetail: false,
+                queryParams: {
+                    pageSize: 3,
+                    pageNum: 1,
+                },
+                title: "",
+                rules: {
+                    title: [
+                        {required: true, message: 'Please enter', trigger: 'blur'},
+
+                    ],
+
+                }
+            }
+        },
+        methods: {
+            handleResetQuery() {
+                this.queryParams = {
+                    pageSize: 3,
+                    pageNum: 1,
+                }
+                this.getList()
+            },
+            removeElement(arr, elem) {
+                return arr.filter(item => item !== elem);
+            },
+            handleRemove(file, fileList) {
+                this.fileStr = this.removeElement(this.fileStr, file.response.msg)
+            },
+            handlePreview(file) {
+                window.open(this.baseUrl + file.response.msg)
+            },
+            handleExceed(files, fileList) {
+                this.$message.warning(`Currently limited to 3 files, ${files.length} files selected this time, ${files.length + fileList.length} files selected in total`);
+            },
+            beforeRemove(file, fileList) {
+                return this.$confirm(`Are you sure to remove ${file.name}?`);
+            },
+            handleFileSuccess(res) {
+                let that = this
+                that.fileStr.push(res.msg)
+            },
+            getSelectList() {
+                let that = this;
+                let param = {
+                    "pageSize": 999,
+                    "pageNum": that.queryParams.pageNum,
+
+                }
+                $.ajax({
+                    url: that.baseUrl + "/tType/list",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        if (data.code !== 500) {
+
+                            that.selectList = data.list
+
+                        }
+                    },
+                    error: function () {
+                        windowsAuto(500, "Server error! Network error!")
+                    }
+                });
+            },
+            // Get list
+            getList() {
+                let that = this;
+                that.loading = true
+                $.ajax({
+                    url: that.baseUrl + "/sysuser",
+                    type: "GET",
+                    data: that.queryParams,
+                    success: function (data) {
+                        if (data.code !== 500) {
+                            that.loading = false
+                            that.dataList = data.list
+                            that.total = data.total
+                        }
+                    },
+                    error: function () {
+                        windowsAuto(500, "Server error! Network error!")
+                    }
+                });
+            },
+            submitEdit() {
+                let that = this
+                this.$refs['form'].validate((valid) => {
+                    if (valid) {
+                        if (that.fileStr && that.fileStr.length > 0) {
+                            that.form.img = that.fileStr.join(",")
+
+                        }
+                        if (that.form.id == undefined) {
+                            $.ajax({
+                                url: that.baseUrl + "/sysuser",
+                                type: "post",
+                                data: JSON.stringify(that.form),
+                                contentType: "application/json",
+                                // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                                success: function (data) {
+                                    that.open = false
+                                    if (data.code === 200) {
+                                        toastr.success(data.msg, 'Notice')
+
+                                    } else {
+
+                                        toastr.error(data.msg, 'Notice')
+                                    }
+                                    that.getList()
+                                },
+                                error: function () {
+                                    alert("Server error! Network error!")
+                                }
+                            })
+                        } else {
+
+                            $.ajax({
+                                url: that.baseUrl + "/sysuser",
+                                type: "PUT",
+                                data: JSON.stringify(that.form),
+                                contentType: "application/json",
+                                // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                                success: function (data) {
+                                    that.open = false
+                                    if (data.code === 200) {
+                                        toastr.success(data.msg, 'Notice')
+
+                                    } else {
+
+                                        toastr.error(data.msg, 'Notice')
+                                    }
+                                    that.getList()
+                                },
+                                error: function () {
+                                    alert("Server error! Network error!")
+                                }
+                            })
+                        }
+
+                    }
+                })
+            },
+            reset() {
+                this.form = {}
+                this.fileStr = []
+                this.fileList = []
+            },
+            //Open details
+            handleDetail(row) {
+                let that = this;
+                that.form = row
+                that.title = "Details"
+                that.openDetail = true
+
+            },
+            handleDel(id) {
+                let that = this;
+                swal({
+                    title: "Are you sure you want to delete this information?",
+                    text: "Cannot be recovered after deletion!",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "Delete",
+                    cancelButtonText: "Let me think again",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        url: that.baseUrl + "/sysuser",
+                        type: "DELETE",
+                        data: {
+                            id: id,
+                        },
+                        success: function (data) {
+                            windowsAuto(data.code, data.msg)
+                            that.getList()
+                        },
+                        error: function () {
+                            alert("Server error! Network error!")
+                        }
+                    })
+
+                });
+            },
+            handleEdit(row) {
+                let that = this
+                that.form = row
+                that.open = true
+                that.title = "Edit"
+            },
+            handleAdd() {
+                let that = this
+                that.reset()
+                that.open = true
+                that.title = "Add"
+            },
+
+            handleCurrentChange() {
+                let that = this;
+                that.getList()
+            },
+
+
+        },
+        watch: {},
+        mounted() {
+            let that = this;
+            if (that.queryParams) {
+                that.getList()
+                that.getSelectList()
+            }
+
+
+        }
+    })
+
+</script>
+</body>
+</html>

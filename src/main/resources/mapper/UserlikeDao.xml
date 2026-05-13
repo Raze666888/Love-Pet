@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javaPro.myProject.modules.userlike.dao.UserlikeDao">
+
+    <resultMap type="com.javaPro.myProject.modules.userlike.entity.Userlike" id="UserlikeMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userid" column="userid" jdbcType="INTEGER"/>
+        <result property="productid" column="productid" jdbcType="INTEGER"/>
+        <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+        <result property="spare1" column="spare1" jdbcType="VARCHAR"/>
+        <result property="productname" column="productname" jdbcType="VARCHAR"/>
+        <result property="img" column="img" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserlikeMap">
+        select
+          id, userid, productid, createtime, spare1
+        from userlike
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UserlikeMap">
+        select
+        u.id, userid, productid, u.createtime, u.spare1,p.productname,p.img
+        from userlike u
+        left join product p on p.id = u.productid
+
+        <where>
+            <if test="id != null">
+                and u.id = #{id}
+            </if>
+            <if test="userid != null">
+                and userid = #{userid}
+            </if>
+            <if test="productid != null">
+                and productid = #{productid}
+            </if>
+
+        </where>
+order by createtime desc
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from userlike
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="userid != null">
+                and userid = #{userid}
+            </if>
+            <if test="productid != null">
+                and productid = #{productid}
+            </if>
+            <if test="createtime != null">
+                and createtime = #{createtime}
+            </if>
+            <if test="spare1 != null and spare1 != ''">
+                and spare1 = #{spare1}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into userlike(userid, productid, createtime, spare1)
+        values (#{userid}, #{productid}, now(), #{spare1})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into userlike(userid, productid, createtime, spare1)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.userid}, #{entity.productid}, #{entity.createtime}, #{entity.spare1})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into userlike(userid, productid, createtime, spare1)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.userid}, #{entity.productid}, #{entity.createtime}, #{entity.spare1})
+        </foreach>
+        on duplicate key update
+        userid = values(userid),
+        productid = values(productid),
+        createtime = values(createtime),
+        spare1 = values(spare1)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update userlike
+        <set>
+            <if test="userid != null">
+                userid = #{userid},
+            </if>
+            <if test="productid != null">
+                productid = #{productid},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime},
+            </if>
+            <if test="spare1 != null and spare1 != ''">
+                spare1 = #{spare1},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from userlike where id = #{id}
+    </delete>
+    <!--通过主键删除-->
+    <delete id="delete">
+        delete from userlike
+         <where>
+        <if test="id != null">
+            and id = #{id}
+        </if>
+        <if test="userid != null">
+            and userid = #{userid}
+        </if>
+        <if test="productid != null">
+            and productid = #{productid}
+        </if>
+        <if test="createtime != null">
+            and createtime = #{createtime}
+        </if>
+        <if test="spare1 != null and spare1 != ''">
+            and spare1 = #{spare1}
+        </if>
+    </where>
+    </delete>
+
+</mapper>
+

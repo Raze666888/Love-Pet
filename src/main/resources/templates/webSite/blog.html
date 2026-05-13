@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>News</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <script src="/static/DemoBootStrap/js/vue.js"></script>
+
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/webSite/css/vendor.css">
+    <link rel="stylesheet" type="text/css" href="/static/webSite/style.css">
+    <link href="/static/hAdmin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+
+    <style>
+      .home-button:hover {
+        background-color: #007bff !important;
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+      }
+
+      /* 筛选区域样式 */
+      .filter-content {
+        animation: slideDown 0.3s ease-out;
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* 文本截断 */
+      .text-truncate-3 {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* 卡片悬停效果 */
+      .post-item {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .post-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1) !important;
+      }
+
+      /* 分页样式 */
+      .pagination .page-link {
+        color: #007bff;
+        border: 1px solid #dee2e6;
+        margin: 0 2px;
+      }
+
+      .pagination .page-item.active .page-link {
+        background-color: #007bff;
+        border-color: #007bff;
+      }
+
+      .pagination .page-item.disabled .page-link {
+        color: #6c757d;
+        pointer-events: none;
+      }
+    </style>
+
+  </head>
+  <body>
+
+<div id="app">
+
+  <div class="preloader-wrapper">
+    <div class="preloader">
+    </div>
+  </div>
+
+  <header>
+    <div class="container-fluid">
+      <div class="row py-3 border-bottom">
+
+        <div class="col-sm-4 col-lg-2 text-center text-sm-start d-flex gap-3 justify-content-center justify-content-md-start">
+          <div class="d-flex align-items-center my-3 my-sm-0">
+            <a href="/web/userindex">
+              <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar" class="img-fluid"
+                   style="width: 50px;height: 50px; border-radius: 50%; border: 2px solid #007bff;">
+              <img v-else src="/static/webSite/images/logo.png" style="width: 50px;height: 50px;" alt="logo" class="img-fluid">
+            </a>
+          </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                  aria-controls="offcanvasNavbar">
+            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
+          </button>
+        </div>
+
+        <div class="col-md-2 ">
+          <div class="search-bar row bg-light p-2 rounded-4">
+
+            <div class="col-11 col-md-10" style="text-align: center">
+              Pet Service Ordering Platform
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-md-8">
+          <ul class="navbar-nav list-unstyled d-flex flex-row gap-3 gap-lg-5 justify-content-center flex-wrap align-items-center mb-0 fw-bold text-uppercase text-dark">
+            <li class="nav-item ">
+              <a href="/web/userindex" class="nav-link">Home</a>
+            </li>
+
+            <li class="nav-item">
+              <a href="/web/userproductlist"  class="nav-link  ">Pet Service List</a>
+            </li>
+            <li class="nav-item">
+              <a href="/web/usercart"  class="nav-link ">Shopping Cart</a>
+            </li>
+            <li class="nav-item ">
+              <a href="/web/usercontact"  class="nav-link ">Contact us</a>
+            </li>
+            <li class="nav-item text-primary">
+              <a href="/web/userblog"  class="nav-link ">Announcement</a>
+            </li>
+            <li class="nav-item">
+              <a href="/web/personal" class="nav-link d-flex align-items-center" title="Personal Center">
+                <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User avatar"
+                     style="width: 30px; height: 30px; border-radius: 50%; margin-right: 5px; border: 2px solid #007bff;">
+                <i v-else class="fa fa-user"></i>
+                <span v-if="userInfo && userInfo.username" style="margin-left: 5px;">{{userInfo.username}}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+
+
+      </div>
+    </div>
+  </header>
+    <section class="jarallax py-5">
+      <img src="/static/webSite/images/banner-1.jpg" class="jarallax-img">
+      <div class="hero-content py-0 py-md-5">
+        <div class="container-lg d-flex flex-column d-md-block align-items-center">
+          <nav class="breadcrumb">
+            <a class="breadcrumb-item nav-link home-button" href="/web/userindex" style="border: 2px solid #007bff; padding: 8px 16px; border-radius: 5px; background-color: #f8f9fa; color: #007bff; text-decoration: none; font-weight: bold; transition: all 0.3s ease;">主页</a>
+
+            <span class="breadcrumb-item active" aria-current="page">Announcement</span>
+          </nav>
+          <h1>Announcement</h1>
+        </div>
+      </div>
+    </section>
+
+    <div class="py-5">
+      <div class="container-lg">
+        <!-- 筛选区域 -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="card border-0 shadow-sm">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h5 class="mb-0"><i class="fa fa-filter"></i> Filter criteria</h5>
+                  <button class="btn btn-sm btn-outline-secondary" @click="toggleFilter">
+                    <i class="fa" :class="filterVisible ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                    {{ filterVisible ? 'Put away' : 'Expand' }}
+                  </button>
+                </div>
+
+                <div v-show="filterVisible" class="filter-content">
+                  <div class="row g-3">
+                    <!-- 分类筛选 -->
+                    <div class="col-md-4">
+                      <label class="form-label"><i class="fa fa-tag"></i> Announcement Type</label>
+                      <select class="form-select" v-model="queryParams.type" @change="handleFilterChange">
+                        <option value="">All Type</option>
+                        <option v-for="item in typeList" :key="item.id" :value="item.id">
+                          {{ item.typeName }}
+                        </option>
+                      </select>
+                    </div>
+
+                    <!-- 标题搜索 -->
+                    <div class="col-md-6">
+                      <label class="form-label"><i class="fa fa-search"></i> Title Search</label>
+                      <input type="text" class="form-control" v-model="queryParams.title"
+                             @keyup.enter="handleFilterChange" placeholder="Please enter the keywords of the announcement title">
+                    </div>
+
+                    <!-- 操作按钮 -->
+                    <div class="col-md-2 d-flex align-items-end">
+                      <button class="btn btn-primary w-100 me-2" @click="handleFilterChange">
+                        <i class="fa fa-search"></i> Search
+                      </button>
+                      <button class="btn btn-secondary w-100" @click="handleResetFilter">
+                        <i class="fa fa-refresh"></i> Reset
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 公告列表 -->
+        <div class="row" v-if="!loading && dataList.length > 0">
+          <div class="col-md-4 mb-4" v-for="item in dataList" :key="item.id">
+            <article class="post-item card border-0 shadow-sm p-3 h-100">
+              <div class="image-holder zoom-effect">
+                <a href="javascript:void(0)" @click="viewDetail(item.id)">
+                  <img :src="item.img" style="width: 100%; height: 250px; object-fit: cover;" alt="post" class="card-img-top">
+                </a>
+              </div>
+              <div class="card-body">
+                <div class="post-meta d-flex text-uppercase gap-3 my-2 align-items-center">
+                  <div class="meta-date"><i class="fa fa-calendar"></i>
+                    {{item.createTime}}</div>
+                  <div class="meta-categories" v-if="item.typeName">
+                    <i class="fa fa-tag"></i> {{item.typeName}}
+                  </div>
+                </div>
+                <div class="post-header">
+                  <h3 class="post-title">
+                    <a href="javascript:void(0)" @click="viewDetail(item.id)" class="text-decoration-none">{{item.title}}</a>
+                  </h3>
+                  <p class="text-truncate-3">{{item.content}}</p>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <!-- 加载中 -->
+        <div class="row" v-if="loading">
+          <div class="col-12 text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Loading announcement...</p>
+          </div>
+        </div>
+
+        <!-- 无数据 -->
+        <div class="row" v-if="!loading && dataList.length === 0">
+          <div class="col-12 text-center py-5">
+            <i class="fa fa-inbox" style="font-size: 64px; color: #ccc;"></i>
+            <p class="mt-3 text-muted">No announcement information available</p>
+          </div>
+        </div>
+
+        <!-- 分页 -->
+        <div class="row mt-4" v-if="!loading && total > 0">
+          <div class="col-12">
+            <nav aria-label="Page navigation">
+              <ul class="pagination justify-content-center">
+                <li class="page-item" :class="{disabled: queryParams.pageNum === 1}">
+                  <a class="page-link" href="javascript:void(0)" @click="handlePageChange(queryParams.pageNum - 1)">
+                    <i class="fa fa-chevron-left"></i> Previous page
+                  </a>
+                </li>
+
+                <li class="page-item" v-for="page in visiblePages" :key="page"
+                    :class="{active: page === queryParams.pageNum}">
+                  <a class="page-link" href="javascript:void(0)" @click="handlePageChange(page)">{{ page }}</a>
+                </li>
+
+                <li class="page-item" :class="{disabled: queryParams.pageNum === totalPages}">
+                  <a class="page-link" href="javascript:void(0)" @click="handlePageChange(queryParams.pageNum + 1)">
+                    Next page <i class="fa fa-chevron-right"></i>
+                  </a>
+                </li>
+              </ul>
+              <div class="text-center text-muted">
+                A total of {{ total }} records, page {{ queryParams.pageNum }} / {{ totalPages }}
+              </div>
+            </nav>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  <section class="py-5">
+    <div class="container-lg">
+      <div class="row row-cols-1 row-cols-sm-3 row-cols-lg-5">
+        <div class="col">
+          <div class="card mb-3 border border-dark-subtle p-3">
+            <div class="text-dark mb-3">
+              <i class="fa fa-battery-4"></i>
+            </div>
+            <div class="card-body p-0">
+              <h5>Pet Service Guarantee</h5>
+              <p class="card-text">The channel is legitimate and has passed the review.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card mb-3 border border-dark-subtle p-3">
+            <div class="text-dark mb-3">
+              <i class="fa fa-bell"></i>              </div>
+            <div class="card-body p-0">
+              <h5>100% true</h5>
+              <p class="card-text">The activities and discounts are genuine and valid.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card mb-3 border border-dark-subtle p-3">
+            <div class="text-dark mb-3">
+              <i class="fa fa-shopping-cart"></i>
+            </div>
+            <div class="card-body p-0">
+              <h5>One item selected in the shopping cart</h5>
+              <p class="card-text">Flexible and free, quick to place an order.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card mb-3 border border-dark-subtle p-3">
+            <div class="text-dark mb-3">
+              <i class="fa fa-bar-chart"></i>
+            </div>
+            <div class="card-body p-0">
+              <h5>Please leave a message if you encounter any problems.</h5>
+              <p class="card-text">The background responds 24 hours a day.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card mb-3 border border-dark-subtle p-3">
+            <div class="text-dark mb-3">
+              <i class="fa fa-user"></i>
+            </div>
+            <div class="card-body p-0">
+              <h5>Personality display</h5>
+              <p class="card-text">Change personal information to highlight individuality.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="pb-4 my-4">
+    <div class="container-lg" >
+
+      <div class="bg-warning pt-5 rounded-5" >
+        <div class="container" style="background-image: url('/static/webSite/images/bottomBanner.jpg')">
+          <div class="row justify-content-center align-items-center">
+            <div class="col-md-4">
+              <h2 class="mt-5">Add to cart for purchase</h2>
+              <p>If you encounter any problems, please contact us to leave a message.</p>
+              <div class="d-flex gap-2 flex-wrap mb-5">
+                <a class="btn btn-danger" href="/web/usercart" title="Go to the shopping cart">Go to the shopping cart <i class="fa fa-shopping-cart"></i></a>
+                <a class="btn btn-primary" href="/web/personal?activeName=third" title="Go to the order">Go to the order <i class="fa fa-list"></i></a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <div id="footer-bottom">
+    <div class="container-lg">
+      <div class="row">
+        <div class="col-md-6 copyright">
+          <p>@  2025 - Pet Service Ordering Platform.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/static/webSite/js/jquery-1.11.0.min.js"></script>
+<script src="/static/webSite/js/plugins.js"></script>
+<script src="/static/webSite/js/script.js"></script>
+<script src="/static/js/GloJs.js"></script>
+  <script>
+
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          baseUrl: gloRequestUrl,
+          dataList: [],
+          typeList: [],
+          userInfo: {},
+          fileList: [],
+          fileStr: [],
+          total: 0,
+          searchKey: "",
+          loading: true,
+          userId: localStorage.getItem("userId"),
+          role: localStorage.getItem("role"),
+          form: {},
+          open: false,
+          openDetail: false,
+          filterVisible: true,
+          queryParams: {
+            pageSize: 12,
+            pageNum: 1,
+            type: '',
+            title: ''
+          },
+          title: "",
+          rules: {
+            title: [
+              {required: true, message: '请输入', trigger: 'blur'},
+
+            ],
+
+          }
+        }
+      },
+      computed: {
+        totalPages() {
+          return Math.ceil(this.total / this.queryParams.pageSize);
+        },
+        visiblePages() {
+          const current = this.queryParams.pageNum;
+          const total = this.totalPages;
+          const pages = [];
+
+          if (total <= 7) {
+            for (let i = 1; i <= total; i++) {
+              pages.push(i);
+            }
+          } else {
+            if (current <= 4) {
+              for (let i = 1; i <= 5; i++) pages.push(i);
+              pages.push('...');
+              pages.push(total);
+            } else if (current >= total - 3) {
+              pages.push(1);
+              pages.push('...');
+              for (let i = total - 4; i <= total; i++) pages.push(i);
+            } else {
+              pages.push(1);
+              pages.push('...');
+              for (let i = current - 1; i <= current + 1; i++) pages.push(i);
+              pages.push('...');
+              pages.push(total);
+            }
+          }
+
+          return pages;
+        }
+      },
+      methods: {
+        // 切换筛选区域显示/隐藏
+        toggleFilter() {
+          this.filterVisible = !this.filterVisible;
+        },
+
+        // 获取公告类型列表
+        getTypeList() {
+          let that = this;
+          let param = {
+            "pageSize": 999,
+            "pageNum": 1,
+          }
+          $.ajax({
+            url: that.baseUrl + "/tType/list",
+            type: "GET",
+            data: param,
+            success: function (data) {
+              if (data.code !== 500) {
+                that.typeList = data.list
+              }
+            },
+            error: function () {
+              console.log("获取类型列表失败")
+            }
+          });
+        },
+
+        // 获取列表
+        getList() {
+          let that = this;
+          that.loading = true
+
+          // 构建查询参数
+          let params = {
+            pageSize: that.queryParams.pageSize,
+            pageNum: that.queryParams.pageNum
+          };
+
+          // 只添加非空的筛选条件
+          if (that.queryParams.type) {
+            params.type = that.queryParams.type;
+          }
+          if (that.queryParams.title && that.queryParams.title.trim()) {
+            params.title = that.queryParams.title.trim();
+          }
+
+          $.ajax({
+            url: that.baseUrl + "/webnotice/list",
+            type: "GET",
+            data: params,
+            success: function (data) {
+              if (data.code !== 500) {
+                that.loading = false
+                that.dataList = data.list
+                that.total = data.total
+
+                // 滚动到顶部
+                window.scrollTo({top: 0, behavior: 'smooth'});
+              }
+            },
+            error: function () {
+              that.loading = false
+              console.log("获取公告列表失败")
+            }
+          });
+        },
+
+        // 筛选条件改变
+        handleFilterChange() {
+          this.queryParams.pageNum = 1; // 重置到第一页
+          this.getList();
+        },
+
+        // 重置筛选条件
+        handleResetFilter() {
+          this.queryParams = {
+            pageSize: 12,
+            pageNum: 1,
+            type: '',
+            title: ''
+          };
+          this.getList();
+        },
+
+        // 分页改变
+        handlePageChange(page) {
+          if (page < 1 || page > this.totalPages || page === '...') {
+            return;
+          }
+          this.queryParams.pageNum = page;
+          this.getList();
+        },
+
+        // 查看详情
+        viewDetail(id) {
+          // 跳转到详情页面（待实现）
+          window.location.href = '/web/userblogdetail?id=' + id;
+        },
+
+        // 获取用户信息
+        getUserInfo(){
+          let that = this
+          if (that.userId) {
+            $.ajax({
+              url: that.baseUrl + "/sysuser/detail",
+              type: "GET",
+              data: {id: that.userId},
+              success: function (data) {
+                if (data.code !== 500) {
+                  that.userInfo = data.data
+                }
+              },
+              error: function () {
+                console.log("获取用户信息失败")
+              }
+            });
+          }
+        }
+      },
+      watch: {},
+      mounted() {
+        let that = this;
+        that.getTypeList()
+        that.getList()
+        that.getUserInfo()
+      }
+    })
+
+  </script>
+  </body>
+</html>

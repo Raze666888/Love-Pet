@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Contact Us</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <script src="/static/DemoBootStrap/js/vue.js"></script>
+
+    <link rel="stylesheet" href="/static/webSite/css/swiper-bundle.min.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/webSite/css/vendor.css">
+    <link rel="stylesheet" type="text/css" href="/static/webSite/style.css">
+    <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+
+  </head>
+  <body>
+  <div id="app">
+
+
+  <header>
+    <div class="container-fluid">
+      <div class="row py-3 border-bottom">
+
+        <div class="col-sm-4 col-lg-2 text-center text-sm-start d-flex gap-3 justify-content-center justify-content-md-start">
+          <div class="d-flex align-items-center my-3 my-sm-0">
+            <a href="/web/userindex">
+              <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar" class="img-fluid"
+                   style="width: 50px;height: 50px; border-radius: 50%; border: 2px solid #007bff;">
+              <img v-else src="/static/webSite/images/logo.png" style="width: 50px;height: 50px;" alt="logo" class="img-fluid">
+            </a>
+          </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                  aria-controls="offcanvasNavbar">
+            <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
+          </button>
+        </div>
+
+        <div class="col-md-2 ">
+          <div class="search-bar row bg-light p-2 rounded-4">
+
+            <div class="col-11 col-md-10" style="text-align: center">
+              Pet Service Booking Platform
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-md-8">
+          <ul class="navbar-nav list-unstyled d-flex flex-row gap-3 gap-lg-5 justify-content-center flex-wrap align-items-center mb-0 fw-bold text-uppercase text-dark">
+            <li class="nav-item ">
+              <a href="/web/userindex" class="nav-link">Home</a>
+            </li>
+
+            <li class="nav-item">
+              <a href="/web/userproductlist"  class="nav-link  ">Pet Service List</a>
+            </li>
+            <li class="nav-item">
+              <a href="/web/usercart"  class="nav-link ">Shopping Cart</a>
+            </li>
+            <li class="nav-item text-primary">
+              <a href="/web/usercontact"  class="nav-link ">Contact Us</a>
+            </li>
+            <li class="nav-item">
+              <a href="/web/userblog"  class="nav-link ">News/Announcements</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link d-flex align-items-center" href="/web/personal" title="Personal Center">
+                <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar"
+                     style="width: 30px; height: 30px; border-radius: 50%; margin-right: 5px; border: 2px solid #007bff;">
+                <i v-else class="fa fa-user"></i>
+                <span v-if="userInfo && userInfo.username" style="margin-left: 5px;">{{userInfo.username}}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+
+
+      </div>
+    </div>
+  </header>
+
+
+    <section class="jarallax py-5">
+      <img src="/static/webSite/images/banner-1.jpg" class="jarallax-img">
+      <div class="hero-content py-0 py-md-5">
+        <div class="container-lg d-flex flex-column d-md-block align-items-center" >
+          <nav class="breadcrumb">
+            <a class="breadcrumb-item nav-link" href="/web/userindex">Home</a>
+            <span class="breadcrumb-item active" aria-current="page">Contact Us</span>
+          </nav>
+          <h1 style="color: whitesmoke">Contact Us </h1>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-us py-5 my-5">
+      <div class="container-lg">
+        <div class="row">
+          <div class="contact-info col-lg-6 pb-3">
+            <p>Online message.</p>
+
+
+          </div>
+          <div class="inquiry-item col-lg-6">
+            <h2>Please enter the problem you want to feedback</h2>
+            <p>The backend customer service will respond.</p>
+
+
+              <div class="col-lg-12 mb-3">
+                <el-form :model="form" :rules="rules" label-width="50px" ref="form">
+
+
+                <el-form-item label="content">
+                  <el-input type="textarea" placeholder="Please enter the content"  v-model="form.content"></el-input>
+
+                </el-form-item>
+                </el-form>
+              </div>
+
+            <div class="d-grid">
+              <button class="btn btn-primary btn-lg text-uppercase btn-rounded-none" @click="submitSend">Submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+  <div id="footer-bottom">
+    <div class="container-lg">
+      <div class="row">
+        <div class="col-md-6 copyright">
+          <p>@  2025 - Pet Service Ordering Platform.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  </div>
+    <script src="/static/webSite/js/jquery-1.11.0.min.js"></script>
+  <script src="/static/webSite/js/swiper-bundle.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <script src="/static/webSite/js/plugins.js"></script>
+    <script src="/static/webSite/js/script.js"></script>
+  <script src="/static/js/GloJs.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script src="/static/hAdmin/js/plugins/toastr/toastr.min.js"></script>
+
+  <script>
+
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          baseUrl: gloRequestUrl,
+          dataList: [],
+          producttypeList: [],
+          userInfo: {},
+          fileList: [],
+          fileStr: [],
+          total: 0,
+          searchKey: "",
+          loading: true,
+          userId: localStorage.getItem("userId"),
+          role: localStorage.getItem("role"),
+          form: {},
+          open: false,
+          openDetail: false,
+          queryParams: {
+            pageSize: 3,
+            pageNum: 1,
+          },
+          title: "",
+          rules: {
+            content: [
+              {required: true, message: '请输入', trigger: 'blur'},
+
+            ],
+
+          }
+        }
+      },
+      methods: {
+
+        submitSend() {
+          let that = this
+          this.$refs['form'].validate((valid) => {
+            if (valid) {
+
+
+              let newParam ={
+                senderid : that.userId,
+                receiveid : "1",
+                content : that.form.content,
+                status : "0",
+              }
+
+
+              $.ajax({
+                url: that.baseUrl + "/message",
+                type: "post",
+                data: JSON.stringify(newParam),
+                contentType: "application/json",
+                // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                success: function (data) {
+that.form.content = ""
+                  if (data.code === 200) {
+                    toastr.success(data.msg, '提示')
+                  } else {
+                    toastr.error(data.msg, '提示')
+                  }
+
+                },
+                error: function () {
+                  alert("服务器异常！network error！")
+                }
+              })
+
+
+
+
+
+
+            }
+          })
+        },
+        // 获取用户信息
+        getUserInfo(){
+          let that = this
+          if (that.userId) {
+            $.ajax({
+              url: that.baseUrl + "/sysuser/detail",
+              type: "GET",
+              data: {id: that.userId},
+              success: function (data) {
+                if (data.code !== 500) {
+                  that.userInfo = data.data
+                }
+              },
+              error: function () {
+                console.log("获取用户信息失败")
+              }
+            });
+          }
+        }
+      },
+      watch: {},
+      mounted() {
+        let that = this;
+        that.getUserInfo()
+      }
+    })
+
+  </script>
+  </body>
+</html>

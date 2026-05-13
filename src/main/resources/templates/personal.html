@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title> - Personal Profile</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <link rel="stylesheet" href="/static/webSite/css/swiper-bundle.min.css">
+    <link crossorigin="anonymous" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" rel="stylesheet">
+    <link href="/static/webSite/css/vendor.css" rel="stylesheet" type="text/css">
+    <link href="/static/webSite/style.css" rel="stylesheet" type="text/css">
+    <script src="/static/DemoBootStrap/js/vue.js"></script>
+    <link href="/static/hAdmin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
+
+    <style>
+        .addList {
+            padding: 10px 30px 10px 30px;
+            height: 90px;
+            margin-top: 3px;
+        }
+
+    </style>
+</head>
+
+<body class="gray-bg">
+ <div id="app">
+
+     <div class="preloader-wrapper">
+         <div class="preloader">
+         </div>
+     </div>
+
+
+     <header v-if="role == '2' || role == '3'">
+         <div class="container-fluid">
+             <div class="row py-3 border-bottom">
+
+                 <div class="col-sm-4 col-lg-2 text-center text-sm-start d-flex gap-3 justify-content-center justify-content-md-start">
+                     <div class="d-flex align-items-center my-3 my-sm-0">
+                         <a href="/web/userindex">
+                             <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar" class="img-fluid"
+                                  style="width: 50px;height: 50px; border-radius: 50%; border: 2px solid #007bff;">
+                             <img v-else alt="logo" class="img-fluid" src="/static/webSite/images/logo.png"
+                                  style="width: 50px;height: 50px;">
+                         </a>
+                     </div>
+                     <button aria-controls="offcanvasNavbar" class="navbar-toggler" data-bs-target="#offcanvasNavbar"
+                             data-bs-toggle="offcanvas"
+                             type="button">
+                         <svg height="24" viewBox="0 0 24 24" width="24">
+                             <use xlink:href="#menu"></use>
+                         </svg>
+                     </button>
+                 </div>
+
+                 <div class="col-md-2 ">
+                     <div class="search-bar row bg-light p-2 rounded-4">
+
+                         <div class="col-11 col-md-10" style="text-align: center">
+                             Pet Service Booking Platform
+                         </div>
+
+                     </div>
+                 </div>
+
+                 <div class="col-md-8">
+                     <!-- Regular User Navigation -->
+                     <ul v-if="role == '2'" class="navbar-nav list-unstyled d-flex flex-row gap-3 gap-lg-5 justify-content-center flex-wrap align-items-center mb-0 fw-bold text-uppercase text-dark">
+                         <li class="nav-item ">
+                             <a class="nav-link" href="/web/userindex">Home</a>
+                         </li>
+                         <li class="nav-item">
+                             <a class="nav-link  " href="/web/userproductlist">Pet Service List</a>
+                         </li>
+                         <li class="nav-item">
+                             <a class="nav-link " href="/web/usercart">Shopping Cart</a>
+                         </li>
+                         <li class="nav-item">
+                             <a class="nav-link " href="/web/usercontact">Contact Us</a>
+                         </li>
+                         <li class="nav-item">
+                             <a class="nav-link " href="/web/userblog">News/Announcements</a>
+                         </li>
+                         <li class="nav-item text-primary" >
+                             <a class="nav-link d-flex align-items-center" href="/web/personal" title="Personal Center">
+                                 <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar"
+                                      style="width: 30px; height: 30px; border-radius: 50%; margin-right: 5px; border: 2px solid #007bff;">
+                                 <i v-else class="fa fa-user"></i>
+                                 <span v-if="userInfo && userInfo.username" style="margin-left: 5px;">{{userInfo.username}}</span>
+                             </a>
+                         </li>
+                     </ul>
+
+                     <!-- Service Provider Navigation -->
+                     <ul v-if="role == '3'" class="navbar-nav list-unstyled d-flex flex-row gap-3 gap-lg-5 justify-content-center flex-wrap align-items-center mb-0 fw-bold text-uppercase text-dark">
+                         <li class="nav-item">
+                             <a class="nav-link  " href="/web/product">My Services</a>
+                         </li>
+                         <li class="nav-item">
+                             <a class="nav-link" href="/web/provider/dashboard" target="_blank">
+                                 <i class="fa fa-bar-chart"></i> Data Statistics
+                             </a>
+                         </li>
+                         <li class="nav-item">
+                             <a class="nav-link " href="/web/order">Order Management</a>
+                         </li>
+                         <li class="nav-item">
+                             <a class="nav-link " href="/web/message">Message Center</a>
+                         </li>
+                         <li class="nav-item text-primary" >
+                             <a class="nav-link d-flex align-items-center" href="/web/personal" title="Personal Center">
+                                 <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar"
+                                      style="width: 30px; height: 30px; border-radius: 50%; margin-right: 5px; border: 2px solid #007bff;">
+                                 <i v-else class="fa fa-user"></i>
+                                 <span v-if="userInfo && userInfo.username" style="margin-left: 5px;">{{userInfo.username}}</span>
+                             </a>
+                         </li>
+                     </ul>
+                 </div>
+
+
+             </div>
+         </div>
+     </header>
+     <el-card class="box-card">
+     <el-tabs stretch v-model="activeName" @tab-click="handleClick">
+         <el-tab-pane :label="role == '1' ? 'Administrator Info' : (role == '2' ? 'User Info' : 'Service Provider Info')" name="first">
+             <!-- Administrator Info -->
+             <el-descriptions v-if="role == '1'" :column="4" title="Administrator Info" border>
+                 <el-descriptions-item :span="4" label="Avatar">
+                     <el-image :src="userInfo.img || '/static/webSite/images/default-avatar.png'"
+                               style="width: 100px;height: 100px;"></el-image>
+                 </el-descriptions-item>
+                 <el-descriptions-item :span="2" label="Administrator Name">{{userInfo.username}}</el-descriptions-item>
+                 <el-descriptions-item :span="2" label="Gender">{{userInfo.sex}}</el-descriptions-item>
+                 <el-descriptions-item :span="2" label="Contact">{{userInfo.phonenumber}}</el-descriptions-item>
+                 <el-descriptions-item :span="2" label="Account">{{userInfo.account}}</el-descriptions-item>
+                 <el-descriptions-item :span="2" label="ID Number">{{userInfo.idcard}}</el-descriptions-item>
+                 <el-descriptions-item :span="2" label="Age">{{userInfo.age}}</el-descriptions-item>
+                 <el-descriptions-item :span="4" label="Address">{{userInfo.address}}</el-descriptions-item>
+                 <el-descriptions-item :span="2" label="Role">System Administrator</el-descriptions-item>
+                 <el-descriptions-item :span="2" label="Permissions">System Management Permissions</el-descriptions-item>
+             </el-descriptions>
+
+             <!-- Regular User Info -->
+             <el-descriptions v-if="role == '2'" :column="4" title="User Info" border>
+                 <el-descriptions-item :span="4" label="Image">
+                     <el-image :src="userInfo.img"
+                               style="width: 100px;height: 100px;"></el-image>
+                 </el-descriptions-item>
+                 <el-descriptions-item :span="2" label="Username">{{userInfo.username}}</el-descriptions-item>
+                 <el-descriptions-item :span="2" label="Gender">{{userInfo.sex}}</el-descriptions-item>
+                 <el-descriptions-item :span="2" label="Contact">{{userInfo.phonenumber}}</el-descriptions-item>
+                 <el-descriptions-item :span="2" label="Account">{{userInfo.account}}</el-descriptions-item>
+                 <el-descriptions-item :span="2" label="Password">{{userInfo.password}}</el-descriptions-item>
+                 <el-descriptions-item :span="2" label="ID Number">{{userInfo.idcard}}</el-descriptions-item>
+                 <el-descriptions-item :span="2" label="Address">{{userInfo.address}}</el-descriptions-item>
+                 <el-descriptions-item :span="2" label="Age">{{userInfo.age}}</el-descriptions-item>
+                 <el-descriptions-item :span="2" label="Create Time">{{userInfo.createtime}}</el-descriptions-item>
+                 <el-descriptions-item :span="4" label="Balance">{{userInfo.money}}</el-descriptions-item>
+                 <el-descriptions-item :span="4" label="Personal Notes">{{userInfo.remark}}</el-descriptions-item>
+                 <el-descriptions-item :span="4" label="Pet Name">{{userInfo.petname}}</el-descriptions-item>
+                 <el-descriptions-item :span="4" label="Pet Age">{{userInfo.petage}}</el-descriptions-item>
+                 <el-descriptions-item :span="4" label="Pet Breed">{{userInfo.pettype}}</el-descriptions-item>
+                 <el-descriptions-item :span="4" label="Pet Description">{{userInfo.petdes}}</el-descriptions-item>
+             </el-descriptions>
+
+             <!-- Service Provider Info -->
+             <div v-if="role == '3'">
+                 <el-descriptions :column="4" title="Basic Information" border style="margin-bottom: 20px;">
+                     <el-descriptions-item :span="4" label="Avatar">
+                         <el-image :src="userInfo.img"
+                                   style="width: 100px;height: 100px;"></el-image>
+                     </el-descriptions-item>
+                     <el-descriptions-item :span="2" label="Name">{{userInfo.username}}</el-descriptions-item>
+                     <el-descriptions-item :span="2" label="Gender">{{userInfo.sex}}</el-descriptions-item>
+                     <el-descriptions-item :span="2" label="Contact">{{userInfo.phonenumber}}</el-descriptions-item>
+                     <el-descriptions-item :span="2" label="Account">{{userInfo.account}}</el-descriptions-item>
+                     <el-descriptions-item :span="2" label="ID Number">{{userInfo.idcard}}</el-descriptions-item>
+                     <el-descriptions-item :span="2" label="Create Time">{{userInfo.createtime}}</el-descriptions-item>
+                 </el-descriptions>
+
+                 <el-descriptions :column="4" title="Service Provider Information" border>
+                     <el-descriptions-item :span="2" label="Contact">{{companyInfo.phonenumber || 'Not Set'}}</el-descriptions-item>
+                     <el-descriptions-item :span="2" label="Registration Address">{{companyInfo.address || 'Not Set'}}</el-descriptions-item>
+                     <el-descriptions-item :span="2" label="Registration Time">{{companyInfo.zhuceshijian || 'Not Set'}}</el-descriptions-item>
+                     <el-descriptions-item :span="2" label="Service Area">{{companyInfo.serviceArea || 'Not Set'}}</el-descriptions-item>
+                     <el-descriptions-item :span="2" label="Average Rating">{{companyInfo.avgRating || 'No Rating'}}</el-descriptions-item>
+                     <el-descriptions-item :span="2" label="Total Reviews">{{companyInfo.ratingCount || 0}}</el-descriptions-item>
+                 </el-descriptions>
+             </div>
+             <div style="width: 100%;text-align: center;margin-top: 50px">
+                 <el-button type="danger" @click="handleLogout">Logout</el-button>
+                 <el-button type="warning" v-if="role == '1'" @click="handleEditAdminInfo">Edit Administrator Info</el-button>
+                 <el-button type="primary" v-if="role == '1'" @click="goToAdminPanel">Admin Panel</el-button>
+                 <el-button type="warning" v-if="role == '2'" @click="handleEditUserInfo">Edit Info</el-button>
+                 <el-button type="primary" v-if="role == '2'" @click="goToChongzhi">Recharge Center</el-button>
+                 <el-button type="success" v-if="role == '3'" @click="handleEditCompanyInfo">Edit Service Provider Info</el-button>
+             </div>
+         </el-tab-pane>
+         <el-tab-pane label="My Favorites" v-if="role == '2'" name="second">
+             <el-table
+                     :data="likeList"
+                     style="width: 100%"
+                     v-loading="loading">
+                 <el-table-column
+                         align="center"
+                         label="ID"
+                         prop="id"
+                 >
+                 </el-table-column>
+                 <el-table-column
+                         align="center"
+                         label="Image"
+                         prop="img"
+                 >
+                     <template slot-scope="scope">
+                         <el-image :src="scope.row.img"
+                                   style="width: 100px;height: 100px;"></el-image>
+                     </template>
+                 </el-table-column>
+                 <el-table-column
+                         align="center"
+                         label="Title"
+                         prop="productname"
+                 >
+                 </el-table-column>
+
+                 <el-table-column
+                         align="center"
+                         label="Create Time"
+                         prop="createtime">
+                 </el-table-column>
+
+                 <el-table-column
+                         align="center"
+                         label="Actions"
+                         width="350px"
+                 >
+                     <template slot-scope="scope">
+                         <el-button @click="viewServiceDetail(scope.row.productid)" type="primary" round size="small"><i
+                                 class="fa fa-eye"></i> View Details
+                         </el-button>
+                         <el-button @click="handleDel(scope.row.id)" type="danger" round size="small"><i
+                                 class="fa fa-close"></i> Remove Favorite
+                         </el-button>
+                     </template>
+                 </el-table-column>
+             </el-table>
+         </el-tab-pane>
+         <el-tab-pane label="My Orders" v-if="role == '2'" name="third">
+             <!--            List          -->
+             <div class="project-list">
+                 <div class="ibox-content">
+                     <el-table
+                             :data="orderList"
+                             style="width: 100%"
+                             v-loading="loading">
+                         <el-table-column
+                                 align="center"
+                                 label="Order ID"
+                                 prop="id"
+                         >
+
+
+                         <el-table-column
+                                 align="center"
+                                 label="Order User"
+                                 prop="username">
+                         </el-table-column>
+                         <el-table-column
+                                 align="center"
+                                 label="Order Time"
+                                 prop="createtime">
+                         </el-table-column>
+
+                         <el-table-column
+                                 align="center"
+                                 label="Update Time"
+                                 prop="updatetime">
+                         </el-table-column>
+                         <el-table-column
+                                 align="center"
+                                 label="Merchant Notes"
+                                 prop="remark"
+                         >
+
+                         </el-table-column>
+                         <el-table-column
+                                 align="center"
+                                 label="Review"
+                                 prop="content"
+                         >
+
+                         </el-table-column>
+                         <el-table-column
+                                 align="center"
+                                 label="Actions"
+                                 width="350px"
+                         >
+                             <template slot-scope="scope">
+                                 <el-button @click="viewOrderDetail(scope.row)" round size="small"
+                                            type="info"><i class="fa fa-eye"></i> View Details
+                                 </el-button>
+                                 <el-button @click="handleDelOrder(scope.row.id)" round size="small"
+                                            type="danger"><i class="fa fa-close"></i> Cancel
+                                 </el-button>
+                                 <el-button @click="handleEvalute(scope.row)" round size="small"
+                                            v-if="!scope.row.content"
+                                            type="primary"><i class="fa fa-edit"></i> Write Review
+                                 </el-button>
+                             </template>
+                         </el-table-column>
+                     </el-table>
+                 </div>
+             </div>
+
+         </el-tab-pane>
+         <el-tab-pane label="My Messages" v-if="role == '2'" name="fourth">
+             <!--            List          -->
+             <div class="project-list">
+                 <div class="ibox-content">
+                     <el-table
+                             :data="msgList"
+                             style="width: 100%"
+                             v-loading="loading">
+                         <el-table-column
+                                 align="center"
+                                 label="ID"
+                                 prop="id"
+                         >
+                         </el-table-column>
+
+                         <el-table-column
+                                 align="center"
+                                 label="Message"
+                                 prop="content"
+                         >
+                         </el-table-column>
+
+                         <el-table-column
+                                 align="center"
+                                 label="Sender"
+                                 prop="senderName">
+                             <template slot-scope="scope">
+                                 <span>{{scope.row.senderName}}</span>
+                                 <el-tag size="mini" v-if="scope.row.senderRole == '3'" type="success">Service Provider</el-tag>
+                                 <el-tag size="mini" v-if="scope.row.senderRole == '1'" type="warning">Administrator</el-tag>
+                             </template>
+                         </el-table-column>
+                         <el-table-column
+                                 align="center"
+                                 label="Status"
+                                 prop="status">
+                             <template slot-scope="scope">
+                                 <el-tag type="info" v-if="scope.row.status == '1'">Replied</el-tag>
+                                 <el-tag type="danger" v-if="scope.row.status == '0'">Unreplied</el-tag>
+                             </template>
+                         </el-table-column>
+                         <el-table-column
+                                 align="center"
+                                 label="Send Time"
+                                 prop="createtime">
+                         </el-table-column>
+                         <el-table-column
+                                 align="center"
+                                 label="Update Time"
+                                 prop="updatetime">
+                         </el-table-column>
+                         <el-table-column
+                                 align="center"
+                                 label="Actions"
+                                 width="350px"
+                         >
+                             <template slot-scope="scope">
+                                 <el-button @click="handleChat(scope.row)" round size="small" type="primary">
+                                     <i class="fa fa-comments"></i> Chat
+                                 </el-button>
+                                 <el-button @click="handleEdit(scope.row)" round size="small" type="warning">
+                                     <i class="fa fa-pencil"></i> Reply
+                                 </el-button>
+                                 <el-button @click="handleDel(scope.row.id)" round size="small"
+                                            type="danger"><i class="fa fa-trash"></i> Delete
+                                 </el-button>
+                             </template>
+                         </el-table-column>
+                     </el-table>
+                 </div>
+             </div>
+         </el-tab-pane>
+     </el-tabs>
+     </el-card>
+     <el-dialog :title="title" :visible.sync="open" width="50%">
+         <el-form :model="form" :rules="rules" label-width="80px" ref="form">
+             <el-form-item label="Image">
+                 <el-upload
+                         :action="baseUrl+'/common/upload'"
+                         :before-remove="beforeRemove"
+                         :file-list="fileList"
+                         :limit="1"
+
+                         :on-remove="handleRemove"
+                         :on-success="handleFileSuccess"
+                         class="upload-demo"
+                         multiple>
+                     <i class="el-icon-upload"></i>
+                     <div class="el-upload__text">Drag image here, or<em>click to upload</em></div>
+
+                     <el-button size="small" type="primary">Click to Upload</el-button>
+
+                 </el-upload>
+             </el-form-item>
+             <el-form-item label="User Name" prop="username">
+                 <el-input v-model="form.username"></el-input>
+             </el-form-item>
+             <el-form-item label="Gender">
+                 <el-input type="text" v-model="form.sex"></el-input>
+             </el-form-item>
+             <el-form-item label="Contact Info">
+                 <el-input v-model="form.phonenumber"></el-input>
+             </el-form-item>
+             <el-form-item label="Account">
+                 <el-input v-model="form.account"></el-input>
+             </el-form-item>
+             <el-form-item label="Password">
+                 <el-input v-model="form.password"></el-input>
+             </el-form-item>
+             <el-form-item label="ID Card No.">
+                 <el-input v-model="form.idcard"></el-input>
+             </el-form-item>
+             <el-form-item label="Address">
+                 <el-input v-model="form.address"></el-input>
+             </el-form-item>
+             <el-form-item label="Age">
+                 <el-input v-model="form.age"></el-input>
+             </el-form-item>
+             <el-form-item label="Personal Notes">
+                 <el-input type="textarea" v-model="form.remark"></el-input>
+             </el-form-item>
+
+             <!-- Regular User's Pet Info -->
+             <div v-if="role == '2'">
+                 <div style="width: 100%;height: 5px;background: #e5e5e5;margin-bottom: 5px"></div>
+                 <el-form-item label="Pet Name">
+                     <el-input v-model="form.petname"></el-input>
+                 </el-form-item>
+                 <el-form-item label="Pet Age">
+                     <el-input v-model="form.petage"></el-input>
+                 </el-form-item>
+                 <el-form-item label="Pet Breed">
+                     <el-input v-model="form.pettype"></el-input>
+                 </el-form-item>
+                 <el-form-item label="Pet Description">
+                     <el-input type="textarea" v-model="form.petdes"></el-input>
+                 </el-form-item>
+             </div>
+
+             <!-- Service Provider's Company Info -->
+             <div v-if="role == '3'">
+                 <div style="width: 100%;height: 5px;background: #e5e5e5;margin-bottom: 5px"></div>
+                 <el-form-item label="Company Name">
+                     <el-input v-model="form.companyname"></el-input>
+                 </el-form-item>
+                 <el-form-item label="Legal Representative">
+                     <el-input v-model="form.faren"></el-input>
+                 </el-form-item>
+                 <el-form-item label="Business License No.">
+                     <el-input v-model="form.yingyezhizhaohao"></el-input>
+                 </el-form-item>
+                 <el-form-item label="Business Scope">
+                     <el-input type="textarea" v-model="form.jingyingfanwei"></el-input>
+                 </el-form-item>
+                 <el-form-item label="Registration Address">
+                     <el-input v-model="form.address"></el-input>
+                 </el-form-item>
+                 <el-form-item label="Registration Time">
+                     <el-input v-model="form.zhuceshijian"></el-input>
+                 </el-form-item>
+                 <el-form-item label="Service Area">
+                     <el-input v-model="form.serviceArea"></el-input>
+                 </el-form-item>
+             </div>
+             <el-form-item>
+                 <el-button @click="submitEdit" type="primary">Save</el-button>
+                 <el-button @click="open = false">Cancel</el-button>
+             </el-form-item>
+         </el-form>
+     </el-dialog>
+
+     <el-dialog :title="title" :visible.sync="openMsg" width="70%">
+         <!-- Message History -->
+         <div class="message-history" style="max-height: 400px; overflow-y: auto; margin-bottom: 20px; border: 1px solid #dcdfe6; border-radius: 4px; padding: 15px;">
+             <h4 style="margin-bottom: 15px; color: #409eff;">Message History</h4>
+             <div v-if="messageHistory.length === 0" style="text-align: center; color: #909399;">
+                 No message history yet
+             </div>
+             <div v-for="(msg, index) in messageHistory" :key="index" class="message-item"
+                  :style="{marginBottom: '15px', padding: '10px', borderRadius: '8px', backgroundColor: msg.senderid == userId ? '#e1f3d8' : '#f4f4f5'}">
+                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                     <span style="font-weight: bold; color: #303133;">
+                         {{msg.senderid == userId ? 'Me' : (msg.senderName || 'Administrator')}}
+                     </span>
+                     <span style="font-size: 12px; color: #909399;">{{msg.createtime}}</span>
+                 </div>
+                 <div style="color: #606266; line-height: 1.5;">{{msg.content}}</div>
+             </div>
+         </div>
+
+         <el-form :model="form" :rules="rules" label-width="160px" ref="form">
+             <el-form-item label="Current Message" prop="content">
+                 <el-input type="textarea" disabled="" v-model="form.content"></el-input>
+             </el-form-item>
+             <el-form-item label="Enter your reply content" prop="rescontent">
+                 <el-input type="textarea" :rows="4" v-model="form.rescontent" placeholder="Enter reply content..."></el-input>
+             </el-form-item>
+             <el-form-item>
+                 <el-button @click="submitSend" type="primary">Send</el-button>
+                 <el-button @click="openMsg = false">Cancel</el-button>
+             </el-form-item>
+         </el-form>
+     </el-dialog>
+
+     <!-- Chat Dialog -->
+     <el-dialog title="Chat Conversation" :visible.sync="chatVisible" width="60%" :before-close="handleChatClose">
+         <div class="chat-container" style="height: 500px; display: flex; flex-direction: column;">
+             <!-- Chat Header Info -->
+             <div class="chat-header" style="padding: 10px; border-bottom: 1px solid #ebeef5; background: #f5f7fa;">
+                 <div style="display: flex; align-items: center; gap: 10px;">
+                     <i class="fa fa-user-circle" style="font-size: 24px; color: #409eff;"></i>
+                     <div>
+                         <div style="font-weight: bold;">{{chatPartner.name}}</div>
+                         <div style="font-size: 12px; color: #909399;">
+                             {{chatPartner.role == '3' ? 'Service Provider' : (chatPartner.role == '1' ? 'Administrator' : 'User')}}
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+             <!-- Chat Messages Area -->
+             <div class="chat-messages" ref="chatMessages" style="flex: 1; overflow-y: auto; padding: 15px; background: #fff;">
+                 <div v-if="chatMessages.length === 0" style="text-align: center; color: #909399; margin-top: 50px;">
+                     <i class="fa fa-comments-o" style="font-size: 48px; margin-bottom: 10px;"></i>
+                     <div>Start your conversation here</div>
+                 </div>
+
+                 <div v-for="msg in chatMessages" :key="msg.id" class="message-item"
+                      :style="{marginBottom: '15px', display: 'flex', justifyContent: msg.senderId == userId ? 'flex-end' : 'flex-start'}">
+                     <div :style="{
+                         maxWidth: '70%',
+                         padding: '10px 15px',
+                         borderRadius: '18px',
+                         backgroundColor: msg.senderId == userId ? '#409eff' : '#f0f0f0',
+                         color: msg.senderId == userId ? '#fff' : '#333'
+                     }">
+                         <div>{{msg.content}}</div>
+                         <div :style="{
+                             fontSize: '12px',
+                             marginTop: '5px',
+                             opacity: '0.8'
+                         }">
+                             {{formatTime(msg.createtime)}}
+                         </div>
+                     </div>
+                 </div>
+             </div>
+
+             <!-- Message Input Area -->
+             <div class="chat-input" style="padding: 15px; border-top: 1px solid #ebeef5; background: #fafafa;">
+                 <div style="display: flex; gap: 10px;">
+                     <el-input
+                         v-model="newMessage"
+                         placeholder="Enter message..."
+                         @keyup.enter.native="sendMessage"
+                         :maxlength="500"
+                         show-word-limit
+                         style="flex: 1;">
+                     </el-input>
+                     <el-button type="primary" @click="sendMessage" :disabled="!newMessage.trim()">
+                         <i class="fa fa-send"></i> Send
+                     </el-button>
+                 </div>
+             </div>
+         </div>
+     </el-dialog>
+
+     <el-dialog :title="title" :visible.sync="evaluteOpen" width="50%">
+         <el-form :model="form" :rules="rules" label-width="160px" ref="form">
+
+             <el-form-item label="Service Rating" prop="rating">
+                 <div style="display: flex; align-items: center; gap: 15px;">
+                     <el-rate
+                         v-model="form.rating"
+                         :max="5"
+                         allow-half
+                         show-text
+                         :texts="['Very Poor', 'Poor', 'Average', 'Good', 'Excellent']"
+                         :colors="['#F7BA2A', '#F7BA2A', '#F7BA2A']"
+                         :disabled-void-color="'#C6D1DE'"
+                         :void-color="'#C6D1DE'"
+                         :text-color="'#1F2D3D'"
+                         @change="onRatingChange"
+                         @click.native="handleRatingClick">
+                     </el-rate>
+                     <div style="display: flex; align-items: center; gap: 8px; min-width: 60px;">
+                         <span style="color: #409EFF; font-size: 18px; font-weight: bold;">
+                             {{ formatRatingDisplay(form.rating) }}
+                         </span>
+                         <span style="color: #606266; font-size: 14px;">Points</span>
+                     </div>
+                 </div>
+                 <div style="margin-top: 8px; color: #909399; font-size: 12px;">
+                     Click the stars to rate the service provider's quality (Half star = 0.5 points, Full star = 1 point)
+                 </div>
+             </el-form-item>
+
+             <el-form-item label="Write Your Review" prop="content">
+                 <el-input type="textarea" :rows="4" placeholder="Please describe your experience and suggestions for this service in detail..." v-model="form.content" maxlength="200" show-word-limit></el-input>
+             </el-form-item>
+
+             <el-form-item>
+                 <el-button @click="handleEvaluteSubmit" type="primary" :disabled="!form.rating || form.rating < 0.5">Submit Review</el-button>
+                 <el-button @click="evaluteOpen = false">Cancel</el-button>
+             </el-form-item>
+         </el-form>
+     </el-dialog>
+
+     <!-- Order Detail Dialog -->
+     <el-dialog title="Order Details" :visible.sync="orderDetailVisible" width="70%">
+         <div v-if="currentOrder">
+             <el-descriptions :column="3" title="Basic Order Information" border>
+                 <el-descriptions-item label="Order ID">{{currentOrder.id}}</el-descriptions-item>
+                 <el-descriptions-item label="Order User">{{currentOrder.username}}</el-descriptions-item>
+                 <el-descriptions-item label="Contact Info">{{currentOrder.phonenumber}}</el-descriptions-item>
+                 <el-descriptions-item label="Order Time">{{currentOrder.createtime}}</el-descriptions-item>
+                 <el-descriptions-item label="Update Time">{{currentOrder.updatetime}}</el-descriptions-item>
+                 <el-descriptions-item label="Order Status">
+                     <el-tag type="success">Completed</el-tag>
+                 </el-descriptions-item>
+                 <el-descriptions-item label="Merchant Notes" :span="3">{{currentOrder.remark || 'None'}}</el-descriptions-item>
+                 <el-descriptions-item label="User Review" :span="3">{{currentOrder.content || 'No Review Yet'}}</el-descriptions-item>
+             </el-descriptions>
+
+             <!-- Order Product Details -->
+             <div class="mt-4">
+                 <h5>Order Product Details</h5>
+                 <el-table :data="currentOrder.cartList" style="width: 100%" border>
+                     <el-table-column label="Product Image" width="120" align="center">
+                         <template slot-scope="scope">
+                             <el-image :src="scope.row.product.img" style="width: 80px; height: 80px;" fit="cover"></el-image>
+                         </template>
+                     </el-table-column>
+                     <el-table-column prop="product.productname" label="Product Name"></el-table-column>
+                     <el-table-column prop="product.kedanjia" label="Unit Price" width="100" align="center">
+                         <template slot-scope="scope">
+                             ￥{{scope.row.product.kedanjia}}
+                         </template>
+                     </el-table-column>
+                     <el-table-column prop="number" label="Quantity" width="80" align="center"></el-table-column>
+                     <el-table-column label="Subtotal" width="120" align="center">
+                         <template slot-scope="scope">
+                             ￥{{(parseFloat(scope.row.product.kedanjia) * scope.row.number).toFixed(2)}}
+                         </template>
+                     </el-table-column>
+                     <el-table-column label="Action" width="120" align="center">
+                         <template slot-scope="scope">
+                             <el-button @click="viewServiceDetail(scope.row.product.id)" type="text" size="small">
+                                 View Service Details
+                             </el-button>
+                         </template>
+                     </el-table-column>
+                 </el-table>
+
+                 <!-- Order Total -->
+                 <div class="text-right mt-3">
+                     <strong>Order Total: ￥{{calculateOrderTotal(currentOrder.cartList)}}</strong>
+                 </div>
+             </div>
+         </div>
+     </el-dialog>
+ </div>
+ <script src="/static/webSite/js/jquery-1.11.0.min.js"></script>
+ <script src="/static/hAdmin/js/plugins/sweetalert/sweetalert.min.js"></script>
+
+ <script src="/static/webSite/js/swiper-bundle.js"></script>
+ <script crossorigin="anonymous"
+         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+         src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.min.js"></script>
+ <script src="/static/webSite/js/plugins.js"></script>
+ <script src="/static/webSite/js/script.js"></script>
+ <script src="/static/hAdmin/js/plugins/toastr/toastr.min.js"></script>
+ <script src="/static/js/GloJs.js"></script>
+ <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+ <script>
+
+     new Vue({
+         el: "#app",
+         data() {
+             return {
+                 baseUrl: gloRequestUrl,
+                 dataList: [],
+                 orderList: [],
+                 msgList: [],
+                 messageHistory: [],
+                 selectList: [],
+                 likeList: [],
+                 fileList: [],
+                 fileStr: [],
+                 userInfo: {},
+                 companyInfo: {},
+                 total: 0,
+                 searchKey: "",
+                 activeName: "first",
+                 loading: true,
+                 userId: localStorage.getItem("userId"),
+                 role: localStorage.getItem("role"),
+                 form: {},
+                 open: false,
+                 openMsg: false,
+                 openDetail: false,
+                 evaluteOpen: false,
+                 orderDetailVisible: false,
+                 currentOrder: null,
+                 // Chat Related
+                 chatVisible: false,
+                 chatPartner: {
+                     id: null,
+                     name: '',
+                     role: ''
+                 },
+                 chatMessages: [],
+                 newMessage: '',
+                 queryParams: {
+                     pageSize: 3,
+                     pageNum: 1,
+                 },
+                 title: "",
+                 rules: {
+                     title: [
+                         {required: true, message: 'Please enter', trigger: 'blur'},
+                     ],
+                     rating: [
+                         {required: true, message: 'Please select a rating', trigger: 'change'},
+                         {type: 'number', min: 0.5, max: 5, message: 'Rating must be between 0.5 and 5 points', trigger: 'change'}
+                     ],
+                     content: [
+                         {required: true, message: 'Please enter review content', trigger: 'blur'},
+                         {min: 5, max: 200, message: 'Review content must be 5 to 200 characters', trigger: 'blur'}
+                     ]
+                 }
+             }
+         },
+         methods: {
+             handleResetQuery() {
+                 this.queryParams = {
+                     pageSize: 3,
+                     pageNum: 1,
+                 }
+                 this.getOrderList() // Refresh order list after resetting query parameters
+             },
+
+             handleClick(tab){
+                 let that = this
+                 console.log(tab.$props.name)
+                 if(tab.$props.name === 'first'){
+                     that.getUserInfo()
+                 }else if (tab.$props.name === 'second'){
+                     that.getlikeList()
+                 }
+             },
+             // Get List
+             getOrderList() {
+                 let that = this;
+                 that.loading = true
+                 $.ajax({
+                     url: that.baseUrl + "/order",
+                     type: "GET",
+                     data: {
+                         pageNum:1,
+                         pageSize:1000,
+                         userid:that.userId,
+                     },
+                     success: function (data) {
+                         if (data.code !== 500) {
+                             that.loading = false
+                             that.orderList = data.list
+
+                         }
+                     },
+                     error: function () {
+                         windowsAuto(500, "Server error! Network error!")
+                     }
+                 });
+             },
+             // Get List
+             getMsgList() {
+                 let that = this;
+                 that.loading = true
+                 $.ajax({
+                     url: that.baseUrl + "/message",
+                     type: "GET",
+                     data: {
+                         pageNum:1,
+                         pageSize:1000,
+                         receiveid:that.userId,
+                     },
+                     success: function (data) {
+                         if (data.code !== 500) {
+                             that.loading = false
+                             that.msgList = data.list
+
+                         }
+                     },
+                     error: function () {
+                         windowsAuto(500, "Server error! Network error!")
+                     }
+                 });
+             },
+            // Get Message History
+            getMessageHistory(senderId) {
+                let that = this;
+                $.ajax({
+                    url: that.baseUrl + "/message",
+                    type: "GET",
+                    data: {
+                        pageNum: 1,
+                        pageSize: 100,
+                        // Get all messages between user and specified sender
+                        senderid: senderId,
+                        receiveid: that.userId
+                    },
+                    success: function (data) {
+                        if (data.code !== 500) {
+                            let history = data.list || [];
+                            // Also get messages sent by user to this sender
+                            $.ajax({
+                                url: that.baseUrl + "/message",
+                                type: "GET",
+                                data: {
+                                    pageNum: 1,
+                                    pageSize: 100,
+                                    senderid: that.userId,
+                                    receiveid: senderId
+                                },
+                                success: function (data2) {
+                                    if (data2.code !== 500) {
+                                        let userMessages = data2.list || [];
+                                        // Merge two message lists and sort by time
+                                        that.messageHistory = [...history, ...userMessages].sort((a, b) => {
+                                            return new Date(a.createtime) - new Date(b.createtime);
+                                        });
+                                    }
+                                },
+                                error: function () {
+                                    console.error("Failed to get messages sent by user");
+                                }
+                            });
+                        }
+                    },
+                    error: function () {
+                        console.error("Failed to get message history");
+                        that.messageHistory = [];
+                    }
+                });
+            },
+             submitSend() {
+                 let that = this
+                 this.$refs['form'].validate((valid) => {
+                     if (valid) {
+
+                         let updateParam = {
+                             id:  that.form.id,
+                             status:  "1"
+                         }
+                         let newParam ={
+                             senderid : that.userId,
+                             receiveid : that.form.senderid,
+                             content : that.form.rescontent,
+                             status : "0",
+                         }
+
+
+                         $.ajax({
+                             url: that.baseUrl + "/message",
+                             type: "post",
+                             data: JSON.stringify(newParam),
+                             contentType: "application/json",
+                             // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                             success: function (data) {
+                                 $.ajax({
+                                     url: that.baseUrl + "/message",
+                                     type: "PUT",
+                                     data: JSON.stringify(updateParam),
+                                     contentType: "application/json",
+                                     // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                                     success: function (data) {
+                                         that.openMsg = false
+                                         if (data.code === 200) {
+                                             toastr.success(data.msg, 'Notification')
+                                         } else {
+                                             toastr.error(data.msg, 'Notification')
+                                         }
+                                         that.getMsgList()
+                                     },
+                                     error: function () {
+                                         alert("Server error! Network error!")
+                                     }
+                                 })
+
+                             },
+                             error: function () {
+                                 alert("Server error! Network error!")
+                             }
+                         })
+
+
+
+                     }
+                 })
+             },
+             getUserInfo(){
+                 let that = this
+                 $.ajax({
+                     url: that.baseUrl + "/sysuser/detail",
+                     type: "GET",
+                     data: {id:that.userId},
+                     success: function (data) {
+                         if (data.code !== 500) {
+                             that.userInfo = data.data
+                             // If service provider, get service provider info
+                             if (that.role === '3') {
+                                 that.getCompanyInfo()
+                             }
+                         }
+                     },
+                     error: function () {
+                         windowsAuto(500, "Server error! Network error!")
+                     }
+                 });
+             },
+             getCompanyInfo(){
+                 let that = this
+                 $.ajax({
+                     url: that.baseUrl + "/company/byCreateId",
+                     type: "GET",
+                     data: {createid: that.userId},
+                     success: function (data) {
+                         if (data.code !== 500) {
+                             that.companyInfo = data.data || {}
+                         }
+                     },
+                     error: function () {
+                         console.error("Failed to get service provider info")
+                         that.companyInfo = {}
+                     }
+                 });
+             },
+             // Get List
+             getlikeList() {
+                 let that = this;
+                 that.loading = true
+                 $.ajax({
+                     url: that.baseUrl + "/userlike",
+                     type: "GET",
+                     data: {
+                         pageNum:1,
+                         pageSize:999,
+                         userid:that.userId
+                     },
+                     success: function (data) {
+                         if (data.code !== 500) {
+                             that.loading = false
+                             that.likeList = data.list
+                             that.total = data.total
+                         }
+                     },
+                     error: function () {
+                         windowsAuto(500, "Server error! Network error!")
+                     }
+                 });
+             },
+             submitEdit() {
+                 let that = this
+                 this.$refs['form'].validate((valid) => {
+                     if (valid) {
+                         if (that.fileStr && that.fileStr.length > 0) {
+                             that.form.img = that.fileStr.join(",")
+                         }
+
+                         // Update user basic info
+                         $.ajax({
+                             url: that.baseUrl + "/sysuser",
+                             type: "PUT",
+                             data: JSON.stringify(that.form),
+                             contentType: "application/json",
+                             success: function (data) {
+                                 if (data.code === 200) {
+                                     // If service provider, also update service provider info
+                                     if (that.role === '3') {
+                                         that.updateCompanyInfo()
+                                     } else {
+                                         that.open = false
+                                         toastr.success(data.msg, 'Notification')
+                                         that.getUserInfo() // Refresh user info
+                                     }
+                                 } else {
+                                     toastr.error(data.msg, 'Notification')
+                                 }
+                             },
+                             error: function () {
+                                 alert("Server error! Network error!")
+                             }
+                         })
+                     }
+                 })
+             },
+             updateCompanyInfo() {
+                 let that = this
+                 // Prepare service provider info data
+                 let companyData = {
+                     id: that.companyInfo.id,
+                     companyname: that.form.companyname,
+                     faren: that.form.faren,
+                     yingyezhizhaohao: that.form.yingyezhizhaohao,
+                     jingyingfanwei: that.form.jingyingfanwei,
+                     address: that.form.address,
+                     zhuceshijian: that.form.zhuceshijian,
+                     serviceArea: that.form.serviceArea,
+                     createid: that.userId
+                 }
+
+                 $.ajax({
+                     url: that.baseUrl + "/company",
+                     type: companyData.id ? "PUT" : "POST",
+                     data: JSON.stringify(companyData),
+                     contentType: "application/json",
+                     success: function (data) {
+                         that.open = false
+                         if (data.code === 200) {
+                             toastr.success("Info updated successfully", 'Notification')
+                             that.getUserInfo() // Refresh user info
+                             that.getCompanyInfo() // Refresh service provider info
+                         } else {
+                             toastr.error(data.msg, 'Notification')
+                         }
+                     },
+                     error: function () {
+                         alert("Failed to update service provider info!")
+                     }
+                 })
+             },
+             reset() {
+                 this.form = {}
+                 this.fileStr = []
+                 this.fileList = []
+             },
+             // Open Detail
+             handleDetail(row) {
+                 let that = this;
+                 that.form = row
+                 that.title = "Details"
+                 that.openDetail = true
+
+             },
+             handleDel(id) {
+                 let that = this;
+                 swal({
+                     title: "Are you sure you want to cancel?",
+                     text: "Cannot be recovered after cancellation!",
+                     type: "warning",
+                     showCancelButton: true,
+                     confirmButtonColor: "#DD6B55",
+                     confirmButtonText: "Cancel",
+                     cancelButtonText: "Think Again",
+                     closeOnConfirm: false
+                 }, function () {
+                     $.ajax({
+                         url: that.baseUrl + "/userlike",
+                         type: "DELETE",
+                         data: {
+                             id: id,
+                         },
+                         success: function (data) {
+                             windowsAuto(data.code, data.msg)
+                             that.getlikeList()
+                         },
+                         error: function () {
+                             alert("Server error! Network error!")
+                         }
+                     })
+
+                 });
+             },
+             handleDelOrder(id) {
+                 let that = this;
+                 swal({
+                     title: "Are you sure you want to cancel the order?",
+                     text: "Cannot be recovered after cancellation!",
+                     type: "warning",
+                     showCancelButton: true,
+                     confirmButtonColor: "#DD6B55",
+                     confirmButtonText: "Cancel",
+                     cancelButtonText: "Think Again",
+                     closeOnConfirm: false
+                 }, function () {
+                     $.ajax({
+                         url: that.baseUrl + "/order",
+                         type: "DELETE",
+                         data: {
+                             id: id,
+                         },
+                         success: function (data) {
+                             windowsAuto(data.code, data.msg)
+                             that.getOrderList()
+                         },
+                         error: function () {
+                             alert("Server error! Network error!")
+                         }
+                     })
+
+                 });
+             },
+             handleEditUserInfo() {
+                 let that = this
+                 that.form = that.userInfo
+                 that.open = true
+                 that.title = "Edit"
+             },
+             handleEditCompanyInfo() {
+                 let that = this
+                 that.form = Object.assign({}, that.userInfo, that.companyInfo)
+                 that.open = true
+                 that.title = "Edit Service Provider Info"
+             },
+
+             // Administrator Related Methods
+             handleEditAdminInfo() {
+                 let that = this
+                 that.form = Object.assign({}, that.userInfo)
+                 that.open = true
+                 that.title = "Edit Administrator Info"
+             },
+
+             goToAdminPanel() {
+                 window.open('/web/index', '_blank')
+             },
+             handleEdit(row) {
+                 let that = this
+                 that.form = row
+                 that.openMsg = true
+                 that.title = "Reply to Message"
+                 // Get message history with this sender
+                 that.getMessageHistory(row.senderid)
+             },
+
+
+             removeElement(arr, elem) {
+                 return arr.filter(item => item !== elem);
+             },
+             handleRemove(file, fileList) {
+                 this.fileStr = this.removeElement(this.fileStr, file.response.msg)
+             },
+
+             // Chat Related Methods
+             handleChat(row) {
+                 this.chatPartner = {
+                     id: row.senderid,
+                     name: row.senderName,
+                     role: row.senderRole || '2'
+                 };
+                 this.chatVisible = true;
+                 this.loadChatMessages();
+             },
+
+             loadChatMessages() {
+                 let that = this;
+                 $.ajax({
+                     url: that.baseUrl + "/message/chat",
+                     type: "GET",
+                     data: {
+                         userId: that.userId,
+                         partnerId: that.chatPartner.id
+                     },
+                     success: function (data) {
+                         if (data.code === 200) {
+                             that.chatMessages = data.list || [];
+                             that.$nextTick(() => {
+                                 that.scrollToBottom();
+                             });
+                         }
+                     },
+                     error: function () {
+                         toastr.error("Failed to load chat history", 'Notification');
+                     }
+                 });
+             },
+
+             sendMessage() {
+                 let that = this;
+                 if (!that.newMessage.trim()) {
+                     return;
+                 }
+
+                 $.ajax({
+                     url: that.baseUrl + "/message/form",
+                     type: "POST",
+                     data: {
+                         content: that.newMessage,
+                         senderid: that.userId,
+                         receiveid: that.chatPartner.id,
+                         status: "0"
+                     },
+                     success: function (data) {
+                         if (data.code === 200) {
+                             that.newMessage = '';
+                             that.loadChatMessages(); // Reload messages
+                             toastr.success("Message sent successfully", 'Notification');
+                         } else {
+                             toastr.error(data.msg || "Failed to send", 'Notification');
+                         }
+                     },
+                     error: function () {
+                         toastr.error("Failed to send message", 'Notification');
+                     }
+                 });
+             },
+
+             handleChatClose() {
+                 this.chatVisible = false;
+                 this.chatMessages = [];
+                 this.newMessage = '';
+             },
+
+             scrollToBottom() {
+                 if (this.$refs.chatMessages) {
+                     this.$refs.chatMessages.scrollTop = this.$refs.chatMessages.scrollHeight;
+                 }
+             },
+
+             formatTime(time) {
+                 if (!time) return '';
+                 const date = new Date(time);
+                 const now = new Date();
+                 const diff = now - date;
+
+                 if (diff < 60000) { // Within 1 minute
+                     return 'Just now';
+                 } else if (diff < 3600000) { // Within 1 hour
+                     return Math.floor(diff / 60000) + ' minutes ago';
+                 } else if (diff < 86400000) { // Within 24 hours
+                     return Math.floor(diff / 3600000) + ' hours ago';
+                 } else {
+                     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString().slice(0, 5);
+                 }
+             },
+
+             beforeRemove(file, fileList) {
+                 return this.$confirm(`Are you sure you want to remove ${file.name}?`);
+             },
+             handleFileSuccess(res) {
+                 let that = this
+                 that.fileStr.push(res.msg)
+             },
+             handleLogout(){
+                 let that = this
+                 $.ajax({
+                     url: that.baseUrl + "/admin/logout",
+                     type: "get",
+                     data: {
+
+                     },
+                     success: function (data) {
+
+                         localStorage.removeItem("userId")
+                         window.location.href = that.baseUrl + "/login"
+
+
+                     },
+                     error: function () {
+                         alert("Server error! Network error!")
+                     }
+                 })
+             },
+             handleEvalute(row){
+                 let that = this
+                 that.evaluteOpen = true
+                 that.title = "Write Review"
+                 that.form = JSON.parse(JSON.stringify(row))
+                 // Initialize rating to 0.5 points (half star), minimum rating
+                 that.form.rating = 0.5
+                 that.form.content = ''
+             },
+
+             // Rating Change Handling (Star Click)
+             onRatingChange(value) {
+                 // Ensure rating value updates correctly and cannot be 0
+                 if (value === 0) {
+                     this.form.rating = 0.5;
+                 } else {
+                     // Ensure it's a multiple of 0.5, realizing half star = 0.5 points, full star = 1 point
+                     let rounded = Math.round(value * 2) / 2;
+                     this.form.rating = Math.max(0.5, Math.min(5, rounded));
+                 }
+
+                 // Force component update to ensure stars stay at clicked position
+                 this.$nextTick(() => {
+                     this.$forceUpdate();
+                 });
+
+                 console.log('Current Rating: ' + this.form.rating + ' Points (' + this.getStarDescription(this.form.rating) + ')');
+             },
+
+             // Handle Star Click Event to Ensure Fixation
+             handleRatingClick(event) {
+                 // Prevent event bubbling to ensure correct click behavior
+                 event.stopPropagation();
+             },
+
+             // Format Rating Display
+             formatRatingDisplay(rating) {
+                 if (!rating || rating === 0) {
+                     return '0';
+                 }
+                 // If integer, display as integer; if decimal, display one decimal place
+                 return rating % 1 === 0 ? rating.toString() : rating.toFixed(1);
+             },
+
+             // Get Star Description
+             getStarDescription(rating) {
+                 if (!rating) return 'No Rating';
+                 const fullStars = Math.floor(rating);
+                 const hasHalfStar = rating % 1 !== 0;
+
+                 let description = '';
+                 if (fullStars > 0) {
+                     description += fullStars + ' Star' + (fullStars > 1 ? 's' : '');
+                 }
+                 if (hasHalfStar) {
+                     description += (fullStars > 0 ? ' and Half' : 'Half a Star');
+                 }
+                 return description;
+             },
+             handleEvaluteSubmit(){
+                 let that = this
+
+                 // Verify Rating
+                 if (!that.form.rating || that.form.rating < 0.5) {
+                     toastr.error("Please click the stars to rate", 'Notification');
+                     return;
+                 }
+
+                 if (!that.form.content || !that.form.content.trim()) {
+                     toastr.error("Please enter review content", 'Notification');
+                     return;
+                 }
+
+                 $.ajax({
+                     url: that.baseUrl + "/orderEvalute",
+                     type: "post",
+                     data: {
+                         orderid: that.form.id,
+                         content: that.form.content,
+                         rating: that.form.rating,
+                         userid: that.userId,
+                         companyid: that.form.companyid,
+                     },
+                     success: function (data) {
+                         if (data.code === 200) {
+                             toastr.success("Review submitted successfully", 'Notification');
+                             that.getOrderList()
+                             that.evaluteOpen = false
+
+                             // If review is successful and has rating statistics, notify other pages to update
+                             if (data.avgRating !== undefined && data.companyid) {
+                                 // Store rating update event using localStorage
+                                 const ratingUpdateEvent = {
+                                     companyid: data.companyid,
+                                     avgRating: data.avgRating,
+                                     ratingCount: data.ratingCount,
+                                     timestamp: new Date().getTime()
+                                 };
+                                 localStorage.setItem('ratingUpdate', JSON.stringify(ratingUpdateEvent));
+
+                                 // Trigger storage event to notify other pages
+                                 window.dispatchEvent(new StorageEvent('storage', {
+                                     key: 'ratingUpdate',
+                                     newValue: JSON.stringify(ratingUpdateEvent)
+                                 }));
+
+                                 // Trigger rating update event within the same page
+                                 window.dispatchEvent(new CustomEvent('ratingUpdated', {
+                                     detail: ratingUpdateEvent
+                                 }));
+                             }
+                         } else {
+                             toastr.error(data.msg || "Failed to submit review", 'Notification');
+                         }
+                     },
+                     error: function () {
+                         toastr.error("Server error! Network error!", 'Notification');
+                     }
+                 })
+             },
+             goToChongzhi() {
+                 window.location.href = "/web/chongzhi";
+             },
+             viewServiceDetail(productId) {
+                 // Jump to service detail page
+                 window.location.href = "/web/usersingle?id=" + productId;
+             },
+             viewOrderDetail(order) {
+                 this.currentOrder = order;
+                 this.orderDetailVisible = true;
+             },
+             calculateOrderTotal(cartList) {
+                 if (!cartList || cartList.length === 0) return '0.00';
+                 let total = 0;
+                 cartList.forEach(item => {
+                     total += parseFloat(item.product.kedanjia) * item.number;
+                 });
+                 return total.toFixed(2);
+             },
+         },
+         watch: {},
+         mounted() {
+             let that = this;
+             that.getUserInfo()
+             that.getOrderList()
+             that.getMsgList()
+             let activeName = new URLSearchParams(window.location.search).get('activeName')
+             if (activeName){
+                 that.activeName = activeName
+
+             }
+         }
+     })
+
+ </script>
+</body>
+
+</html>

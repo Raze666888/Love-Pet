@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>静态资源测试 - 简化版</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h2 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .image-item {
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+        }
+        .test-image {
+            max-width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 2px solid #ddd;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 5px;
+            border-radius: 3px;
+        }
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .info {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>静态资源测试 - 简化版</h1>
+        
+        <div class="info">
+            <strong>测试说明：</strong>此页面用于测试静态资源配置是否正确。如果图片能正常显示，说明静态资源配置成功。
+        </div>
+
+        <!-- WebSite 图片测试 -->
+        <div class="test-section">
+            <h2>1. WebSite 图片测试</h2>
+            <p>测试路径：<code>/static/webSite/images/</code></p>
+            <div class="image-grid">
+                <div class="image-item">
+                    <h4>Logo</h4>
+                    <img src="/static/webSite/images/logo.png" alt="Logo" class="test-image" 
+                         onload="showStatus(this, true)" onerror="showStatus(this, false)">
+                    <div class="status" id="status-logo">加载中...</div>
+                </div>
+                
+                <div class="image-item">
+                    <h4>Banner 1</h4>
+                    <img src="/static/webSite/images/banner-1.jpg" alt="Banner 1" class="test-image"
+                         onload="showStatus(this, true)" onerror="showStatus(this, false)">
+                    <div class="status" id="status-banner1">加载中...</div>
+                </div>
+                
+                <div class="image-item">
+                    <h4>Product Thumb 1</h4>
+                    <img src="/static/webSite/images/product-thumb-1.png" alt="Product Thumb 1" class="test-image"
+                         onload="showStatus(this, true)" onerror="showStatus(this, false)">
+                    <div class="status" id="status-thumb1">加载中...</div>
+                </div>
+                
+                <div class="image-item">
+                    <h4>Category Thumb 1</h4>
+                    <img src="/static/webSite/images/category-thumb-1.jpg" alt="Category Thumb 1" class="test-image"
+                         onload="showStatus(this, true)" onerror="showStatus(this, false)">
+                    <div class="status" id="status-category1">加载中...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Static IMG 图片测试 -->
+        <div class="test-section">
+            <h2>2. Static IMG 图片测试</h2>
+            <p>测试路径：<code>/static/img/</code></p>
+            <div class="image-grid">
+                <div class="image-item">
+                    <h4>Admin 头像</h4>
+                    <img src="/static/img/admin.jpg" alt="Admin" class="test-image"
+                         onload="showStatus(this, true)" onerror="showStatus(this, false)">
+                    <div class="status" id="status-admin">加载中...</div>
+                </div>
+                
+                <div class="image-item">
+                    <h4>No Photo</h4>
+                    <img src="/static/img/noPhoto.png" alt="No Photo" class="test-image"
+                         onload="showStatus(this, true)" onerror="showStatus(this, false)">
+                    <div class="status" id="status-nophoto">加载中...</div>
+                </div>
+                
+                <div class="image-item">
+                    <h4>支付宝</h4>
+                    <img src="/static/img/zfb.jpg" alt="支付宝" class="test-image"
+                         onload="showStatus(this, true)" onerror="showStatus(this, false)">
+                    <div class="status" id="status-zfb">加载中...</div>
+                </div>
+                
+                <div class="image-item">
+                    <h4>微信支付</h4>
+                    <img src="/static/img/wxzf.jpg" alt="微信支付" class="test-image"
+                         onload="showStatus(this, true)" onerror="showStatus(this, false)">
+                    <div class="status" id="status-wxzf">加载中...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product 图片测试 -->
+        <div class="test-section">
+            <h2>3. Product 图片测试</h2>
+            <p>测试路径：<code>/product/</code> (映射到 /static/img/)</p>
+            <div class="image-grid">
+                <div class="image-item">
+                    <h4>Product Admin</h4>
+                    <img src="/product/admin.jpg" alt="Product Admin" class="test-image"
+                         onload="showStatus(this, true)" onerror="showStatus(this, false)">
+                    <div class="status" id="status-product-admin">加载中...</div>
+                </div>
+                
+                <div class="image-item">
+                    <h4>Product No Photo</h4>
+                    <img src="/product/noPhoto.png" alt="Product No Photo" class="test-image"
+                         onload="showStatus(this, true)" onerror="showStatus(this, false)">
+                    <div class="status" id="status-product-nophoto">加载中...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CSS 和 JS 资源测试 -->
+        <div class="test-section">
+            <h2>4. CSS 和 JS 资源测试</h2>
+            <div id="resource-test">
+                <p>Bootstrap CSS: <span id="bootstrap-status">检测中...</span></p>
+                <p>Vue.js: <span id="vue-status">检测中...</span></p>
+                <p>jQuery: <span id="jquery-status">检测中...</span></p>
+            </div>
+        </div>
+
+        <!-- 测试结果汇总 -->
+        <div class="test-section">
+            <h2>5. 测试结果汇总</h2>
+            <div id="summary">
+                <p>正在统计测试结果...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 测试外部资源 -->
+    <link href="https://cdn.bootcdn.net/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/3.3.4/vue.global.min.js" id="vue-js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.0/jquery.min.js" id="jquery-js"></script>
+
+    <script>
+        let successCount = 0;
+        let totalCount = 0;
+        
+        function showStatus(img, success) {
+            totalCount++;
+            const statusDiv = img.nextElementSibling;
+            if (success) {
+                successCount++;
+                statusDiv.textContent = '✅ 加载成功';
+                statusDiv.className = 'status success';
+            } else {
+                statusDiv.textContent = '❌ 加载失败';
+                statusDiv.className = 'status error';
+                img.style.display = 'none';
+            }
+            updateSummary();
+        }
+        
+        function updateSummary() {
+            const summaryDiv = document.getElementById('summary');
+            const successRate = totalCount > 0 ? (successCount / totalCount * 100).toFixed(1) : 0;
+            summaryDiv.innerHTML = `
+                <p><strong>图片加载统计：</strong></p>
+                <p>成功：${successCount} 个</p>
+                <p>失败：${totalCount - successCount} 个</p>
+                <p>总计：${totalCount} 个</p>
+                <p>成功率：${successRate}%</p>
+                ${successRate >= 80 ? '<p class="success">✅ 静态资源配置良好</p>' : '<p class="error">❌ 静态资源配置需要调整</p>'}
+            `;
+        }
+        
+        // 检测外部资源
+        window.addEventListener('load', function() {
+            // 检测Bootstrap
+            const bootstrapLink = document.getElementById('bootstrap-css');
+            if (bootstrapLink && bootstrapLink.sheet && bootstrapLink.sheet.cssRules.length > 0) {
+                document.getElementById('bootstrap-status').innerHTML = '<span class="success">✅ 加载成功</span>';
+            } else {
+                document.getElementById('bootstrap-status').innerHTML = '<span class="error">❌ 加载失败</span>';
+            }
+            
+            // 检测Vue
+            if (typeof Vue !== 'undefined') {
+                document.getElementById('vue-status').innerHTML = '<span class="success">✅ 加载成功</span>';
+            } else {
+                document.getElementById('vue-status').innerHTML = '<span class="error">❌ 加载失败</span>';
+            }
+            
+            // 检测jQuery
+            if (typeof $ !== 'undefined') {
+                document.getElementById('jquery-status').innerHTML = '<span class="success">✅ 加载成功</span>';
+            } else {
+                document.getElementById('jquery-status').innerHTML = '<span class="error">❌ 加载失败</span>';
+            }
+        });
+        
+        // 初始化统计
+        setTimeout(updateSummary, 3000);
+    </script>
+</body>
+</html>

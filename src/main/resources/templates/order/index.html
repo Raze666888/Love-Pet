@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+
+    <title> Orders</title>
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <link href="favicon.ico" rel="shortcut icon">
+    <script src="/static/DemoBootStrap/js/vue.js"></script>
+    <!--    <link href="/static/hAdmin/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">-->
+    <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <!-- Sweet Alert -->
+    <link href="/static/hAdmin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/animate.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="/static/element/element.css" rel="stylesheet">
+    <style>
+        .addList {
+            padding: 10px 30px 10px 30px;
+            height: 90px;
+            margin-top: 3px
+        }
+    </style>
+
+</head>
+
+<body class="gray-bg animated bounceInDown">
+<div id="app">
+    <div id="block"
+         style="width: 100%;height: 100%;background: #171717;opacity: 0.7;position: fixed;top: 0;left: 0;z-index: 999;text-align: center;display: none">
+        <div style="margin-top: 300px">
+            <span style="color: #ffffff;font-size: 20px;font-weight: 700">Submitting operation, please do not perform any actions...</span>
+        </div>
+    </div>
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <span id="gloUrl" style="display: none"></span>
+
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="ibox">
+                    <div class="ibox-title" style="height: 55px;">
+                        <h5>All Records</h5>
+                        <div class="ibox-tools">
+                            <div class="text-center">
+                                <el-button
+                                        @click="handleAdd"
+                                        v-if="role === '1'"
+                                        type="primary">
+                                    添加
+                                </el-button>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row m-b-sm m-t-sm">
+
+                            <div class="col-md-11 form-inline">
+                                <el-form :inline="true" :model="queryParams" class="demo-form-inline">
+                                    <el-form-item label="订单id">
+                                        <el-input placeholder="订单id" v-model="queryParams.id"></el-input>
+                                    </el-form-item>
+<!--                                    <el-form-item label="类型">-->
+<!--                                        <el-select placeholder="类型" v-model="queryParams.type">-->
+<!--                                            <el-option :label="item.typeName" :value="item.id"-->
+<!--                                                       v-for="item in selectList">-->
+
+<!--                                            </el-option>-->
+<!--                                        </el-select>-->
+<!--                                    </el-form-item>-->
+                                    <el-form-item>
+                                        <el-button @click="getList" type="primary"><i class="fa fa-search"></i> 查询
+                                        </el-button>
+                                        <el-button @click="handleResetQuery" type="info"><i class="fa fa-circle"></i> 重置
+                                        </el-button>
+                                    </el-form-item>
+                                </el-form>
+                            </div>
+                        </div>
+                        <!--            列表          -->
+                        <div class="project-list">
+                            <div class="ibox-content">
+                                <el-table
+                                        :data="dataList"
+                                        style="width: 100%"
+                                        v-loading="loading">
+                                    <el-table-column
+                                            align="center"
+
+                                            type="expand"
+                                            prop="id"
+                                    >
+                                        <template slot-scope="scope">
+
+                                            <el-table v-if="scope.row.cartList" :data="scope.row.cartList">
+                                                <el-table-column
+                                                        align="center"
+                                                        label="Image"
+                                                        prop="img"
+                                                >
+                                                    <template slot-scope="scopeInner">
+                                                        <el-image :src="scopeInner.row.product.img"
+                                                                  style="width: 100px;height: 100px;"></el-image>
+                                                    </template>
+                                                </el-table-column>
+                                                <el-table-column
+                                                        align="center"
+                                                        label="Pet Service Name"
+                                                        prop="product.productname"
+                                                >
+
+                                                </el-table-column>
+                                                <el-table-column
+                                                        align="center"
+                                                        label="Unit Price"
+                                                        prop="product.kedanjia"
+                                                >
+
+                                                </el-table-column>
+                                                <el-table-column
+                                                        align="center"
+                                                        label="Quantity"
+                                                        prop="number"
+                                                >
+
+                                                </el-table-column>
+
+                                                <el-table-column
+                                                        align="center"
+                                                        label="Total Price"
+
+                                                >
+                                                    <template slot-scope="scopeInner">
+                                                        {{parseFloat(scopeInner.row.product.kedanjia)*scopeInner.row.number}}
+                                                    </template>
+                                                </el-table-column>
+                                            </el-table>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Order ID"
+                                            prop="id"
+                                    >
+
+                                    </el-table-column>
+
+                                    <el-table-column
+                                            align="center"
+                                            label="Order User"
+                                            prop="username">
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="User Contact"
+                                            prop="account">
+                                        <template slot-scope="scope">
+                                          <span >{{scope.row.account}}</span>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Order Time"
+                                            prop="createtime">
+                                    </el-table-column>
+
+                                    <el-table-column
+                                            align="center"
+                                            label="Update Time"
+                                            prop="updatetime">
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Remarks"
+                                            prop="remark">
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Actions"
+                                            width="350px"
+                                    >
+                                        <template slot-scope="scope">
+                                            <el-button @click="handleDetail(scope.row)" round size="small"
+                                                       type="info"><i class="fa fa-eye"></i> Details
+                                            </el-button>
+                                            <el-button @click="handleDel(scope.row.id)" round size="small"
+                                                       v-if="role === '1'"
+                                                       type="danger"><i class="fa fa-trash"></i> Delete
+                                            </el-button>
+                                            <el-button @click="handleRemark(scope.row)" round size="small"
+                                                       v-if="role !== '2' && !scope.row.remark"
+                                                       type="primary"><i class="fa fa-pencil"></i> Remarks
+                                            </el-button>
+                                            <el-button @click="handleEvaluate(scope.row)" round size="small"
+                                                       v-if="role === '2' && !scope.row.content"
+                                                       type="success"><i class="fa fa-star"></i> 评价
+                                            </el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                        <div style="width: 100%;text-align: center">
+                            <el-pagination
+                                    :current-page.sync="queryParams.pageNum"
+                                    :page-size="queryParams.pageSize"
+                                    :total="total"
+                                    @current-change="handleCurrentChange"
+                                    background
+                                    layout="total, prev, pager, next">
+                            </el-pagination>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <el-dialog :title="title" :visible.sync="openRemark" width="50%">
+        <el-form :model="form"  label-width="150px" ref="form">
+
+            <el-form-item label="备注">
+                <el-input type="textarea" v-model="form.remark"></el-input>
+            </el-form-item>
+
+            <el-form-item>
+                <el-button @click="submitEditRemark" type="primary">保存</el-button>
+                <el-button @click="openRemark = false">取消</el-button>
+            </el-form-item>
+        </el-form>
+    </el-dialog>
+    <el-dialog :title="'订单详情 - 订单ID: ' + form.id" :visible.sync="openDetail" width="70%">
+        <el-descriptions :column="4" border>
+            <el-descriptions-item :span="2" label="订单ID">{{form.id}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="下单用户">{{form.username}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="用户联系方式">{{form.account}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="下单时间">{{form.createtime}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="更新时间">{{form.updatetime}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="备注">{{form.remark || '无'}}</el-descriptions-item>
+            <el-descriptions-item :span="4" label="评价内容">{{form.content || '暂无评价'}}</el-descriptions-item>
+        </el-descriptions>
+
+        <div style="margin-top: 20px;">
+            <h4>订单商品详情</h4>
+            <el-table v-if="form.cartList" :data="form.cartList" border>
+                <el-table-column align="center" label="商品图片" width="120">
+                    <template slot-scope="scope">
+                        <el-image :src="scope.row.product.img" style="width: 80px;height: 80px;"></el-image>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="商品名称" prop="product.productname"></el-table-column>
+                <el-table-column align="center" label="单价" prop="product.kedanjia">
+                    <template slot-scope="scope">
+                        ￥{{scope.row.product.kedanjia}}
+                    </template>
+                </el-table-column>
+                <el-table-column align="center" label="数量" prop="number"></el-table-column>
+                <el-table-column align="center" label="小计">
+                    <template slot-scope="scope">
+                        ￥{{(parseFloat(scope.row.product.kedanjia) * scope.row.number).toFixed(2)}}
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
+
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="openDetail = false">关闭</el-button>
+        </div>
+    </el-dialog>
+
+    <!-- 评价对话框 -->
+    <el-dialog title="订单评价" :visible.sync="openEvaluate" width="500px">
+        <el-form :model="evaluateForm" label-width="80px">
+            <el-form-item label="服务评分">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <el-rate
+                        v-model="evaluateForm.rating"
+                        :max="5"
+                        allow-half
+                        show-text
+                        :texts="['极差', '失望', '一般', '满意', '惊喜']"
+                        :colors="['#F7BA2A', '#F7BA2A', '#F7BA2A']"
+                        :disabled-void-color="'#C6D1DE'"
+                        :void-color="'#C6D1DE'"
+                        :text-color="'#1F2D3D'"
+                        @change="onRatingChange"
+                        @click.native="handleRatingClick">
+                    </el-rate>
+                    <div style="display: flex; align-items: center; gap: 8px; min-width: 60px;">
+                        <span style="color: #409EFF; font-size: 18px; font-weight: bold;">
+                            {{ formatRatingDisplay(evaluateForm.rating) }}
+                        </span>
+                        <span style="color: #606266; font-size: 14px;">分</span>
+                    </div>
+                </div>
+                <div style="margin-top: 8px; color: #909399; font-size: 12px;">
+                    请点击星星为服务商的服务质量打分（点击固定星数，半颗星=0.5分，一颗星=1分）
+                </div>
+            </el-form-item>
+            <el-form-item label="评价内容">
+                <el-input
+                    type="textarea"
+                    :rows="4"
+                    placeholder="请详细描述您对本次服务的感受和建议..."
+                    v-model="evaluateForm.content"
+                    maxlength="200"
+                    show-word-limit>
+                </el-input>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="openEvaluate = false">取消</el-button>
+            <el-button type="primary" @click="submitEvaluate" :disabled="!evaluateForm.rating || evaluateForm.rating < 0.5">提交评价</el-button>
+        </div>
+    </el-dialog>
+</div>
+
+
+<!-- 全局js -->
+<script src="/static/hAdmin/js/jquery.min.js?v=2.1.4"></script>
+<!--<script src="/static/hAdmin/js/bootstrap.min.js?v=3.3.6"></script>-->
+<!-- Sweet alert -->
+<script src="/static/hAdmin/js/plugins/sweetalert/sweetalert.min.js"></script>
+
+<!-- 自定义js -->
+<script src="/static/hAdmin/js/content.js?v=1.0.0"></script>
+
+
+<script src="/static/element/element.js"></script>
+
+<!--    分页js -->
+<!--<script src="/static/wmmJs/public/PageHelper.js"></script>-->
+<script src="/static/hAdmin/js/plugins/toastr/toastr.min.js"></script>
+<script src="/static/js/GloJs.js"></script>
+<script>
+
+    new Vue({
+        el: "#app",
+        data() {
+            return {
+                baseUrl: gloRequestUrl,
+                dataList: [],
+                selectList: [],
+                fileList: [],
+                fileStr: [],
+                total: 0,
+                searchKey: "",
+                loading: true,
+                userId: localStorage.getItem("userId"),
+                role: localStorage.getItem("role"),
+                form: {},
+                formRemark: {},
+                open: false,
+                openRemark: false,
+                openDetail: false,
+                openEvaluate: false,
+                evaluateForm: {
+                    rating: 0.5,
+                    content: '',
+                    orderid: null,
+                    userid: null,
+                    companyid: null
+                },
+                queryParams: {
+                    pageSize: 3,
+                    pageNum: 1,
+                    companyid: localStorage.getItem("userId"),
+                },
+                title: "",
+                rules: {
+                    title: [
+                        {required: true, message: '请输入', trigger: 'blur'},
+
+                    ],
+
+                }
+            }
+        },
+        methods: {
+            handleResetQuery() {
+                this.queryParams = {
+                    pageSize: 3,
+                    pageNum: 1,
+                }
+                this.getList()
+            },
+            removeElement(arr, elem) {
+                return arr.filter(item => item !== elem);
+            },
+            handleRemove(file, fileList) {
+                this.fileStr = this.removeElement(this.fileStr, file.response.msg)
+            },
+            handlePreview(file) {
+                window.open(this.baseUrl + file.response.msg)
+            },
+            handleExceed(files, fileList) {
+                this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+            },
+            beforeRemove(file, fileList) {
+                return this.$confirm(`确定移除 ${file.name}？`);
+            },
+            handleFileSuccess(res) {
+                let that = this
+                that.fileStr.push(res.msg)
+            },
+            getSelectList() {
+                let that = this;
+                let param = {
+                    "pageSize": 999,
+                    "pageNum": that.queryParams.pageNum,
+
+                }
+                $.ajax({
+                    url: that.baseUrl + "/tType/list",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        if (data.code !== 500) {
+
+                            that.selectList = data.list
+
+                        }
+                    },
+                    error: function () {
+                        windowsAuto(500, "服务器异常！network error！")
+                    }
+                });
+            },
+            // 获取列表
+            getList() {
+                let that = this;
+                that.loading = true
+                $.ajax({
+                    url: that.baseUrl + "/order",
+                    type: "GET",
+                    data: that.queryParams,
+                    success: function (data) {
+                        if (data.code !== 500) {
+                            that.loading = false
+                            that.dataList = data.list
+                            that.total = data.total
+                        }
+                    },
+                    error: function () {
+                        windowsAuto(500, "服务器异常！network error！")
+                    }
+                });
+            },
+            submitEdit() {
+                let that = this
+                this.$refs['form'].validate((valid) => {
+                    if (valid) {
+                        if (that.fileStr && that.fileStr.length > 0) {
+                            that.form.img = that.fileStr.join(",")
+
+                        }
+                        that.form.createid = that.userId
+                        if (that.form.id == undefined) {
+
+                            $.ajax({
+                                url: that.baseUrl + "/order",
+                                type: "post",
+                                data: JSON.stringify(that.form),
+                                contentType: "application/json",
+                                // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                                success: function (data) {
+                                    that.open = false
+                                    if (data.code === 200) {
+                                        toastr.success(data.msg, '提示')
+
+                                    } else {
+
+                                        toastr.error(data.msg, '提示')
+                                    }
+                                    that.getList()
+                                },
+                                error: function () {
+                                    alert("服务器异常！network error！")
+                                }
+                            })
+                        } else {
+
+                            $.ajax({
+                                url: that.baseUrl + "/order",
+                                type: "PUT",
+                                data: JSON.stringify(that.form),
+                                contentType: "application/json",
+                                // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                                success: function (data) {
+                                    that.open = false
+                                    if (data.code === 200) {
+                                        toastr.success(data.msg, '提示')
+
+                                    } else {
+
+                                        toastr.error(data.msg, '提示')
+                                    }
+                                    that.getList()
+                                },
+                                error: function () {
+                                    alert("服务器异常！network error！")
+                                }
+                            })
+                        }
+
+                    }
+                })
+            },
+            submitEditRemark() {
+                let that = this
+                this.$refs['form'].validate((valid) => {
+                    if (valid) {
+
+                            $.ajax({
+                                url: that.baseUrl + "/order",
+                                type: "PUT",
+                                data: JSON.stringify(that.form),
+                                contentType: "application/json",
+                                // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                                success: function (data) {
+                                    that.openRemark = false
+                                    if (data.code === 200) {
+                                        toastr.success(data.msg, '提示')
+
+                                    } else {
+
+                                        toastr.error(data.msg, '提示')
+                                    }
+                                    that.getList()
+                                },
+                                error: function () {
+                                    alert("服务器异常！network error！")
+                                }
+                            })
+
+
+                    }
+                })
+            },
+            reset() {
+                this.form = {}
+                this.fileStr = []
+                this.fileList = []
+            },
+            //打开详情
+            handleDetail(row) {
+                let that = this;
+                that.form = row
+                that.title = "订单详情"
+                that.openDetail = true
+            },
+            handleDel(id) {
+                let that = this;
+                swal({
+                    title: "您确定要删除该信息吗",
+                    text: "删除后不可恢复！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "删除",
+                    cancelButtonText: "我再想想",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        url: that.baseUrl + "/order",
+                        type: "DELETE",
+                        data: {
+                            id: id,
+                        },
+                        success: function (data) {
+                            windowsAuto(data.code, data.msg)
+                            that.getList()
+                        },
+                        error: function () {
+                            alert("服务器异常！network error！")
+                        }
+                    })
+
+                });
+            },
+            handleEdit(row) {
+                let that = this
+                that.form = row
+                that.open = true
+                that.title = "编辑"
+            },
+            handleRemark(row) {
+                let that = this
+                that.form = row
+                that.openRemark = true
+                that.title = "备注"
+            },
+            handleAdd() {
+                let that = this
+                that.reset()
+                that.open = true
+                that.title = "新增"
+            },
+
+            handleCurrentChange() {
+                let that = this;
+                that.getList()
+            },
+
+            // 处理评价
+            handleEvaluate(row) {
+                this.evaluateForm = {
+                    rating: 0.5,
+                    content: '',
+                    orderid: row.id,
+                    userid: this.userId,
+                    companyid: null // 需要从订单中获取服务商ID
+                };
+
+                // 获取订单对应的服务商ID
+                this.getOrderCompanyId(row.id);
+                this.openEvaluate = true;
+            },
+
+            // 获取订单对应的服务商ID
+            getOrderCompanyId(orderId) {
+                let that = this;
+                $.ajax({
+                    url: that.baseUrl + "/order/detail",
+                    type: "GET",
+                    data: { id: orderId },
+                    success: function (data) {
+                        if (data.code !== 500 && data.Data && data.Data.cartList && data.Data.cartList.length > 0) {
+                            // 从购物车商品中获取服务商ID
+                            that.evaluateForm.companyid = data.Data.cartList[0].product.companyid;
+                        }
+                    },
+                    error: function () {
+                        console.error("获取订单详情失败");
+                    }
+                });
+            },
+
+            // 评分变化处理（星星点击）
+            onRatingChange(value) {
+                // 确保评分值正确更新，并且不能为0
+                if (value === 0) {
+                    this.evaluateForm.rating = 0.5;
+                } else {
+                    // 确保是0.5的倍数，实现半颗星=0.5分，一颗星=1分
+                    let rounded = Math.round(value * 2) / 2;
+                    this.evaluateForm.rating = Math.max(0.5, Math.min(5, rounded));
+                }
+
+                // 强制更新组件显示，确保星星固定在点击位置
+                this.$nextTick(() => {
+                    this.$forceUpdate();
+                });
+
+                console.log('当前评分：' + this.evaluateForm.rating + '分 (' + this.getStarDescription(this.evaluateForm.rating) + ')');
+            },
+
+            // 处理星星点击事件，确保点击固定
+            handleRatingClick(event) {
+                // 阻止事件冒泡，确保点击行为正确
+                event.stopPropagation();
+            },
+
+            // 格式化评分显示
+            formatRatingDisplay(rating) {
+                if (!rating || rating === 0) {
+                    return '0';
+                }
+                // 如果是整数，显示整数；如果是小数，显示一位小数
+                return rating % 1 === 0 ? rating.toString() : rating.toFixed(1);
+            },
+
+            // 获取星数描述
+            getStarDescription(rating) {
+                if (!rating) return '未评分';
+                const fullStars = Math.floor(rating);
+                const hasHalfStar = rating % 1 !== 0;
+
+                let description = '';
+                if (fullStars > 0) {
+                    description += fullStars + '颗星';
+                }
+                if (hasHalfStar) {
+                    description += (fullStars > 0 ? '半' : '半颗星');
+                }
+                return description;
+            },
+
+            // 提交评价
+            submitEvaluate() {
+                let that = this;
+
+                // 验证评分
+                if (!that.evaluateForm.rating || that.evaluateForm.rating < 0.5) {
+                    toastr.error("请点击星星进行评分", '提示');
+                    return;
+                }
+
+                if (!that.evaluateForm.content.trim()) {
+                    toastr.error("请输入评价内容", '提示');
+                    return;
+                }
+
+                $.ajax({
+                    url: that.baseUrl + "/orderEvalute",
+                    type: "POST",
+                    data: that.evaluateForm,
+                    success: function (data) {
+                        that.openEvaluate = false;
+                        if (data.code === 200) {
+                            toastr.success("评价提交成功", '提示');
+                            that.getList(); // 刷新列表
+
+                            // 如果评价成功且有评分统计信息，通知其他页面更新
+                            if (data.avgRating !== undefined && data.companyid) {
+                                // 使用localStorage存储评分更新事件
+                                const ratingUpdateEvent = {
+                                    companyid: data.companyid,
+                                    avgRating: data.avgRating,
+                                    ratingCount: data.ratingCount,
+                                    timestamp: new Date().getTime()
+                                };
+                                localStorage.setItem('ratingUpdate', JSON.stringify(ratingUpdateEvent));
+
+                                // 触发storage事件通知其他页面
+                                window.dispatchEvent(new StorageEvent('storage', {
+                                    key: 'ratingUpdate',
+                                    newValue: JSON.stringify(ratingUpdateEvent)
+                                }));
+
+                                // 触发同页面内的评分更新事件
+                                window.dispatchEvent(new CustomEvent('ratingUpdated', {
+                                    detail: ratingUpdateEvent
+                                }));
+                            }
+                        } else {
+                            toastr.error(data.msg, '提示');
+                        }
+                    },
+                    error: function () {
+                        toastr.error("评价提交失败", '提示');
+                    }
+                });
+            },
+
+
+
+
+        },
+        watch: {},
+        mounted() {
+            let that = this;
+            if (that.queryParams) {
+                that.getList()
+                that.getSelectList()
+            }
+
+
+        }
+    })
+
+</script>
+</body>
+</html>

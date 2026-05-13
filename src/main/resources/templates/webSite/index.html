@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="" name="author">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <link rel="stylesheet" href="/static/webSite/css/swiper-bundle.min.css">
+
+    <link crossorigin="anonymous" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" rel="stylesheet">
+    <link href="/static/webSite/css/vendor.css" rel="stylesheet" type="text/css">
+    <link href="/static/webSite/style.css" rel="stylesheet" type="text/css">
+    <script src="/static/DemoBootStrap/js/vue.js"></script>
+    <link href="/static/hAdmin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <style>
+        .backelement {
+
+          background-image: url('/static/webSite/images/banner-1.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+    </style>
+</head>
+<body>
+
+
+<div id="app">
+
+
+    <div class="preloader-wrapper">
+        <div class="preloader">
+        </div>
+    </div>
+
+
+    <header>
+        <div class="container-fluid">
+            <div class="row py-3 border-bottom">
+
+                <div class="col-sm-4 col-lg-2 text-center text-sm-start d-flex gap-3 justify-content-center justify-content-md-start">
+                    <div class="d-flex align-items-center my-3 my-sm-0">
+                        <a href="/web/userindex">
+                            <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar" class="img-fluid"
+                                 style="width: 50px;height: 50px; border-radius: 50%; border: 2px solid #007bff;">
+                            <img v-else alt="logo" class="img-fluid" src="/static/webSite/images/logo.png"
+                                 style="width: 50px;height: 50px;">
+                        </a>
+                    </div>
+                    <button aria-controls="offcanvasNavbar" class="navbar-toggler" data-bs-target="#offcanvasNavbar"
+                            data-bs-toggle="offcanvas"
+                            type="button">
+                        <svg height="24" viewBox="0 0 24 24" width="24">
+                            <use xlink:href="#menu"></use>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="col-md-2 ">
+                    <div class="search-bar row bg-light p-2 rounded-4">
+
+                        <div class="col-11 col-md-10" style="text-align: center">
+                            Pet Service Booking Platform
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <ul class="navbar-nav list-unstyled d-flex flex-row gap-3 gap-lg-5 justify-content-center flex-wrap align-items-center mb-0 fw-bold text-uppercase text-dark">
+                        <li class="nav-item text-primary">
+                            <a class="nav-link" href="/web/userindex">Home</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link  " href="/web/userproductlist">Pet Service List</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/web/usercart">Shopping Cart</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/web/usercontact">Contact Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/web/userblog">News/Announcements</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " href="/web/chongzhi" title="Recharge">Recharge Center</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-danger fw-bold" href="/web/aipet" title="AI Pet Health">
+                                <i class="fa fa-robot"></i> AI Pet Health
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center" href="/web/personal" title="Personal Center">
+                                <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar"
+                                     style="width: 30px; height: 30px; border-radius: 50%; margin-right: 5px; border: 2px solid #007bff;">
+                                <i v-else class="fa fa-user"></i>
+                                <span v-if="userInfo && userInfo.username" style="margin-left: 5px;">{{userInfo.username}}</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+
+
+            </div>
+        </div>
+    </header>
+
+    <section class="backelement">
+        <div class="container-lg">
+            <div class="row">
+                <div class="col-lg-6 pt-5 mt-5" style="background-color: rgba(255,255,255,0.44);border-radius: 10px;margin-bottom: 10px">
+                    <h2 class="display-1 ls-1"><span class="fw-bold text-primary">New</span> Pet Services <span
+                            class="fw-bold">Available</span></h2>
+                    <p class="fs-4 fw-bold" style="color: #840027">Lock in this week's discount day.</p>
+                    <div class="d-flex gap-3">
+                        <a class="btn btn-primary text-uppercase fs-6 rounded-pill px-4 py-3 mt-3" href="#">Start Shopping</a>
+                        <a class="btn btn-dark text-uppercase fs-6 rounded-pill px-4 py-3 mt-3" href="#py-5">Browse</a>
+                    </div>
+                    <div class="row my-5">
+                        <div class="col">
+                            <div class="row text-dark">
+                                <div class="col-auto"><p class="fs-1 fw-bold lh-sm mb-0">1000+</p></div>
+                                <div class="col"><p class="text-uppercase lh-sm mb-0">Total Pet Services</p></div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row text-dark">
+                                <div class="col-auto"><p class="fs-1 fw-bold lh-sm mb-0">10k+</p></div>
+                                <div class="col"><p class="text-uppercase lh-sm mb-0">Orders</p></div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row text-dark">
+                                <div class="col-auto"><p class="fs-1 fw-bold lh-sm mb-0">10k+</p></div>
+                                <div class="col"><p class="text-uppercase lh-sm mb-0">Favorites</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row row-cols-1 row-cols-sm-3 row-cols-lg-3 g-0 justify-content-center">
+                <div class="col">
+                    <div class="card border-0 bg-primary rounded-0 p-4 text-light">
+                        <div class="row">
+                            <div class="col-md-3 text-center">
+                                <svg height="60" width="60">
+                                    <use xlink:href="#fresh"></use>
+                                </svg>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="card-body p-0">
+                                    <h5 class="text-light">Support + Shopping Cart</h5>
+                                    <p class="card-text">Choose first, pay later, flexible and convenient.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card border-0 bg-secondary rounded-0 p-4 text-light">
+                        <div class="row">
+                            <div class="col-md-3 text-center">
+                                <svg height="60" width="60">
+                                    <use xlink:href="#organic"></use>
+                                </svg>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="card-body p-0">
+                                    <h5 class="text-light">Support online payment</h5>
+                                    <p class="card-text">Online payment.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card border-0 bg-danger rounded-0 p-4 text-light">
+                        <div class="row">
+                            <div class="col-md-3 text-center">
+                                <svg height="60" width="60">
+                                    <use xlink:href="#delivery"></use>
+                                </svg>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="card-body p-0">
+                                    <h5 class="text-light">Order History</h5>
+                                    <p class="card-text">View order history in real time.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="py-5 overflow-hidden" id="py-5">
+        <div class="container-lg">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="section-header d-flex flex-wrap justify-content-between mb-5">
+                        <h2 class="section-title">Pet services type</h2>
+
+                        <div class="d-flex align-items-center">
+                            <a class="btn btn-primary me-2" href="#">Back to top</a>
+                            <div class="swiper-buttons">
+                                <button class="swiper-prev category-carousel-prev btn btn-yellow">❮</button>
+                                <button class="swiper-next category-carousel-next btn btn-yellow">❯</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="category-carousel swiper">
+                        <div class="swiper-wrapper">
+                            <a class="nav-link swiper-slide text-center" :href="'/web/userproductlist?type='+item.id"
+                               v-for="item in producttypeList">
+                                <img :src="item.img" alt="Category Thumbnail" class="rounded-circle"
+                                     style="width: 120px;height: 120px;">
+                                <h4 class="fs-6 mt-3 fw-normal category-title">{{item.typeName}}</h4>
+                            </a>
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pb-5">
+        <div class="container-lg">
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="section-header d-flex flex-wrap justify-content-between my-4">
+
+                        <h2 class="section-title">Hot-selling pet services</h2>
+
+                        <div class="d-flex align-items-center">
+                            <a class="btn btn-primary rounded-1" href="/web/userproductlist">View all</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
+
+                        <div class="col" v-for="item in dataList">
+                            <div class="product-item">
+                                <figure>
+                                    <a :href="'/web/usersingle?id='+item.id" title="Product Title">
+                                        <img :src="item.img" alt="Product Thumbnail" class="tab-image"
+                                             style="width: 120px;height: 120px;">
+                                    </a>
+                                </figure>
+                                <div class="d-flex flex-column text-center">
+                                    <h3 class="fs-6 fw-normal">{{item.productname}}</h3>
+                                    <div>
+
+                                        sales volume：<span>({{item.spare1 || 0}})</span>
+                                    </div>
+                                    <div class="d-flex justify-content-center align-items-center gap-2">
+                                        <del v-if="item.spare2 && !isNaN(parseFloat(item.spare2)) && parseFloat(item.spare2) < 10" class="text-muted">￥ {{item.kedanjia}}</del>
+                                        <span class="text-dark fw-semibold">￥ {{calculateItemPrice(item)}}</span>
+                                        <span v-if="item.spare2 && !isNaN(parseFloat(item.spare2)) && parseFloat(item.spare2) < 10" class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">{{item.spare2}}discount</span>
+                                    </div>
+                                    <div class="button-area p-3 pt-0">
+                                        <div class="row g-1 mt-2">
+                                            <div class="col-3"><input class="form-control border-dark-subtle input-number quantity" type="number"
+                                                                      v-model="item.number"
+
+                                                                      value="1"></div>
+                                            <div class="col-7"><a class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"
+                                                                  @click="handleAddCart(item.id,item.number)"  href="javascript:void(0)"><i
+                                                    class="fa fa-shopping-cart"></i> Add to cart</a></div>
+                                            <div class="col-2">
+                                                <a class="btn btn-outline-dark rounded-1 p-2 fs-6"
+                                                   href="javascript:void(0)">
+                                                    <i class="fa fa-heart" @click="handleCancelLike(item.id)" style="color: red" v-if="item.likeFlag"></i>
+                                                    <i class="fa fa-heart-o" @click="handleAddLike(item.id)"  v-if="!item.likeFlag"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <!-- / product-grid -->
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <div class="container-lg">
+
+            <div class="bg-secondary text-light py-5 my-5"
+                 style="background: url('/static/webSite/images/banner-newsletter.jpg') no-repeat; background-size: cover;">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-md-5 p-3">
+                            <div class="section-header">
+                                <h2 class="section-title display-5 text-light">There is a 50% off event this weekend.
+                                </h2>
+                            </div>
+                            <p>Please refer to the announcement for details of the event： <a class="text-white" href="/web/userblog">"Notice on the Flash Sale Activity This Weekend"</a> .</p>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <section class="products-carousel" id="featured-products">
+        <div class="container-lg overflow-hidden py-5">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="section-header d-flex flex-wrap justify-content-between my-4">
+
+                        <h2 class="section-title">Newly listed pet services</h2>
+
+                        <div class="d-flex align-items-center">
+                            <a class="btn btn-primary me-2" href="#">View all</a>
+                            <div class="swiper-buttons">
+                                <button class="swiper-prev products-carousel-prev btn btn-primary">❮</button>
+                                <button class="swiper-next products-carousel-next btn btn-primary">❯</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="swiper">
+                        <div class="swiper-wrapper">
+
+                            <div class="product-item swiper-slide" v-for="item in dataList">
+                                <figure>
+                                    <a :href="'/web/usersingle?id='+item.id" title="Product Title">
+                                      <img :src="item.img" alt="Product Thumbnail" class="tab-image"
+                                           style="width: 160px;height: 160px;">
+                                    </a>
+                                </figure>
+                                <div class="d-flex flex-column text-center">
+                                    <h3 class="fs-6 fw-normal">{{item.productname}}</h3>
+                                    <div>
+
+                                       sales volume： <span>({{item.spare1 || 0}})</span>
+                                    </div>
+                                    <div class="d-flex justify-content-center align-items-center gap-2">
+                                        <del v-if="item.spare2 && !isNaN(parseFloat(item.spare2)) && parseFloat(item.spare2) < 10" class="text-muted">￥{{item.kedanjia}}</del>
+                                        <span class="text-dark fw-semibold">￥{{calculateItemPrice(item)}}</span>
+                                        <span v-if="item.spare2 && !isNaN(parseFloat(item.spare2)) && parseFloat(item.spare2) < 10" class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">{{item.spare2}}discount</span>
+                                    </div>
+                                    <div class="button-area p-3 pt-0">
+                                        <div class="row g-1 mt-2">
+                                            <div class="col-3">
+                                                <input class="form-control border-dark-subtle input-number quantity" name="quantity"
+                                                                      type="number"
+                                                                      v-model="item.number"
+                                                                      value="1">
+                                            </div>
+                                            <div class="col-7">
+                                                <a class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"
+                                                   @click="handleAddCart(item.id,item.number)"
+                                                                  href="javascript:void(0)">
+                                              <i class="fa fa-shopping-cart"></i>
+                                              Add to cart</a></div>
+                                            <div class="col-2">
+                                                <a class="btn btn-outline-dark rounded-1 p-2 fs-6"
+                                                                     href="javascript:void(0)">
+                                                <i class="fa fa-heart" @click="handleCancelLike(item.id)" style="color: red" v-if="item.likeFlag"></i>
+                                                <i class="fa fa-heart-o" @click="handleAddLike(item.id)"  v-if="!item.likeFlag"></i>
+                                            </a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <!-- / products-carousel -->
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+<!--公告-->
+    <section class="pb-4" id="latest-blog">
+        <div class="container-lg">
+            <div class="row">
+                <div class="section-header d-flex align-items-center justify-content-between my-4">
+                    <h2 class="section-title">Our announcement</h2>
+                    <a class="btn btn-primary" href="/web/userblog">View all</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4" v-for="item in webnoticeList">
+                    <article class="post-item card border-0 shadow-sm p-3">
+                        <div class="image-holder zoom-effect" style="text-align: center">
+                            <a href="#">
+                                <img alt="post" style="width: 380px;height: 290px;" class="card-img-top" :src="item.img">
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div class="post-meta d-flex text-uppercase gap-3 my-2 align-items-center">
+                                <div class="meta-date">
+                                    <i class="fa fa-calendar"></i>
+                                    {{item.createTime}}
+                                </div>
+
+                            </div>
+                            <div class="post-header">
+                                <h3 class="post-title">
+                                    <a class="text-decoration-none" href="#">{{item.title}}</a>
+                                </h3>
+                                <p>{{item.content}}</p>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="pb-4 my-4">
+        <div class="container-lg" >
+
+            <div class="bg-warning pt-5 rounded-5" >
+                <div class="container" style="background-image: url('/static/webSite/images/bottomBanner.jpg')">
+                    <div class="row justify-content-center align-items-center">
+                      <div class="col-md-4">
+                        <h2 class="mt-5">Add to cart to purchase</h2>
+                        <p>If you encounter any problems, please contact us and leave a message.</p>
+                        <div class="d-flex gap-2 flex-wrap mb-5">
+                          <a class="btn btn-danger" href="/web/usercart" title="Go to the shopping cart">Go to the shopping cart <i class="fa fa-shopping-cart"></i></a>
+                          <a class="btn btn-primary" href="/web/personal?activeName=third" title="Go to the order">Go to the order <i class="fa fa-list"></i></a>
+                        </div>
+                      </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <section class="py-5">
+        <div class="container-lg">
+            <div class="row row-cols-1 row-cols-sm-3 row-cols-lg-5">
+                <div class="col">
+                    <div class="card mb-3 border border-dark-subtle p-3">
+                        <div class="text-dark mb-3">
+                            <i class="fa fa-battery-4"></i>
+                        </div>
+                        <div class="card-body p-0">
+                            <h5>Pet Service Guarantee</h5>
+                            <p class="card-text">The channel is legitimate and has passed the review.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card mb-3 border border-dark-subtle p-3">
+                        <div class="text-dark mb-3">
+                            <i class="fa fa-bell"></i>              </div>
+                        <div class="card-body p-0">
+                            <h5>100% true</h5>
+                            <p class="card-text">The activities and discounts are truly valid.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card mb-3 border border-dark-subtle p-3">
+                        <div class="text-dark mb-3">
+                            <i class="fa fa-shopping-cart"></i>
+                        </div>
+                        <div class="card-body p-0">
+                            <h5>One item selected in the shopping cart</h5>
+                            <p class="card-text">Flexible and comfortable, place orders quickly.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card mb-3 border border-dark-subtle p-3">
+                        <div class="text-dark mb-3">
+                            <i class="fa fa-bar-chart"></i>
+                        </div>
+                        <div class="card-body p-0">
+                            <h5>Please leave a message if you encounter any problems.</h5>
+                            <p class="card-text">The background responds all day long.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card mb-3 border border-dark-subtle p-3">
+                        <div class="text-dark mb-3">
+                            <i class="fa fa-user"></i>
+                        </div>
+                        <div class="card-body p-0">
+                            <h5>Personality Display</h5>
+                            <p class="card-text">Change personal information to highlight individuality.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div id="footer-bottom">
+        <div class="container-lg">
+            <div class="row">
+                <div class="col-md-6 copyright">
+                    <p>@  2025 - Pet Service Ordering Platform.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/static/webSite/js/swiper-bundle.js"></script>
+
+<script src="/static/webSite/js/jquery-1.11.0.min.js"></script>
+<script src="/static/hAdmin/js/plugins/sweetalert/sweetalert.min.js"></script>
+<script src="/static/webSite/js/plugins.js"></script>
+<script src="/static/webSite/js/script.js"></script>
+<script src="/static/hAdmin/js/plugins/toastr/toastr.min.js"></script>
+<script src="/static/js/GloJs.js"></script>
+<script>
+
+    new Vue({
+        el: "#app",
+        data() {
+            return {
+                baseUrl: gloRequestUrl,
+                dataList: [],
+                producttypeList: [],
+                fileList: [],
+                webnoticeList: [],
+                fileStr: [],
+                total: 0,
+                searchKey: "",
+                loading: true,
+                userId: localStorage.getItem("userId"),
+                role: localStorage.getItem("role"),
+                userInfo: {},
+                form: {},
+                open: false,
+                openDetail: false,
+                queryParams: {
+                    pageSize: 10,
+                    pageNum: 1,
+                },
+                title: "",
+                rules: {
+                    title: [
+                        {required: true, message: '请输入', trigger: 'blur'},
+
+                    ],
+
+                }
+            }
+        },
+        methods: {
+            // 获取用户信息
+            getUserInfo(){
+                let that = this
+                if (that.userId) {
+                    $.ajax({
+                        url: that.baseUrl + "/sysuser/detail",
+                        type: "GET",
+                        data: {id: that.userId},
+                        success: function (data) {
+                            console.log("getUserInfo response:", data);
+                            if (data.code !== 500) {
+                                that.userInfo = data.data
+                                console.log("userInfo set to:", that.userInfo);
+                            } else {
+                                console.log("getUserInfo failed with code:", data.code);
+                            }
+                        },
+                        error: function () {
+                            console.log("获取用户信息失败")
+                        }
+                    });
+                }
+            },
+
+            getproductTypeList() {
+                let that = this;
+                let param = {
+                    "pageSize": 999,
+                    "pageNum": that.queryParams.pageNum,
+
+                }
+                $.ajax({
+                    url: that.baseUrl + "/producttype",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        if (data.code !== 500) {
+
+                            that.producttypeList = data.list
+
+                        }
+                    },
+                    error: function () {
+                        windowsAuto(500, "服务器异常！network error！")
+                    }
+                });
+            },
+            getwebnoticeList() {
+                let that = this;
+                let param = {
+                    "pageSize": 3,
+                    "pageNum": that.queryParams.pageNum,
+
+                }
+                $.ajax({
+                    url: that.baseUrl + "/webnotice/list",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        if (data.code !== 500) {
+
+                            that.webnoticeList = data.list
+
+                        }
+                    },
+                    error: function () {
+                        windowsAuto(500, "服务器异常！network error！")
+                    }
+                });
+            },
+            // 获取列表
+            getList() {
+                let that = this;
+                that.queryParams.userid = that.userId
+                that.loading = true
+                $.ajax({
+                    url: that.baseUrl + "/product",
+                    type: "GET",
+                    data: that.queryParams,
+                    success: function (data) {
+                        if (data.code !== 500) {
+                            that.loading = false
+                            that.dataList = data.list
+                            that.total = data.total
+                        }
+                    },
+                    error: function () {
+                        windowsAuto(500, "服务器异常！network error！")
+                    }
+                });
+            },
+
+            handleDel(id) {
+                let that = this;
+                swal({
+                    title: "您确定要删除该信息吗",
+                    text: "删除后不可恢复！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "删除",
+                    cancelButtonText: "我再想想",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        url: that.baseUrl + "/webnotice/del",
+                        type: "DELETE",
+                        data: {
+                            id: id,
+                        },
+                        success: function (data) {
+                            windowsAuto(data.code, data.msg)
+                            that.getList()
+                        },
+                        error: function () {
+                            alert("服务器异常！network error！")
+                        }
+                    })
+
+                });
+            },
+            //添加购物车
+            handleAddCart(id,number){
+                let that = this
+if (number === null || number === 0 || number == undefined){
+    toastr.error("数量不能为空", '提示')
+    return false
+}
+                let param = {
+                    productid:id,
+                    userid:that.userId,
+                    number:number,
+                }
+                $.ajax({
+                    url: that.baseUrl + "/shopcart",
+                    type: "post",
+                    data: JSON.stringify(param),
+                    contentType: "application/json",
+                    // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                    success: function (data) {
+                        that.open = false
+                        if (data.code === 200) {
+                            toastr.success(data.msg, '提示')
+
+                        } else {
+
+                            toastr.error(data.msg, '提示')
+                        }
+                        that.getList()
+                    },
+                    error: function () {
+                        alert("服务器异常！network error！")
+                    }
+                })
+            },
+            //添加购物车
+            handleAddLike(id){
+                let that = this
+
+                let param = {
+                    productid:id,
+                    userid:that.userId,
+
+                }
+                $.ajax({
+                    url: that.baseUrl + "/userlike",
+                    type: "post",
+                    data: JSON.stringify(param),
+                    contentType: "application/json",
+                    // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                    success: function (data) {
+                        that.open = false
+                        if (data.code === 200) {
+                            toastr.success(data.msg, '提示')
+
+                        } else {
+
+                            toastr.error(data.msg, '提示')
+                        }
+                        that.getList()
+                    },
+                    error: function () {
+                        alert("服务器异常！network error！")
+                    }
+                })
+            },    //添加购物车
+            handleCancelLike(id){
+                let that = this
+
+                let param = {
+                    productid:id,
+                    userid:that.userId,
+
+                }
+                $.ajax({
+                    url: that.baseUrl + "/userlike/delete",
+                    type: "DELETE",
+                    data: JSON.stringify(param),
+                    contentType: "application/json",
+                    // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                    success: function (data) {
+                        that.open = false
+                        if (data.code === 200) {
+                            toastr.warning(data.msg, '提示')
+
+                        } else {
+
+                            toastr.warning(data.msg, '提示')
+                        }
+                        that.getList()
+                    },
+                    error: function () {
+                        alert("服务器异常！network error！")
+                    }
+                })
+            },
+
+            // 计算商品价格（考虑折扣）
+            calculateItemPrice(item) {
+                if (!item || !item.kedanjia) {
+                    return '0.00';
+                }
+
+                const originalPrice = parseFloat(item.kedanjia);
+                if (isNaN(originalPrice)) {
+                    return '0.00';
+                }
+
+                // 如果有折扣且折扣有效
+                if (item.spare2 && !isNaN(parseFloat(item.spare2))) {
+                    const discount = parseFloat(item.spare2);
+                    if (discount > 0 && discount < 10) {
+                        return (originalPrice * discount / 10).toFixed(2);
+                    }
+                }
+
+                // 没有折扣或折扣无效时，返回原价
+                return originalPrice.toFixed(2);
+            },
+        },
+        watch: {},
+        mounted() {
+            let that = this;
+            that.getUserInfo()
+            that.getproductTypeList()
+            that.getList()
+            that.getwebnoticeList()
+
+        }
+    })
+
+</script>
+</body>
+</html>

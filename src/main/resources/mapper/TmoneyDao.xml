@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javaPro.myProject.modules.tmoney.dao.TmoneyDao">
+
+    <resultMap type="com.javaPro.myProject.modules.tmoney.entity.Tmoney" id="TmoneyMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="money" column="money" jdbcType="VARCHAR"/>
+        <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+        <result property="audittime" column="audittime" jdbcType="TIMESTAMP"/>
+        <result property="auditstatus" column="auditstatus" jdbcType="VARCHAR"/>
+        <result property="cause" column="cause" jdbcType="VARCHAR"/>
+        <result property="userid" column="userid" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="TmoneyMap">
+        select
+          id, money, createtime, audittime, auditstatus, cause, userid
+        from tmoney
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="TmoneyMap">
+        select
+          id, money, createtime, audittime, auditstatus, cause, userid
+        from tmoney
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="money != null and money != ''">
+                and money = #{money}
+            </if>
+            <if test="createtime != null">
+                and createtime = #{createtime}
+            </if>
+            <if test="audittime != null">
+                and audittime = #{audittime}
+            </if>
+            <if test="auditstatus != null and auditstatus != ''">
+                and auditstatus = #{auditstatus}
+            </if>
+            <if test="cause != null and cause != ''">
+                and cause = #{cause}
+            </if>
+            <if test="userid != null">
+                and userid = #{userid}
+            </if>
+        </where>
+order by createtime desc
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from tmoney
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="money != null and money != ''">
+                and money = #{money}
+            </if>
+            <if test="createtime != null">
+                and createtime = #{createtime}
+            </if>
+            <if test="audittime != null">
+                and audittime = #{audittime}
+            </if>
+            <if test="auditstatus != null and auditstatus != ''">
+                and auditstatus = #{auditstatus}
+            </if>
+            <if test="cause != null and cause != ''">
+                and cause = #{cause}
+            </if>
+            <if test="userid != null">
+                and userid = #{userid}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into tmoney(money, createtime, audittime, auditstatus, cause, userid)
+        values (#{money}, now(), #{audittime}, '待审核', #{cause}, #{userid})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tmoney(money, createtime, audittime, auditstatus, cause, userid)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.money}, #{entity.createtime}, #{entity.audittime}, #{entity.auditstatus}, #{entity.cause}, #{entity.userid})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tmoney(money, createtime, audittime, auditstatus, cause, userid)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.money}, #{entity.createtime}, #{entity.audittime}, #{entity.auditstatus}, #{entity.cause}, #{entity.userid})
+        </foreach>
+        on duplicate key update
+        money = values(money),
+        createtime = values(createtime),
+        audittime = values(audittime),
+        auditstatus = values(auditstatus),
+        cause = values(cause),
+        userid = values(userid)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tmoney
+        <set>
+            <if test="money != null and money != ''">
+                money = #{money},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime},
+            </if>
+
+                audittime = now(),
+
+            <if test="auditstatus != null and auditstatus != ''">
+                auditstatus = #{auditstatus},
+            </if>
+            <if test="cause != null and cause != ''">
+                cause = #{cause},
+            </if>
+            <if test="userid != null">
+                userid = #{userid},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tmoney where id = #{id}
+    </delete>
+
+</mapper>
+

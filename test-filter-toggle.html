@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>筛选条件展开/收起功能测试</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        /* 筛选条件展开/收起按钮样式 */
+        .filter-toggle-btn {
+            transition: all 0.3s ease;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .filter-toggle-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+
+        .filter-toggle-btn .fa {
+            transition: transform 0.3s ease;
+        }
+
+        .filter-toggle-btn[aria-expanded="true"] .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+
+        .filter-toggle-btn[aria-expanded="false"] .fa-chevron-down {
+            transform: rotate(0deg);
+        }
+
+        /* 高级筛选按钮样式 */
+        .advanced-filter-btn {
+            transition: all 0.3s ease;
+            border-radius: 15px;
+        }
+
+        .advanced-filter-btn:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,123,255,0.2);
+        }
+
+        .advanced-filter-btn .fa {
+            transition: transform 0.3s ease;
+        }
+
+        .advanced-filter-btn[aria-expanded="true"] .fa-cog {
+            transform: rotate(90deg);
+        }
+
+        /* 筛选卡片动画 */
+        .filter-card {
+            transition: all 0.3s ease;
+        }
+
+        .filter-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        /* 折叠内容动画 */
+        .collapse {
+            transition: all 0.3s ease;
+        }
+
+        .test-section {
+            margin: 2rem 0;
+            padding: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">筛选条件展开/收起功能测试</h1>
+        
+        <!-- 测试说明 -->
+        <div class="test-section">
+            <h3>🧪 测试说明</h3>
+            <ul>
+                <li>点击"展开/收起"按钮测试主筛选条件的展开收起功能</li>
+                <li>点击"高级筛选"按钮测试高级筛选的展开收起功能</li>
+                <li>使用键盘快捷键：<kbd>Ctrl + F</kbd> 切换主筛选，<kbd>Ctrl + Shift + F</kbd> 切换高级筛选</li>
+                <li>观察按钮图标旋转、文字变化、颜色切换等动画效果</li>
+            </ul>
+        </div>
+
+        <!-- 筛选功能区域 -->
+        <div class="filter-section mb-4">
+            <div class="card filter-card">
+                <div class="card-header bg-light">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-primary">
+                            <i class="fa fa-filter me-2"></i> 筛选条件
+                            <small class="text-muted ms-2">快速找到您需要的宠物服务</small>
+                            <small class="text-info ms-2" style="font-size: 0.75rem;" title="键盘快捷键：Ctrl+F 切换筛选条件">
+                                <i class="fa fa-keyboard-o"></i> Ctrl+F
+                            </small>
+                        </h5>
+                        <button class="btn btn-outline-primary btn-sm filter-toggle-btn" 
+                                type="button" 
+                                data-bs-toggle="collapse" 
+                                data-bs-target="#filterCollapse" 
+                                aria-expanded="true" 
+                                aria-controls="filterCollapse"
+                                id="filterToggleBtn">
+                            <i class="fa fa-chevron-down me-1"></i> 
+                            <span id="toggleText">收起筛选</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="collapse show" id="filterCollapse">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <!-- 搜索框 -->
+                            <div class="col-md-3">
+                                <label class="form-label">名称搜索</label>
+                                <div class="input-group">
+                                    <input class="form-control" type="text" placeholder="根据名称搜索">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- 种类筛选 -->
+                            <div class="col-md-3">
+                                <label class="form-label">服务种类</label>
+                                <select class="form-select">
+                                    <option value="all">全部种类</option>
+                                    <option value="1">宠物美容</option>
+                                    <option value="2">宠物医疗</option>
+                                    <option value="3">宠物寄养</option>
+                                </select>
+                            </div>
+                            <!-- 时间段筛选 -->
+                            <div class="col-md-3">
+                                <label class="form-label">服务时间段</label>
+                                <select class="form-select">
+                                    <option value="">全部时间</option>
+                                    <option value="morning">上午 (08:00-12:00)</option>
+                                    <option value="afternoon">下午 (12:00-18:00)</option>
+                                    <option value="evening">晚上 (18:00-22:00)</option>
+                                </select>
+                            </div>
+                            <!-- 评分筛选 -->
+                            <div class="col-md-3">
+                                <label class="form-label">服务商评分</label>
+                                <select class="form-select">
+                                    <option value="">全部评分</option>
+                                    <option value="4.5">4.5分以上</option>
+                                    <option value="4.0">4.0分以上</option>
+                                    <option value="3.5">3.5分以上</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 高级筛选折叠区域 -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <button class="btn btn-outline-info btn-sm advanced-filter-btn" 
+                                        type="button" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#advancedFilter" 
+                                        aria-expanded="false" 
+                                        aria-controls="advancedFilter"
+                                        id="advancedFilterBtn">
+                                    <i class="fa fa-cog me-1"></i> 
+                                    <span id="advancedToggleText">展开高级筛选</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="collapse mt-3" id="advancedFilter">
+                            <div class="card card-body">
+                                <div class="row g-3">
+                                    <!-- 自定义时间段筛选 -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">自定义时间筛选</label>
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text">
+                                                        <i class="fa fa-clock-o"></i>
+                                                    </span>
+                                                    <input type="time" class="form-control" placeholder="开始时间">
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text">
+                                                        <i class="fa fa-clock-o"></i>
+                                                    </span>
+                                                    <input type="time" class="form-control" placeholder="结束时间">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- 操作按钮 -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">操作</label>
+                                        <div class="d-flex gap-2">
+                                            <button type="button" class="btn btn-success">
+                                                <i class="fa fa-search"></i> 搜索
+                                            </button>
+                                            <button type="button" class="btn btn-secondary">
+                                                <i class="fa fa-refresh"></i> 重置
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 测试结果显示 -->
+        <div class="test-section">
+            <h3>📊 测试结果</h3>
+            <div id="testResults">
+                <p class="text-muted">请进行测试操作，结果将在这里显示...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 初始化筛选条件展开/收起功能
+        function initFilterToggle() {
+            const filterToggleBtn = document.getElementById('filterToggleBtn');
+            const advancedFilterBtn = document.getElementById('advancedFilterBtn');
+            const filterCollapse = document.getElementById('filterCollapse');
+            const advancedFilter = document.getElementById('advancedFilter');
+            const testResults = document.getElementById('testResults');
+
+            function addTestResult(message) {
+                const timestamp = new Date().toLocaleTimeString();
+                testResults.innerHTML += `<p class="mb-1"><span class="badge bg-info">${timestamp}</span> ${message}</p>`;
+                testResults.scrollTop = testResults.scrollHeight;
+            }
+
+            // 主筛选条件展开/收起
+            if (filterCollapse && filterToggleBtn) {
+                filterCollapse.addEventListener('show.bs.collapse', function () {
+                    const toggleText = document.getElementById('toggleText');
+                    const icon = filterToggleBtn.querySelector('.fa-chevron-down');
+                    if (toggleText) toggleText.textContent = '收起筛选';
+                    if (icon) icon.style.transform = 'rotate(180deg)';
+                    filterToggleBtn.setAttribute('aria-expanded', 'true');
+                    
+                    filterToggleBtn.classList.add('btn-primary');
+                    filterToggleBtn.classList.remove('btn-outline-primary');
+                    
+                    addTestResult('✅ 主筛选条件已展开');
+                });
+
+                filterCollapse.addEventListener('hide.bs.collapse', function () {
+                    const toggleText = document.getElementById('toggleText');
+                    const icon = filterToggleBtn.querySelector('.fa-chevron-down');
+                    if (toggleText) toggleText.textContent = '展开筛选';
+                    if (icon) icon.style.transform = 'rotate(0deg)';
+                    filterToggleBtn.setAttribute('aria-expanded', 'false');
+                    
+                    filterToggleBtn.classList.remove('btn-primary');
+                    filterToggleBtn.classList.add('btn-outline-primary');
+                    
+                    addTestResult('✅ 主筛选条件已收起');
+                });
+            }
+
+            // 高级筛选展开/收起
+            if (advancedFilter && advancedFilterBtn) {
+                advancedFilter.addEventListener('show.bs.collapse', function () {
+                    const advancedToggleText = document.getElementById('advancedToggleText');
+                    const icon = advancedFilterBtn.querySelector('.fa-cog');
+                    if (advancedToggleText) advancedToggleText.textContent = '收起高级筛选';
+                    if (icon) icon.style.transform = 'rotate(90deg)';
+                    advancedFilterBtn.setAttribute('aria-expanded', 'true');
+                    
+                    advancedFilterBtn.classList.add('btn-info');
+                    advancedFilterBtn.classList.remove('btn-outline-info');
+                    
+                    addTestResult('✅ 高级筛选已展开');
+                });
+
+                advancedFilter.addEventListener('hide.bs.collapse', function () {
+                    const advancedToggleText = document.getElementById('advancedToggleText');
+                    const icon = advancedFilterBtn.querySelector('.fa-cog');
+                    if (advancedToggleText) advancedToggleText.textContent = '展开高级筛选';
+                    if (icon) icon.style.transform = 'rotate(0deg)';
+                    advancedFilterBtn.setAttribute('aria-expanded', 'false');
+                    
+                    advancedFilterBtn.classList.remove('btn-info');
+                    advancedFilterBtn.classList.add('btn-outline-info');
+                    
+                    addTestResult('✅ 高级筛选已收起');
+                });
+            }
+
+            // 添加键盘快捷键支持
+            document.addEventListener('keydown', function(event) {
+                if (event.ctrlKey && event.key === 'f') {
+                    event.preventDefault();
+                    if (filterToggleBtn) {
+                        filterToggleBtn.click();
+                        addTestResult('⌨️ 使用键盘快捷键 Ctrl+F 切换主筛选');
+                    }
+                }
+                
+                if (event.ctrlKey && event.shiftKey && event.key === 'F') {
+                    event.preventDefault();
+                    if (advancedFilterBtn) {
+                        advancedFilterBtn.click();
+                        addTestResult('⌨️ 使用键盘快捷键 Ctrl+Shift+F 切换高级筛选');
+                    }
+                }
+            });
+
+            addTestResult('🚀 筛选条件展开/收起功能初始化完成');
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initFilterToggle();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javaPro.myProject.modules.comment.dao.CommentDao">
+
+    <resultMap type="com.javaPro.myProject.modules.comment.entity.Comment" id="CommentMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="noticeId" column="notice_id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
+        <!-- 关联查询字段 -->
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="userAvatar" column="user_avatar" jdbcType="VARCHAR"/>
+        <result property="noticeTitle" column="notice_title" jdbcType="VARCHAR"/>
+        <result property="replyToUser" column="reply_to_user" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="CommentMap">
+        SELECT
+            c.id, c.notice_id, c.user_id, c.content, c.create_time, c.update_time, c.status, c.parent_id,
+            u.username, u.img as user_avatar,
+            w.title as notice_title
+        FROM comment c
+        LEFT JOIN sysuser u ON c.user_id = u.id
+        LEFT JOIN webnotice w ON c.notice_id = w.id
+        WHERE c.id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="CommentMap">
+        SELECT
+            c.id, c.notice_id, c.user_id, c.content, c.create_time, c.update_time, c.status, c.parent_id,
+            u.username, u.img as user_avatar,
+            w.title as notice_title
+        FROM comment c
+        LEFT JOIN sysuser u ON c.user_id = u.id
+        LEFT JOIN webnotice w ON c.notice_id = w.id
+        <where>
+            c.status = '1'
+            <if test="noticeId != null">
+                AND c.notice_id = #{noticeId}
+            </if>
+            <if test="userId != null">
+                AND c.user_id = #{userId}
+            </if>
+            <if test="content != null and content != ''">
+                AND c.content LIKE CONCAT('%',#{content},'%')
+            </if>
+        </where>
+        ORDER BY c.create_time DESC
+    </select>
+
+    <!--根据公告ID查询评论列表-->
+    <select id="queryByNoticeId" resultMap="CommentMap">
+        SELECT
+            c.id, c.notice_id, c.user_id, c.content, c.create_time, c.update_time, c.status, c.parent_id,
+            u.username, u.img as user_avatar
+        FROM comment c
+        LEFT JOIN sysuser u ON c.user_id = u.id
+        WHERE c.notice_id = #{noticeId} AND c.status = '1'
+        ORDER BY c.create_time DESC
+    </select>
+
+    <!--根据用户ID查询评论列表-->
+    <select id="queryByUserId" resultMap="CommentMap">
+        SELECT
+            c.id, c.notice_id, c.user_id, c.content, c.create_time, c.update_time, c.status, c.parent_id,
+            w.title as notice_title
+        FROM comment c
+        LEFT JOIN webnotice w ON c.notice_id = w.id
+        WHERE c.user_id = #{userId} AND c.status = '1'
+        ORDER BY c.create_time DESC
+    </select>
+
+    <!--统计指定公告的评论数量-->
+    <select id="countByNoticeId" resultType="int">
+        SELECT COUNT(*)
+        FROM comment
+        WHERE notice_id = #{noticeId} AND status = '1'
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO comment(notice_id, user_id, content, create_time, update_time, status, parent_id)
+        VALUES (#{noticeId}, #{userId}, #{content}, #{createTime}, #{updateTime}, #{status}, #{parentId})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO comment(notice_id, user_id, content, create_time, update_time, status, parent_id)
+        VALUES
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.noticeId}, #{entity.userId}, #{entity.content}, #{entity.createTime}, #{entity.updateTime}, #{entity.status}, #{entity.parentId})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        INSERT INTO comment(notice_id, user_id, content, create_time, update_time, status, parent_id)
+        VALUES
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.noticeId}, #{entity.userId}, #{entity.content}, #{entity.createTime}, #{entity.updateTime}, #{entity.status}, #{entity.parentId})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        content = VALUES(content),
+        update_time = VALUES(update_time),
+        status = VALUES(status)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        UPDATE comment
+        <set>
+            <if test="noticeId != null">
+                notice_id = #{noticeId},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+            <if test="parentId != null">
+                parent_id = #{parentId},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        DELETE FROM comment WHERE id = #{id}
+    </delete>
+
+    <!--软删除评论-->
+    <update id="softDeleteById">
+        UPDATE comment SET status = '0', update_time = NOW() WHERE id = #{id}
+    </update>
+
+    <!--根据公告ID删除所有评论-->
+    <delete id="deleteByNoticeId">
+        DELETE FROM comment WHERE notice_id = #{noticeId}
+    </delete>
+
+    <!--查询顶级评论（没有父评论的评论）-->
+    <select id="queryTopLevelComments" resultMap="CommentMap">
+        SELECT
+            c.id, c.notice_id, c.user_id, c.content, c.create_time, c.update_time, c.status, c.parent_id,
+            u.username, u.img as user_avatar
+        FROM comment c
+        LEFT JOIN sysuser u ON c.user_id = u.id
+        WHERE c.notice_id = #{noticeId} AND c.status = '1' AND (c.parent_id IS NULL OR c.parent_id = 0)
+        ORDER BY c.create_time DESC
+    </select>
+
+    <!--根据父评论ID查询回复-->
+    <select id="queryByParentId" resultMap="CommentMap">
+        SELECT
+            c.id, c.notice_id, c.user_id, c.content, c.create_time, c.update_time, c.status, c.parent_id,
+            u.username, u.img as user_avatar,
+            CASE
+                WHEN parent_u.username IS NOT NULL AND parent_u.username != '' THEN parent_u.username
+                ELSE '原评论者'
+            END as reply_to_user
+        FROM comment c
+        LEFT JOIN sysuser u ON c.user_id = u.id
+        LEFT JOIN comment parent_comment ON c.parent_id = parent_comment.id
+        LEFT JOIN sysuser parent_u ON parent_comment.user_id = parent_u.id
+        WHERE c.parent_id = #{parentId} AND c.status = '1'
+        ORDER BY c.create_time ASC
+    </select>
+
+    <!--根据父评论ID查询回复（分页）-->
+    <select id="queryByParentIdWithLimit" resultMap="CommentMap">
+        SELECT
+            c.id, c.notice_id, c.user_id, c.content, c.create_time, c.update_time, c.status, c.parent_id,
+            u.username, u.img as user_avatar,
+            CASE
+                WHEN parent_u.username IS NOT NULL AND parent_u.username != '' THEN parent_u.username
+                ELSE '原评论者'
+            END as reply_to_user
+        FROM comment c
+        LEFT JOIN sysuser u ON c.user_id = u.id
+        LEFT JOIN comment parent_comment ON c.parent_id = parent_comment.id
+        LEFT JOIN sysuser parent_u ON parent_comment.user_id = parent_u.id
+        WHERE c.parent_id = #{parentId} AND c.status = '1'
+        ORDER BY c.create_time ASC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!--统计父评论的回复数量-->
+    <select id="countRepliesByParentId" resultType="int">
+        SELECT COUNT(*)
+        FROM comment
+        WHERE parent_id = #{parentId} AND status = '1'
+    </select>
+
+    <!--递归查询所有子评论（包括多级回复）- 使用MySQL 8.0+的CTE语法-->
+    <select id="queryAllChildComments" resultMap="CommentMap" resultType="com.javaPro.myProject.modules.comment.entity.Comment">
+        WITH RECURSIVE comment_tree AS (
+            -- 基础查询：直接回复
+            SELECT
+                c.id, c.notice_id, c.user_id, c.content, c.create_time, c.update_time, c.status, c.parent_id,
+                u.username, u.img as user_avatar,
+                parent_u.username as parent_username,
+                1 as level
+            FROM comment c
+            LEFT JOIN sysuser u ON c.user_id = u.id
+            LEFT JOIN sysuser parent_u ON (
+                SELECT parent_c.user_id FROM comment parent_c WHERE parent_c.id = c.parent_id
+            ) = parent_u.id
+            WHERE c.parent_id = #{parentId} AND c.status = '1'
+
+            UNION ALL
+
+            -- 递归查询：多级回复
+            SELECT
+                c.id, c.notice_id, c.user_id, c.content, c.create_time, c.update_time, c.status, c.parent_id,
+                u.username, u.img as user_avatar,
+                parent_u.username as parent_username,
+                ct.level + 1 as level
+            FROM comment c
+            INNER JOIN comment_tree ct ON c.parent_id = ct.id
+            LEFT JOIN sysuser u ON c.user_id = u.id
+            LEFT JOIN sysuser parent_u ON parent_u.id = ct.user_id
+            WHERE c.status = '1'
+        )
+        SELECT
+            id, notice_id, user_id, content, create_time, update_time, status, parent_id,
+            username, user_avatar,
+            CASE
+                WHEN parent_username IS NOT NULL AND parent_username != '' THEN parent_username
+                ELSE '原评论者'
+            END as reply_to_user,
+            level
+        FROM comment_tree
+        ORDER BY create_time ASC
+    </select>
+
+    <!--兼容旧版本的递归查询（不使用CTE）-->
+    <select id="queryAllChildCommentsLegacy" resultMap="CommentMap">
+        SELECT
+            c.id, c.notice_id, c.user_id, c.content, c.create_time, c.update_time, c.status, c.parent_id,
+            u.username, u.img as user_avatar,
+            CASE
+                WHEN parent_u.username IS NOT NULL AND parent_u.username != '' THEN parent_u.username
+                ELSE '原评论者'
+            END as reply_to_user
+        FROM comment c
+        LEFT JOIN sysuser u ON c.user_id = u.id
+        LEFT JOIN comment parent_comment ON c.parent_id = parent_comment.id
+        LEFT JOIN sysuser parent_u ON parent_comment.user_id = parent_u.id
+        WHERE c.status = '1' AND (
+            c.parent_id = #{parentId}
+            OR FIND_IN_SET(c.parent_id, (
+                SELECT GROUP_CONCAT(id SEPARATOR ',')
+                FROM (
+                    SELECT id FROM comment
+                    WHERE parent_id = #{parentId} AND status = '1'
+                    UNION
+                    SELECT c2.id FROM comment c2
+                    INNER JOIN comment c1 ON c2.parent_id = c1.id
+                    WHERE c1.parent_id = #{parentId} AND c1.status = '1' AND c2.status = '1'
+                ) as child_comments
+            ))
+        )
+        ORDER BY c.create_time ASC
+    </select>
+
+</mapper>

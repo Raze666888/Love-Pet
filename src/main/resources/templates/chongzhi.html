@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title> Recharge</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <link rel="stylesheet" href="/static/webSite/css/swiper-bundle.min.css">
+    <link crossorigin="anonymous" href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" rel="stylesheet">
+    <link href="/static/webSite/css/vendor.css" rel="stylesheet" type="text/css">
+    <link href="/static/webSite/style.css" rel="stylesheet" type="text/css">
+    <script src="/static/DemoBootStrap/js/vue.js"></script>
+    <link href="/static/hAdmin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
+
+    <style>
+        .addList {
+            padding: 10px 30px 10px 30px;
+            height: 90px;
+            margin-top: 3px;
+        }
+
+    </style>
+</head>
+
+<body class="gray-bg">
+ <div id="app">
+
+     <div class="preloader-wrapper">
+         <div class="preloader">
+         </div>
+     </div>
+
+
+     <header v-if="role !== '1'">
+         <div class="container-fluid">
+             <div class="row py-3 border-bottom">
+
+                 <div class="col-sm-4 col-lg-2 text-center text-sm-start d-flex gap-3 justify-content-center justify-content-md-start">
+                     <div class="d-flex align-items-center my-3 my-sm-0">
+                         <a href="/web/userindex">
+                             <img alt="logo" class="img-fluid" src="/static/webSite/images/logo.png"
+                                  style="width: 50px;height: 50px;">
+                         </a>
+                     </div>
+                     <button aria-controls="offcanvasNavbar" class="navbar-toggler" data-bs-target="#offcanvasNavbar"
+                             data-bs-toggle="offcanvas"
+                             type="button">
+                         <svg height="24" viewBox="0 0 24 24" width="24">
+                             <use xlink:href="#menu"></use>
+                         </svg>
+                     </button>
+                 </div>
+
+                 <div class="col-md-2 ">
+                     <div class="search-bar row bg-light p-2 rounded-4">
+
+                         <div class="col-11 col-md-10" style="text-align: center">
+                             Pet Service Booking Platform
+                         </div>
+
+                     </div>
+                 </div>
+
+                 <div class="col-md-8">
+                     <ul class="navbar-nav list-unstyled d-flex flex-row gap-3 gap-lg-5 justify-content-center flex-wrap align-items-center mb-0 fw-bold text-uppercase text-dark">
+                         <li class="nav-item ">
+                             <a class="nav-link" href="/web/userindex">Home</a>
+                         </li>
+
+                         <li class="nav-item">
+                             <a class="nav-link  " href="/web/userproductlist">Pet Service List</a>
+                         </li>
+                         <li class="nav-item">
+                             <a class="nav-link " href="/web/usercart">Shopping Cart</a>
+                         </li>
+                         <li class="nav-item">
+                             <a class="nav-link " href="/web/usercontact">Contact Us</a>
+                         </li>
+                         <li class="nav-item">
+                             <a class="nav-link " href="/web/userblog">News/Announcements</a>
+                         </li>
+                         <li class="nav-item text-primary" >
+                             <a class="nav-link " href="/web/personal" title="Personal Center"><i class="fa fa-user"></i></a>
+                         </li>
+                     </ul>
+                 </div>
+
+
+             </div>
+         </div>
+     </header>
+     <el-card class="box-card">
+     <el-tabs stretch v-model="activeName" @tab-click="handleClick">
+         <el-button type="danger" @click="handleChongzhi">Apply for Recharge</el-button>
+
+         <el-tab-pane label="My Recharge Records" v-if="role !== '1'" name="second">
+             <el-table
+                     :data="likeList"
+                     style="width: 100%"
+                     v-loading="loading">
+                 <el-table-column
+                         align="center"
+                         label="ID"
+                         prop="id"
+                 >
+                 </el-table-column>
+
+                 <el-table-column
+                         align="center"
+                         label="Amount"
+                         prop="money"
+                 >
+                 </el-table-column>
+
+                 <el-table-column
+                         align="center"
+                         label="Create Time"
+                         prop="createtime">
+                 </el-table-column>
+      <el-table-column
+                         align="center"
+                         label="Audit Status"
+                         prop="auditstatus">
+                 </el-table-column>
+      <el-table-column
+                         align="center"
+                         label="Audit Notes"
+                         prop="cause">
+                 </el-table-column>
+
+
+             </el-table>
+         </el-tab-pane>
+
+     </el-tabs>
+     </el-card>
+     <el-dialog :title="title" :visible.sync="chongzhiopen" width="50%">
+         <el-form :model="form" :rules="rules" label-width="80px" ref="form">
+
+
+             <el-form-item label="Amount">
+                 <el-input type="text" v-model="form.money"></el-input>
+             </el-form-item>
+
+
+
+             <el-form-item>
+                 <el-button @click="submitEdit" type="primary">Save</el-button>
+                 <el-button @click="chongzhiopen = false">Cancel</el-button>
+             </el-form-item>
+         </el-form>
+     </el-dialog>
+
+
+ </div>
+ <script src="/static/webSite/js/jquery-1.11.0.min.js"></script>
+ <script src="/static/hAdmin/js/plugins/sweetalert/sweetalert.min.js"></script>
+
+ <script src="/static/webSite/js/swiper-bundle.js"></script>
+ <script crossorigin="anonymous"
+         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+ <script src="/static/webSite/js/plugins.js"></script>
+ <script src="/static/webSite/js/script.js"></script>
+ <script src="/static/hAdmin/js/plugins/toastr/toastr.min.js"></script>
+ <script src="/static/js/GloJs.js"></script>
+ <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+ <script>
+
+     new Vue({
+         el: "#app",
+         data() {
+             return {
+                 baseUrl: gloRequestUrl,
+
+                 likeList: [],
+                 fileList: [],
+                 fileStr: [],
+                 userInfo: {},
+                 total: 0,
+                 searchKey: "",
+                 activeName: "second",
+                 loading: true,
+                 userId: localStorage.getItem("userId"),
+                 role: localStorage.getItem("role"),
+                 form: {},
+                 chongzhiopen: false,
+                 openMsg: false,
+                 openDetail: false,
+                 queryParams: {
+                     pageSize: 3,
+                     pageNum: 1,
+                 },
+                 title: "",
+                 rules: {
+                     title: [
+                         {required: true, message: 'Please enter', trigger: 'blur'},
+
+                     ],
+
+                 }
+             }
+         },
+         methods: {
+             handleResetQuery() {
+                 this.queryParams = {
+                     pageSize: 3,
+                     pageNum: 1,
+                 }
+                 this.getList()
+             },
+
+             handleClick(tab){
+                 let that = this
+                 console.log(tab.$props.name)
+                     that.getmoneyList()
+
+             },
+
+             submitEdit() {
+                 let that = this
+                 this.$refs['form'].validate((valid) => {
+                     if (valid) {
+                         if (that.fileStr && that.fileStr.length > 0) {
+                             that.form.img = that.fileStr.join(",")
+                         }
+                         that.form.userid = that.userId
+                         $.ajax({
+                             url: that.baseUrl + "/tmoney",
+                             type: "POST",
+                             data: JSON.stringify(that.form),
+                             contentType: "application/json",
+                             // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                             success: function (data) {
+                                 that.open = false
+                                 if (data.code === 200) {
+                                     toastr.success(data.msg, 'Notice')
+that.chongzhiopen = false
+                                     that.getmoneyList()
+                                 } else {
+
+                                     toastr.error(data.msg, 'Notice')
+                                 }
+                                 that.getList()
+                             },
+                             error: function () {
+                                 alert("Server error! Network error!")
+                             }
+                         })
+                     }
+                 })
+             },
+             // Get recharge list
+             getmoneyList() {
+                 let that = this;
+                 that.loading = true
+                 $.ajax({
+                     url: that.baseUrl + "/tmoney",
+                     type: "GET",
+                     data: {
+                         pageNum:1,
+                         pageSize:999,
+                         userid:that.userId
+                     },
+                     success: function (data) {
+                         if (data.code !== 500) {
+                             that.loading = false
+                             that.likeList = data.list
+                             that.total = data.total
+                         }
+                     },
+                     error: function () {
+                         windowsAuto(500, "Server error! Network error!")
+                     }
+                 });
+             },
+
+             reset() {
+                 this.form = {}
+                 this.fileStr = []
+                 this.fileList = []
+             },
+
+             handleChongzhi(){
+               this.chongzhiopen = true
+             },
+             handleEditUserInfo() {
+                 let that = this
+                 that.form = that.userInfo
+                 that.open = true
+                 that.title = "Edit"
+             },
+             handleEdit(row) {
+                 let that = this
+                 that.form = row
+                 that.openMsg = true
+                 that.title = "Reply"
+             },
+
+
+             removeElement(arr, elem) {
+                 return arr.filter(item => item !== elem);
+             },
+             handleRemove(file, fileList) {
+                 this.fileStr = this.removeElement(this.fileStr, file.response.msg)
+             },
+
+             beforeRemove(file, fileList) {
+                 return this.$confirm(`Are you sure to remove ${file.name}?`);
+             },
+             handleFileSuccess(res) {
+                 let that = this
+                 that.fileStr.push(res.msg)
+             },
+             handleLogout(){
+                 let that = this
+                 $.ajax({
+                     url: that.baseUrl + "/admin/logout",
+                     type: "get",
+                     data: {
+
+                     },
+                     success: function (data) {
+
+                         localStorage.removeItem("userId")
+                         window.location.href = that.baseUrl + "/login"
+
+
+                     },
+                     error: function () {
+                         alert("Server error! Network error!")
+                     }
+                 })
+             }
+         },
+         watch: {},
+         mounted() {
+             let that = this;
+
+             that.getmoneyList()
+
+         }
+     })
+
+ </script>
+</body>
+
+</html>

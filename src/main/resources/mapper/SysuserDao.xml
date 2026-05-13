@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javaPro.myProject.modules.sysuser.dao.SysuserDao">
+
+    <resultMap type="com.javaPro.myProject.modules.sysuser.entity.Sysuser" id="SysuserMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="VARCHAR"/>
+        <result property="phonenumber" column="phonenumber" jdbcType="VARCHAR"/>
+        <result property="account" column="account" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="idcard" column="idcard" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="img" column="img" jdbcType="VARCHAR"/>
+        <result property="role" column="role" jdbcType="VARCHAR"/>
+        <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+        <result property="age" column="age" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="province" column="province" jdbcType="VARCHAR"/>
+        <result property="city" column="city" jdbcType="VARCHAR"/>
+        <result property="district" column="district" jdbcType="VARCHAR"/>
+        <result property="longitude" column="longitude" jdbcType="DOUBLE"/>
+        <result property="latitude" column="latitude" jdbcType="DOUBLE"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="SysuserMap">
+        select
+          id, username, sex, phonenumber, account, password, idcard, address, img, role, createtime, age, remark,money
+        , petname,petage,petdes,pettype, province, city, district, longitude, latitude
+        from sysuser
+        where id = #{id}
+    </select>
+    <!--查询单个-->
+    <select id="queryByAccount" resultMap="SysuserMap">
+        select
+            id, username, sex, phonenumber, account, password, idcard, address, img, role, createtime, age, remark,money
+           , petname,petage,petdes,pettype, province, city, district, longitude, latitude
+        from sysuser
+        where account = #{account}
+    </select>
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="SysuserMap">
+        select
+          id, username, sex, phonenumber, account, password, idcard, address, img, role, createtime, age, remark,money
+        , petname,petage,petdes,pettype, province, city, district, longitude, latitude
+        from sysuser
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="username != null and username != ''">
+                and username like concat('%', #{username},'%')
+            </if>
+            <if test="sex != null and sex != ''">
+                and sex = #{sex}
+            </if>
+            <if test="phonenumber != null and phonenumber != ''">
+                and phonenumber = #{phonenumber}
+            </if>
+            <if test="account != null and account != ''">
+                and account = #{account}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="idcard != null and idcard != ''">
+                and idcard = #{idcard}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
+            </if>
+            <if test="img != null and img != ''">
+                and img = #{img}
+            </if>
+            <if test="role != null and role != ''">
+                and role = #{role}
+            </if>
+            <if test="createtime != null">
+                and createtime = #{createtime}
+            </if>
+            <if test="age != null and age != ''">
+                and age = #{age}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+        </where>
+        order by createtime desc
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from sysuser
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+            <if test="sex != null and sex != ''">
+                and sex = #{sex}
+            </if>
+            <if test="phonenumber != null and phonenumber != ''">
+                and phonenumber = #{phonenumber}
+            </if>
+            <if test="account != null and account != ''">
+                and account = #{account}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+            <if test="idcard != null and idcard != ''">
+                and idcard = #{idcard}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
+            </if>
+            <if test="img != null and img != ''">
+                and img = #{img}
+            </if>
+            <if test="role != null and role != ''">
+                and role = #{role}
+            </if>
+            <if test="createtime != null">
+                and createtime = #{createtime}
+            </if>
+            <if test="age != null and age != ''">
+                and age = #{age}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into sysuser(username, sex, phonenumber, account, password, idcard, address, img, role, createtime, age, remark, province, city, district, longitude, latitude)
+        values (#{username}, #{sex}, #{phonenumber}, #{account}, #{password}, #{idcard}, #{address}, #{img}, #{role}, now(), #{age}, #{remark}, #{province}, #{city}, #{district}, #{longitude}, #{latitude})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into sysuser(username, sex, phonenumber, account, password, idcard, address, img, role, createtime, age, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.username}, #{entity.sex}, #{entity.phonenumber}, #{entity.account}, #{entity.password}, #{entity.idcard}, #{entity.address}, #{entity.img}, #{entity.role}, #{entity.createtime}, #{entity.age}, #{entity.remark})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into sysuser(username, sex, phonenumber, account, password, idcard, address, img, role, createtime, age, remark)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.username}, #{entity.sex}, #{entity.phonenumber}, #{entity.account}, #{entity.password}, #{entity.idcard}, #{entity.address}, #{entity.img}, #{entity.role}, #{entity.createtime}, #{entity.age}, #{entity.remark})
+        </foreach>
+        on duplicate key update
+        username = values(username),
+        sex = values(sex),
+        phonenumber = values(phonenumber),
+        account = values(account),
+        password = values(password),
+        idcard = values(idcard),
+        address = values(address),
+        img = values(img),
+        role = values(role),
+        createtime = values(createtime),
+        age = values(age),
+        remark = values(remark)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update sysuser
+        <set>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="sex != null and sex != ''">
+                sex = #{sex},
+            </if>
+            <if test="phonenumber != null and phonenumber != ''">
+                phonenumber = #{phonenumber},
+            </if>
+            <if test="account != null and account != ''">
+                account = #{account},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="idcard != null and idcard != ''">
+                idcard = #{idcard},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+            <if test="img != null and img != ''">
+                img = #{img},
+            </if>
+            <if test="role != null and role != ''">
+                role = #{role},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime},
+            </if>
+            <if test="age != null and age != ''">
+                age = #{age},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="money != null and money != ''">
+                money = #{money},
+            </if>  <if test="petname != null and petname != ''">
+            petname = #{petname},
+            </if>  <if test="petage != null and petage != ''">
+            petage = #{petage},
+            </if>  <if test="petdes != null and petdes != ''">
+            petdes = #{petdes},
+            </if>  <if test="pettype != null and pettype != ''">
+            pettype = #{pettype},
+            </if>
+            <if test="province != null and province != ''">
+                province = #{province},
+            </if>
+            <if test="city != null and city != ''">
+                city = #{city},
+            </if>
+            <if test="district != null and district != ''">
+                district = #{district},
+            </if>
+            <if test="longitude != null">
+                longitude = #{longitude},
+            </if>
+            <if test="latitude != null">
+                latitude = #{latitude},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from sysuser where id = #{id}
+    </delete>
+
+</mapper>
+

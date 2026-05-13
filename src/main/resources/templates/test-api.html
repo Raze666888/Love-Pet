@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>API Test Page</h1>
+    <button onclick="testProductAPI()">Test Product API</button>
+    <button onclick="testProductDetailAPI()">Test Product Detail API</button>
+    
+    <div id="results" style="margin-top: 20px; padding: 20px; border: 1px solid #ccc;">
+        <h3>Results:</h3>
+        <pre id="output"></pre>
+    </div>
+
+    <script>
+        function testProductAPI() {
+            $.ajax({
+                url: "http://localhost:7002/product?pageNum=1&pageSize=10",
+                type: "GET",
+                success: function(data) {
+                    console.log("Product API Success:", data);
+                    document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Product API Error:", error);
+                    document.getElementById('output').textContent = "Error: " + error + "\nStatus: " + status + "\nResponse: " + xhr.responseText;
+                }
+            });
+        }
+
+        function testProductDetailAPI() {
+            $.ajax({
+                url: "http://localhost:7002/product/detail?id=38",
+                type: "GET",
+                success: function(data) {
+                    console.log("Product Detail API Success:", data);
+                    document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Product Detail API Error:", error);
+                    document.getElementById('output').textContent = "Error: " + error + "\nStatus: " + status + "\nResponse: " + xhr.responseText;
+                }
+            });
+        }
+    </script>
+</body>
+</html>

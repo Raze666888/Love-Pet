@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地址数据加载测试</title>
+    <link href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
+    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #e4e7ed;
+            border-radius: 6px;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #303133;
+        }
+        .status-indicator {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        .status-success {
+            background-color: #f0f9ff;
+            color: #409eff;
+            border: 1px solid #b3d8ff;
+        }
+        .status-error {
+            background-color: #fef0f0;
+            color: #f56c6c;
+            border: 1px solid #fbc4c4;
+        }
+        .status-loading {
+            background-color: #fdf6ec;
+            color: #e6a23c;
+            border: 1px solid #f5dab1;
+        }
+        .address-selector {
+            margin-top: 15px;
+        }
+        .debug-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+        .test-button {
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="container">
+            <h1>🧪 地址数据加载功能测试</h1>
+
+            <div class="test-section">
+                <div class="test-title">
+                    API状态检查
+                    <span class="status-indicator" :class="apiStatus.class">{{apiStatus.text}}</span>
+                </div>
+                <div class="test-buttons">
+                    <el-button @click="checkAPILoading" class="test-button" type="primary" size="small">
+                        检查API加载状态
+                    </el-button>
+                    <el-button @click="testStaticData" class="test-button" type="success" size="small">
+                        测试静态数据
+                    </el-button>
+                </div>
+                <div class="debug-info" v-if="debugInfo.length > 0">
+                    <div v-for="(info, index) in debugInfo" :key="index">
+                        {{info}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <div class="test-title">
+                    省份加载测试
+                    <span class="status-indicator" :class="provinceStatus.class">{{provinceStatus.text}}</span>
+                </div>
+                <div class="address-selector">
+                    <el-select
+                        v-model="selectedProvince"
+                        placeholder="请选择省份"
+                        @change="handleProvinceChange"
+                        :loading="loadingProvinces"
+                        style="width: 300px;">
+                        <el-option
+                            v-for="province in provinceList"
+                            :key="province.adcode"
+                            :label="province.name"
+                            :value="province.name">
+                        </el-option>
+                    </el-select>
+                    <span style="margin-left: 15px; color: #666;">
+                        共加载 {{provinceList.length}} 个省份
+                    </span>
+                </div>
+                <div style="margin-top: 10px;">
+                    <el-button @click="loadProvinces" type="primary" size="small">
+                        重新加载省份
+                    </el-button>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <div class="test-title">
+                    城市加载测试
+                    <span class="status-indicator" :class="cityStatus.class">{{cityStatus.text}}</span>
+                </div>
+                <div class="address-selector">
+                    <el-select
+                        v-model="selectedCity"
+                        placeholder="请先选择省份"
+                        @change="handleCityChange"
+                        :loading="loadingCities"
+                        :disabled="!selectedProvince"
+                        style="width: 300px;">
+                        <el-option
+                            v-for="city in cityList"
+                            :key="city.adcode"
+                            :label="city.name"
+                            :value="city.name">
+                        </el-option>
+                    </el-select>
+                    <span style="margin-left: 15px; color: #666;">
+                        共加载 {{cityList.length}} 个城市
+                    </span>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <div class="test-title">
+                    区县加载测试
+                    <span class="status-indicator" :class="districtStatus.class">{{districtStatus.text}}</span>
+                </div>
+                <div class="address-selector">
+                    <el-select
+                        v-model="selectedDistrict"
+                        placeholder="请先选择城市"
+                        :loading="loadingDistricts"
+                        :disabled="!selectedCity"
+                        style="width: 300px;">
+                        <el-option
+                            v-for="district in districtList"
+                            :key="district.adcode"
+                            :label="district.name"
+                            :value="district.name">
+                        </el-option>
+                    </el-select>
+                    <span style="margin-left: 15px; color: #666;">
+                        共加载 {{districtList.length}} 个区县
+                    </span>
+                </div>
+            </div>
+
+            <div class="test-section">
+                <div class="test-title">测试结果</div>
+                <div v-if="selectedProvince || selectedCity || selectedDistrict" style="background: #f0f9ff; padding: 15px; border-radius: 4px;">
+                    <p><strong>选择的地址：</strong></p>
+                    <p>省份：{{selectedProvince || '未选择'}}</p>
+                    <p>城市：{{selectedCity || '未选择'}}</p>
+                    <p>区县：{{selectedDistrict || '未选择'}}</p>
+                    <p><strong>完整地址：</strong>{{getFullAddress()}}</p>
+                </div>
+                <div v-else style="color: #999; text-align: center; padding: 20px;">
+                    请依次选择省市区来查看结果
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入map-config.js -->
+    <script src="src/main/resources/static/js/map-config.js"></script>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    // API状态
+                    apiStatus: { text: '未检查', class: 'status-loading' },
+
+                    // 省份数据
+                    provinceList: [],
+                    selectedProvince: '',
+                    loadingProvinces: false,
+                    provinceStatus: { text: '未加载', class: 'status-loading' },
+
+                    // 城市数据
+                    cityList: [],
+                    selectedCity: '',
+                    loadingCities: false,
+                    cityStatus: { text: '未加载', class: 'status-loading' },
+
+                    // 区县数据
+                    districtList: [],
+                    selectedDistrict: '',
+                    loadingDistricts: false,
+                    districtStatus: { text: '未加载', class: 'status-loading' },
+
+                    // 调试信息
+                    debugInfo: []
+                };
+            },
+            mounted() {
+                this.checkAPILoading();
+                this.loadProvinces();
+            },
+            methods: {
+                // 添加调试信息
+                addDebugInfo(message) {
+                    const timestamp = new Date().toLocaleTimeString();
+                    this.debugInfo.unshift(`[${timestamp}] ${message}`);
+                    if (this.debugInfo.length > 20) {
+                        this.debugInfo = this.debugInfo.slice(0, 20);
+                    }
+                },
+
+                // 检查API加载状态
+                checkAPILoading() {
+                    this.addDebugInfo('开始检查API加载状态...');
+
+                    if (typeof AMap !== 'undefined') {
+                        this.apiStatus = { text: '已加载', class: 'status-success' };
+                        this.addDebugInfo('✓ 高德地图API已加载');
+                    } else {
+                        this.apiStatus = { text: '未加载', class: 'status-error' };
+                        this.addDebugInfo('✗ 高德地图API未加载，尝试加载...');
+
+                        // 尝试加载API
+                        if (typeof loadAmapApi === 'function') {
+                            loadAmapApi(() => {
+                                this.apiStatus = { text: '已加载', class: 'status-success' };
+                                this.addDebugInfo('✓ 高德地图API加载成功');
+                                this.loadProvinces();
+                            });
+                        }
+                    }
+
+                    // 检查函数可用性
+                    const functions = ['loadProvinces', 'loadCities', 'loadDistricts', 'getStaticProvinces'];
+                    functions.forEach(funcName => {
+                        const available = typeof window[funcName] === 'function';
+                        this.addDebugInfo(`${available ? '✓' : '✗'} ${funcName} 函数: ${available ? '可用' : '不可用'}`);
+                    });
+                },
+
+                // 测试静态数据
+                testStaticData() {
+                    this.addDebugInfo('测试静态数据功能...');
+                    if (typeof getStaticProvinces === 'function') {
+                        const staticData = getStaticProvinces();
+                        this.addDebugInfo(`✓ 静态省份数据加载成功，共 ${staticData.length} 个省份`);
+                        this.provinceList = staticData;
+                        this.provinceStatus = { text: '静态数据', class: 'status-success' };
+                    } else {
+                        this.addDebugInfo('✗ getStaticProvinces 函数不可用');
+                    }
+                },
+
+                // 加载省份数据
+                loadProvinces() {
+                    this.addDebugInfo('开始加载省份数据...');
+                    this.loadingProvinces = true;
+                    this.provinceStatus = { text: '加载中', class: 'status-loading' };
+
+                    if (typeof loadProvinces === 'function') {
+                        loadProvinces((provinces) => {
+                            this.provinceList = provinces.map(province => ({
+                                name: province.name,
+                                adcode: province.adcode,
+                                level: province.level
+                            }));
+                            this.loadingProvinces = false;
+                            this.provinceStatus = { text: `成功(${this.provinceList.length}个)`, class: 'status-success' };
+                            this.addDebugInfo(`✓ 省份数据加载成功，共 ${this.provinceList.length} 个省份`);
+                        });
+                    } else {
+                        this.addDebugInfo('✗ loadProvinces 函数不可用');
+                        this.testStaticData();
+                    }
+                },
+
+                // 省份变化处理
+                handleProvinceChange(provinceName) {
+                    this.addDebugInfo(`省份选择变化: ${provinceName}`);
+                    this.selectedCity = '';
+                    this.selectedDistrict = '';
+                    this.cityList = [];
+                    this.districtList = [];
+                    this.cityStatus = { text: '未加载', class: 'status-loading' };
+                    this.districtStatus = { text: '未加载', class: 'status-loading' };
+
+                    if (!provinceName) return;
+
+                    this.loadingCities = true;
+                    this.cityStatus = { text: '加载中', class: 'status-loading' };
+
+                    if (typeof loadCities === 'function') {
+                        loadCities(provinceName, (cities) => {
+                            this.cityList = cities.map(city => ({
+                                name: city.name,
+                                adcode: city.adcode,
+                                level: city.level
+                            }));
+                            this.loadingCities = false;
+                            this.cityStatus = { text: `成功(${this.cityList.length}个)`, class: 'status-success' };
+                            this.addDebugInfo(`✓ 城市数据加载成功，共 ${this.cityList.length} 个城市`);
+                        });
+                    } else {
+                        this.addDebugInfo('✗ loadCities 函数不可用');
+                        this.loadingCities = false;
+                        this.cityStatus = { text: '失败', class: 'status-error' };
+                    }
+                },
+
+                // 城市变化处理
+                handleCityChange(cityName) {
+                    this.addDebugInfo(`城市选择变化: ${cityName}`);
+                    this.selectedDistrict = '';
+                    this.districtList = [];
+                    this.districtStatus = { text: '未加载', class: 'status-loading' };
+
+                    if (!cityName) return;
+
+                    this.loadingDistricts = true;
+                    this.districtStatus = { text: '加载中', class: 'status-loading' };
+
+                    if (typeof loadDistricts === 'function') {
+                        loadDistricts(cityName, (districts) => {
+                            this.districtList = districts.map(district => ({
+                                name: district.name,
+                                adcode: district.adcode,
+                                level: district.level
+                            }));
+                            this.loadingDistricts = false;
+                            this.districtStatus = { text: `成功(${this.districtList.length}个)`, class: 'status-success' };
+                            this.addDebugInfo(`✓ 区县数据加载成功，共 ${this.districtList.length} 个区县`);
+                        });
+                    } else {
+                        this.addDebugInfo('✗ loadDistricts 函数不可用');
+                        this.loadingDistricts = false;
+                        this.districtStatus = { text: '失败', class: 'status-error' };
+                    }
+                },
+
+                // 获取完整地址
+                getFullAddress() {
+                    const parts = [];
+                    if (this.selectedProvince) parts.push(this.selectedProvince);
+                    if (this.selectedCity && this.selectedCity !== this.selectedProvince) parts.push(this.selectedCity);
+                    if (this.selectedDistrict) parts.push(this.selectedDistrict);
+                    return parts.join('');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

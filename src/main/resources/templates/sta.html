@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+
+    <title>统计</title>
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <!--    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/prettify/r224/prettify.min.css">-->
+    <link href="/static/hAdmin/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="/static/hAdmin/css/animate.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <!-- Sweet Alert -->
+    <link href="/static/hAdmin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <!-- orris -->
+    <link href="/static/hAdmin/css/plugins/morris/morris.css" rel="stylesheet">
+    <style>
+        .addList {
+            padding: 10px 30px 10px 30px;
+            height: 90px;
+            margin-top: 3px;
+        }
+    </style>
+</head>
+
+<body class="gray-bg">
+<span id="gloUrl" style="display: none"></span>
+<div class="wrapper wrapper-content animated fadeInRight" style="background: url('/static/img/daping.png') center">
+    <div style="position: relative;left: 45%;display: inline-block">
+        <h1 style="color: white;margin-bottom: 65px">宠物服务可视化</h1>
+    </div>
+    <div class="row " style="margin-top: 30px">
+
+        <div class="col-sm-6" style="min-height: 425px;display: inline-block;">
+            <div class="ibox float-e-margins" >
+
+                <div class="ibox-title" style="background-color: rgb(8,25,61);color: white">
+                    <h5>饼图</h5>
+
+                </div>
+                <div class="ibox-content" style="background-color: rgb(8,25,61)">
+                    <div id="morris-donut-chart"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6" style="min-height: 425px;max-height: 425px;overflow: hidden;display: inline-block;">
+            <div class="ibox float-e-margins" >
+
+                <div class="ibox-title" style="background-color: rgb(8,25,61);color: white">
+                    <h5>公告</h5>
+
+                </div>
+                <div class="ibox-content" style="background-color: rgb(8,25,61);max-height: 400px;overflow-y: scroll" >
+                    <div class="faq-item" id="accordion" style="background-color: black">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6" style="min-height: 425px;display: inline-block;">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title"  style="background-color: rgb(8,25,61);color: white">
+                    <h5>订单折线图</h5>
+
+                </div>
+                <div class="ibox-content"  style="background-color: rgb(8,25,61)">
+                    <div id="morris-one-line-chart" style="position: relative;">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6" style="min-height: 425px;display: inline-block;">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title"  style="background-color: rgb(8,25,61);color: white">
+                    <h5>消息回复统计图</h5>
+
+                </div>
+                <div class="ibox-content"  style="background-color: rgb(8,25,61)">
+                    <div id="morris-bar-chart" style="position: relative;">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+</div>
+
+<!-- 全局js -->
+<script src="/static/hAdmin/js/jquery.min.js?v=2.1.4"></script>
+<script src="/static/hAdmin/js/bootstrap.min.js?v=3.3.6"></script>
+
+<!-- 自定义js -->
+<script src="/static/hAdmin/js/content.js?v=1.0.0"></script>
+
+
+<!-- Peity -->
+<script src="/static/hAdmin/js/plugins/peity/jquery.peity.min.js"></script>
+
+<!-- Peity -->
+<script src="/static/hAdmin/js/demo/peity-demo.js"></script>
+<script src="/static/js/GloJs.js"></script>
+<!-- Toastr script -->
+<script src="/static/hAdmin/js/plugins/toastr/toastr.min.js"></script>
+<!--<script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.2/raphael-min.js"></script>-->
+
+<!--<script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/r224/prettify.min.js"></script>-->
+<!-- Sweet alert -->
+<script src="/static/hAdmin/js/plugins/sweetalert/sweetalert.min.js"></script>
+<!-- Morris -->
+<script src="/static/hAdmin/js/plugins/morris/raphael-2.1.0.min.js"></script>
+<script src="/static/hAdmin/js/plugins/morris/morris.js"></script>
+
+<!-- 自定义js -->
+<script src="/static/hAdmin/js/content.js?v=1.0.0"></script>
+<script>
+    $(function () {
+
+        let Glo_BaseUrl = $("#gloUrl").attr("gloUValue")
+//获取饼图
+        function   getstatic(){
+            $.ajax({
+                url: Glo_BaseUrl + "/order/statistics",
+                type: "get",
+                data: {
+                    "airportId":localStorage.getItem("currentId")
+                },
+                success: function (data) {
+                    console.log(data)
+                    let str = ``
+                    let Data = []
+                    for (let i = 0; i < data.data.topMap.length; i++) {
+                        let item = data.data.topMap[i]
+                        str += `<br>
+                        <h4>${item.name} ： <strong >${item.percent}</strong></h4>
+                        <br>`
+                        Data[i] = {
+                            label: item.name,
+                            value: item.value,
+                        }
+                    }
+                    $("#contentPercent").append(str)
+                    Morris.Donut({
+                        element: 'morris-donut-chart',
+                        data: Data,
+                        resize: true,
+                        labelColor:"#ffffff",
+                        colors: ['#87d6c6', '#d54141',],
+                    });
+                    Morris.Line({
+                        element: 'morris-one-line-chart',
+                        data: data.data.bottomMap,
+                        xkey: 'period',
+                        ykeys: ['licensed'],
+                        resize: true,
+                        lineWidth:4,
+                        labels: ['订单数'],
+                        lineColors: ['#1ab394'],
+                        pointSize:5,
+                    });
+                    Morris.Bar({
+                        element: 'morris-bar-chart',
+                        data: data.data.thirdMap,
+                        xkey: 'period',
+                        ykeys: ['a', 'b'],
+                        labels: ['已回复', '未回复'],
+                        hideHover: 'auto',
+                        resize: true,
+                        barColors: ['#1ab394', '#e31a1a'],
+                    });
+                },
+                error: function () {
+                    alert("服务器异常！network error！")
+                }
+            })
+        }
+
+        getstatic()
+
+        function getTitleList() {
+            let total = 0;//总数
+            let pageSize = 6;//每页条数
+            let html_dom = $("#accordion")
+            $("#pageHelper").attr("ajaxUrl", "/system/company")
+
+
+            setTimeout(function () {
+                $.ajax({
+                    url: Glo_BaseUrl + "/webnotice/list",
+                    type: "get",
+                    data: {
+                        "pageSize": pageSize,
+                        "pageNum": 1,
+
+
+                    },
+                    success: function (data) {
+
+                        let ListStr = ''
+                        total = data.total
+                        console.log(data)
+                        for (let i = 0; i < data.list.length; i++) {
+                            ListStr +=`  <div class="marTop20" style="background-color: black">
+                                    <div class="row" >
+                                        <div class="col-md-7">
+                                            <a data-toggle="collapse" href="faq.html#faq${data.list[i].id}" class="faq-question">${data.list[i].title}</a>
+                                            <small><strong>发布时间</strong> <i class="fa fa-clock-o"></i>${data.list[i].createtime}</small>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <span class="small font-bold">系统公告</span>
+                                            <div class="tag-list">
+                                                <span class="tag-item">网站公告</span>
+                                                <span class="tag-item">宠物服务活动公告</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row" style="background-color: black">
+                                        <div class="col-sm-12" style="background-color: black;color: white">
+                                            <div id="faq${data.list[i].id}" class="panel-collapse faq-answer collapse" style="background-color: black;" aria-expanded="false" style="height: 32px;">
+                                                <span style="font-size: 18px">
+                                                   ${data.list[i].content}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`
+
+                        }
+
+                        if (data.code !== 500) {
+                            html_dom.html("")
+                            html_dom.append(ListStr)
+                        } else {
+                            alert("获取失败")
+                        }
+                        total = data.total
+
+                        $("#data_total").html(data.total);
+                        //下一页
+                        $('.next').unbind().click(function () {
+                            if (currentPage * pageSize >= total) {
+                                toastr.error("已经是最后一页了！", '提醒')
+                            } else {
+                                currentPage++;
+                                $("#pageHelper").attr("currentPage", currentPage);
+                                if (currentPage > 0) {
+                                    $(".previous").removeClass("disabled")
+                                }
+                                $(".project-list").addClass("animated bounceOutLeft")
+                                setTimeout(function () {
+                                    $(".project-list").removeClass("animated bounceOutLeft").addClass("animated bounceInRight")
+                                }, 500)
+                                getTitleList(2)
+                            }
+
+                        });
+                        //上一页
+                        $('.previous').unbind().click(function () {
+                            currentPage--;
+                            $("#pageHelper").attr("currentPage", currentPage);
+                            if (currentPage === 0) {
+                                currentPage = 1;
+                                $("#pageHelper").attr("currentPage", currentPage);
+                                $(".previous").addClass("disabled");
+                            } else {
+                                $(".project-list").addClass("animated bounceOutRight")
+                                setTimeout(function () {
+                                    $(".project-list").removeClass("animated bounceOutRight bounceInRight").addClass("animated bounceInLeft")
+                                }, 500)
+                                getTitleList(2)
+                            }
+                        });
+
+
+
+
+                    },
+                    error: function () {
+                        alert("服务器异常！network error！")
+                    }
+                });
+            }, 300)
+
+
+        }
+
+
+        //*******************************************
+        getTitleList()
+    })
+
+</script>
+
+</body>
+
+</html>

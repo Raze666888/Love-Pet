@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Info & Service Provider Info Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div id="app" class="container mt-4">
+    <h1>User Info & Service Provider Info Test Page</h1>
+    
+    <!-- User Info Test -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>User Info Test</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <label>User ID:</label>
+                    <input v-model="testUserId" type="number" class="form-control" placeholder="Enter User ID">
+                    <button @click="getUserInfo" class="btn btn-primary mt-2">Get User Info</button>
+                </div>
+                <div class="col-md-6">
+                    <h5>User Info Result:</h5>
+                    <div v-if="userInfo.id" class="alert alert-success">
+                        <p><strong>ID:</strong> {{userInfo.id}}</p>
+                        <p><strong>Username:</strong> {{userInfo.username}}</p>
+                        <p><strong>Gender:</strong> {{userInfo.sex}}</p>
+                        <p><strong>Phone Number:</strong> {{userInfo.phonenumber}}</p>
+                        <p><strong>Role:</strong> {{userInfo.role}}</p>
+                        <p><strong>Address:</strong> {{userInfo.address}}</p>
+                    </div>
+                    <div v-else-if="userError" class="alert alert-danger">
+                        {{userError}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Service Provider Info Test -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Service Provider Info Test</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <label>Provider ID:</label>
+                    <input v-model="testCompanyId" type="number" class="form-control" placeholder="Enter Provider ID">
+                    <button @click="getCompanyInfo" class="btn btn-primary mt-2">Get Provider Info</button>
+                    
+                    <hr>
+                    
+                    <label>Search by Creator ID:</label>
+                    <input v-model="testCreateId" type="number" class="form-control" placeholder="Enter Creator ID">
+                    <button @click="getCompanyByCreateId" class="btn btn-secondary mt-2">Search by Creator ID</button>
+                </div>
+                <div class="col-md-6">
+                    <h5>Provider Info Result:</h5>
+                    <div v-if="companyInfo.id" class="alert alert-success">
+                        <p><strong>ID:</strong> {{companyInfo.id}}</p>
+                        <p><strong>Provider Name:</strong> {{companyInfo.username || 'Not Set'}}</p>
+                        <p><strong>Phone Number:</strong> {{companyInfo.phonenumber}}</p>
+                        <p><strong>Address:</strong> {{companyInfo.address}}</p>
+                        <p><strong>Creator ID:</strong> {{companyInfo.createid}}</p>
+                        <p><strong>Service Hours:</strong> {{companyInfo.service_time}}</p>
+                        <p><strong>Average Rating:</strong> {{companyInfo.avg_rating}}</p>
+                        <p><strong>Rating Count:</strong> {{companyInfo.rating_count}}</p>
+                    </div>
+                    <div v-else-if="companyError" class="alert alert-danger">
+                        {{companyError}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Response Raw Data -->
+    <div class="card">
+        <div class="card-header">
+            <h3>API Response Raw Data</h3>
+        </div>
+        <div class="card-body">
+            <h5>User API Response:</h5>
+            <pre>{{userApiResponse}}</pre>
+            
+            <h5>Provider API Response:</h5>
+            <pre>{{companyApiResponse}}</pre>
+        </div>
+    </div>
+</div>
+
+<script>
+new Vue({
+    el: '#app',
+    data() {
+        return {
+            baseUrl: 'http://localhost:7002',
+            testUserId: 1,
+            testCompanyId: 1,
+            testCreateId: 1,
+            userInfo: {},
+            companyInfo: {},
+            userError: '',
+            companyError: '',
+            userApiResponse: '',
+            companyApiResponse: ''
+        }
+    },
+    methods: {
+        getUserInfo() {
+            let that = this;
+            that.userError = '';
+            that.userInfo = {};
+            
+            $.ajax({
+                url: that.baseUrl + "/sysuser/detail",
+                type: "GET",
+                data: {id: that.testUserId},
+                success: function (data) {
+                    that.userApiResponse = JSON.stringify(data, null, 2);
+                    if (data.code === 200) {
+                        that.userInfo = data.data;
+                    } else {
+                        that.userError = data.msg || 'Failed to get user info';
+                    }
+                },
+                error: function (xhr, status, error) {
+                    that.userError = 'Network Error: ' + error;
+                    that.userApiResponse = 'Error: ' + error;
+                }
+            });
+        },
+        
+        getCompanyInfo() {
+            let that = this;
+            that.companyError = '';
+            that.companyInfo = {};
+            
+            $.ajax({
+                url: that.baseUrl + "/company/detail",
+                type: "GET",
+                data: {id: that.testCompanyId},
+                success: function (data) {
+                    that.companyApiResponse = JSON.stringify(data, null, 2);
+                    if (data.code === 200) {
+                        that.companyInfo = data.data;
+                    } else {
+                        that.companyError = data.msg || 'Failed to get provider info';
+                    }
+                },
+                error: function (xhr, status, error) {
+                    that.companyError = 'Network Error: ' + error;
+                    that.companyApiResponse = 'Error: ' + error;
+                }
+            });
+        },
+        
+        getCompanyByCreateId() {
+            let that = this;
+            that.companyError = '';
+            that.companyInfo = {};
+            
+            $.ajax({
+                url: that.baseUrl + "/company/byCreateId",
+                type: "GET",
+                data: {createid: that.testCreateId},
+                success: function (data) {
+                    that.companyApiResponse = JSON.stringify(data, null, 2);
+                    if (data.code === 200) {
+                        that.companyInfo = data.data;
+                    } else {
+                        that.companyError = data.msg || 'Failed to get provider info';
+                    }
+                },
+                error: function (xhr, status, error) {
+                    that.companyError = 'Network Error: ' + error;
+                    that.companyApiResponse = 'Error: ' + error;
+                }
+            });
+        }
+    },
+    mounted() {
+        // Auto-test on page load
+        this.getUserInfo();
+        this.getCompanyInfo();
+    }
+});
+</script>
+</body>
+</html>

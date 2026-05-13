@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+
+    <title> Pet Services</title>
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <link href="favicon.ico" rel="shortcut icon">
+    <script src="/static/DemoBootStrap/js/vue.js"></script>
+    <!--    <link href="/static/hAdmin/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">-->
+    <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <!-- Sweet Alert -->
+    <link href="/static/hAdmin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/animate.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+    <link href="/static/element/element.css" rel="stylesheet">
+    <style>
+        .addList {
+            padding: 10px 30px 10px 30px;
+            height: 90px;
+            margin-top: 3px
+        }
+    </style>
+
+</head>
+
+<body class="gray-bg animated bounceInDown">
+<div id="app">
+    <div id="block"
+         style="width: 100%;height: 100%;background: #171717;opacity: 0.7;position: fixed;top: 0;left: 0;z-index: 999;text-align: center;display: none">
+        <div style="margin-top: 300px">
+            <span style="color: #ffffff;font-size: 20px;font-weight: 700">Submitting operation, please do not perform any actions...</span>
+        </div>
+    </div>
+    <div class="wrapper wrapper-content animated fadeInUp">
+        <span id="gloUrl" style="display: none"></span>
+
+        <div class="row">
+            <div class="col-sm-12">
+
+                <div class="ibox">
+                    <div class="ibox-title" style="height: 55px;">
+                        <h5>All Records</h5>
+                        <div class="ibox-tools">
+                            <div class="text-center">
+                                <el-button
+                                        @click="handleAdd"
+                                        v-if="role !== '2'"
+                                        type="primary">
+                                    Add
+                                </el-button>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="row m-b-sm m-t-sm">
+
+                            <div class="col-md-11 form-inline">
+                                <el-form :inline="true" :model="queryParams" class="demo-form-inline">
+                                    <el-form-item label="Pet Service Name">
+                                        <el-input placeholder="Pet Service Name" v-model="queryParams.productname"></el-input>
+                                    </el-form-item>
+<!--                                    <el-form-item label="类型">-->
+<!--                                        <el-select placeholder="类型" v-model="queryParams.type">-->
+<!--                                            <el-option :label="item.typeName" :value="item.id"-->
+<!--                                                       v-for="item in selectList">-->
+
+<!--                                            </el-option>-->
+<!--                                        </el-select>-->
+<!--                                    </el-form-item>-->
+                                    <el-form-item>
+                                        <el-button @click="getList" type="primary"><i class="fa fa-search"></i> Search
+                                        </el-button>
+                                        <el-button @click="handleResetQuery" type="info"><i class="fa fa-circle"></i> Reset
+                                        </el-button>
+                                    </el-form-item>
+                                </el-form>
+                            </div>
+                        </div>
+                        <!--            列表          -->
+                        <div class="project-list">
+                            <div class="ibox-content">
+                                <el-table
+                                        height="550"
+                                        :data="dataList"
+                                        style="width: 100%"
+                                        v-loading="loading">
+                                    <el-table-column
+                                            align="center"
+                                            label="ID"
+                                            prop="id"
+                                    >
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Image"
+                                            prop="img"
+                                    >
+                                        <template slot-scope="scope">
+                                            <el-image :src="scope.row.img"
+                                                      style="width: 100px;height: 100px;"></el-image>
+                                        </template>
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Pet Service Name"
+                                            prop="productname"
+                                    >
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Service Cost"
+                                            prop="chengben">
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Service Price"
+                                            prop="kedanjia">
+                                    </el-table-column>
+
+                                    <el-table-column
+                                            align="center"
+                                            label="Daily Available Quantity"
+                                            prop="kucun">
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Create Time"
+                                            prop="createtime">
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Update Time"
+                                            prop="updatetime">
+                                    </el-table-column>
+                                    <el-table-column
+                                            align="center"
+                                            label="Actions"
+                                            width="350px"
+                                    >
+                                        <template slot-scope="scope">
+                                            <el-button @click="handleDetail(scope.row)" round
+                                                       size="small" type="primary"
+                                            ><i class="fa fa-eye"></i> View
+                                            </el-button>
+                                            <el-button @click="handleEdit(scope.row)" round size="small" type="warning"
+                                                       v-if="role !== '2'">
+                                                <i class="fa fa-pencil"></i> Edit
+                                            </el-button>
+                                            <el-button @click="handleDel(scope.row.id)" round size="small"
+                                                       v-if="role !== '2'"
+                                                       type="danger"><i class="fa fa-trash"></i> Delete
+                                            </el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                        <div style="width: 100%;text-align: center">
+                            <el-pagination
+                                    :current-page.sync="queryParams.pageNum"
+                                    :page-size="queryParams.pageSize"
+                                    :total="total"
+                                    @current-change="handleCurrentChange"
+                                    background
+                                    layout="total, prev, pager, next">
+                            </el-pagination>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <el-dialog :title="title" :visible.sync="open" width="50%">
+        <el-form :model="form" :rules="rules" label-width="150px" ref="form">
+            <el-form-item label="Image">
+                <el-upload
+                        :action="baseUrl+'/common/upload'"
+                        :before-remove="beforeRemove"
+                        :file-list="fileList"
+                        :limit="5"
+                        :on-exceed="handleExceed"
+                        :on-preview="handlePreview"
+                        :on-remove="handleRemove"
+                        :on-success="handleFileSuccess"
+                        class="upload-demo"
+                        multiple>
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">Drag image here, or <em>click to upload</em></div>
+
+                    <el-button size="small" type="primary">Click to Upload</el-button>
+
+                </el-upload>
+            </el-form-item>
+            <el-form-item label="Pet Service Name" prop="productname">
+                <el-input v-model="form.productname"></el-input>
+            </el-form-item>
+            <el-form-item label="Pet Service Cost">
+                <el-input type="text" v-model="form.chengben"></el-input>
+            </el-form-item>
+            <el-form-item label="Service Price">
+                <el-input v-model="form.kedanjia"></el-input>
+            </el-form-item>
+            <el-form-item label="Daily Available Quantity">
+                <el-input v-model="form.kucun"></el-input>
+            </el-form-item>
+            <el-form-item label="Service Days">
+                <el-input v-model="form.fahuotianshu"></el-input>
+            </el-form-item>
+            <el-form-item label="Service Location">
+                <el-input v-model="form.chandi"></el-input>
+            </el-form-item>
+            <el-form-item label="Service Quality">
+                <el-input v-model="form.guige"></el-input>
+            </el-form-item>
+            <el-form-item label="Discount (10%-100%)">
+                <el-input type="number" v-model="form.spare2"></el-input>
+            </el-form-item>
+            <el-form-item label="Pet Service Type">
+                <el-select v-model="form.producttype">
+                    <el-option v-for="item in selectList" :label="item.typeName" :value="item.id+''"></el-option>
+                </el-select>
+            </el-form-item>
+
+            <!-- Service Time Range -->
+            <el-form-item label="Service Time Range">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <el-time-picker
+                        v-model="form.serviceStartTime"
+                        placeholder="Start Time"
+                        format="HH:mm"
+                        value-format="HH:mm"
+                        style="width: 120px;">
+                    </el-time-picker>
+                    <span>to</span>
+                    <el-time-picker
+                        v-model="form.serviceEndTime"
+                        placeholder="End Time"
+                        format="HH:mm"
+                        value-format="HH:mm"
+                        style="width: 120px;">
+                    </el-time-picker>
+                </div>
+                <div style="font-size: 12px; color: #909399; margin-top: 5px;">
+                    Please set the time period for providing this service, e.g.: 09:00 to 18:00
+                </div>
+            </el-form-item>
+
+            <el-form-item label="Pet Service Description">
+                <el-input type="textarea" v-model="form.productdes"></el-input>
+            </el-form-item>
+
+            <el-form-item>
+                <el-button @click="submitEdit" type="primary">Save</el-button>
+                <el-button @click="open = false">Cancel</el-button>
+            </el-form-item>
+        </el-form>
+    </el-dialog>
+    <el-dialog :visible.sync="openDetail" width="50%">
+        <el-descriptions :column="4" :title="title" border>
+            <el-descriptions-item :span="4" label="Image">
+                <el-image :src="form.img"
+                          style="width: 100px;height: 100px;"></el-image>
+            </el-descriptions-item>
+            <el-descriptions-item :span="2" label="Pet Service Name">{{form.productname}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="Pet Service Cost">{{form.chengben}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="Service Price">{{form.kedanjia}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="Daily Available Quantity">{{form.kucun}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="Service Location">{{form.chandi}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="Service Quality">{{form.guige}}</el-descriptions-item>
+<!--            <el-descriptions-item :span="2" label="sales volume">{{form.spare1}}</el-descriptions-item>-->
+            <el-descriptions-item :span="2" label="Discount">{{form.spare2}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="Product Type">
+                <el-select v-model="form.producttype">
+                    <el-option v-for="item in selectList" :label="item.typeName" :value="item.id+''"></el-option>
+                </el-select>
+            </el-descriptions-item>
+            <el-descriptions-item :span="2" label="Service Time">
+                {{form.serviceStartTime && form.serviceEndTime ? form.serviceStartTime + ' - ' + form.serviceEndTime : 'Not Set'}}
+            </el-descriptions-item>
+            <el-descriptions-item :span="2" label="Service Days">{{form.fahuotianshu}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="Create Time">{{form.createtime}}</el-descriptions-item>
+            <el-descriptions-item :span="2" label="Create Time">{{form.createtime}}</el-descriptions-item>
+            <el-descriptions-item :span="4" label="Pet Service Description">{{form.productdes}}</el-descriptions-item>
+        </el-descriptions>
+    </el-dialog>
+</div>
+
+
+<!-- 全局js -->
+<script src="/static/hAdmin/js/jquery.min.js?v=2.1.4"></script>
+<!--<script src="/static/hAdmin/js/bootstrap.min.js?v=3.3.6"></script>-->
+<!-- Sweet alert -->
+<script src="/static/hAdmin/js/plugins/sweetalert/sweetalert.min.js"></script>
+
+<!-- 自定义js -->
+<script src="/static/hAdmin/js/content.js?v=1.0.0"></script>
+
+
+<script src="/static/element/element.js"></script>
+
+<!--    分页js -->
+<!--<script src="/static/wmmJs/public/PageHelper.js"></script>-->
+<script src="/static/hAdmin/js/plugins/toastr/toastr.min.js"></script>
+<script src="/static/js/GloJs.js"></script>
+<script>
+
+    new Vue({
+        el: "#app",
+        data() {
+            return {
+                baseUrl: gloRequestUrl,
+                dataList: [],
+                selectList: [],
+                fileList: [],
+                fileStr: [],
+                total: 0,
+                searchKey: "",
+                loading: true,
+                userId: localStorage.getItem("userId"),
+                role: localStorage.getItem("role"),
+                form: {},
+                open: false,
+                openDetail: false,
+                queryParams: {
+                    pageSize: 3,
+                    pageNum: 1,
+                    companyid:  localStorage.getItem("userId"),
+                },
+                title: "",
+                rules: {
+                    title: [
+                        {required: true, message: '请输入', trigger: 'blur'},
+
+                    ],
+
+                }
+            }
+        },
+        methods: {
+            handleResetQuery() {
+                this.queryParams = {
+                    pageSize: 3,
+                    pageNum: 1,
+                }
+                this.getList()
+            },
+            removeElement(arr, elem) {
+                return arr.filter(item => item !== elem);
+            },
+            handleRemove(file, fileList) {
+                this.fileStr = this.removeElement(this.fileStr, file.response.msg)
+            },
+            handlePreview(file) {
+                window.open(this.baseUrl + file.response.msg)
+            },
+            handleExceed(files, fileList) {
+                this.$message.warning(`当前限制选择 5 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+            },
+            beforeRemove(file, fileList) {
+                return this.$confirm(`确定移除 ${file.name}？`);
+            },
+            handleFileSuccess(res) {
+                let that = this
+                that.fileStr.push(res.msg)
+            },
+            getSelectList() {
+                let that = this;
+                let param = {
+                    "pageSize": 999,
+                    "pageNum": that.queryParams.pageNum,
+
+                }
+                $.ajax({
+                    url: that.baseUrl + "/producttype",
+                    type: "GET",
+                    data: param,
+                    success: function (data) {
+                        if (data.code !== 500) {
+
+                            that.selectList = data.list
+
+                        }
+                    },
+                    error: function () {
+                        windowsAuto(500, "服务器异常！network error！")
+                    }
+                });
+            },
+            // 获取列表
+            getList() {
+                let that = this;
+                that.loading = true
+                $.ajax({
+                    url: that.baseUrl + "/product",
+                    type: "GET",
+                    data: that.queryParams,
+                    success: function (data) {
+                        if (data.code !== 500) {
+                            that.loading = false
+                            that.dataList = data.list
+                            that.total = data.total
+                        }
+                    },
+                    error: function () {
+                        windowsAuto(500, "服务器异常！network error！")
+                    }
+                });
+            },
+            submitEdit() {
+                let that = this
+                this.$refs['form'].validate((valid) => {
+                    if (valid) {
+                        if (that.fileStr && that.fileStr.length > 0) {
+                            that.form.img = that.fileStr.join(",")
+
+                        }
+                        that.form.companyid = that.userId
+                        if (that.form.id == undefined) {
+
+                            $.ajax({
+                                url: that.baseUrl + "/product",
+                                type: "post",
+                                data: JSON.stringify(that.form),
+                                contentType: "application/json",
+                                // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                                success: function (data) {
+                                    that.open = false
+                                    if (data.code === 200) {
+                                        toastr.success(data.msg, '提示')
+
+                                    } else {
+
+                                        toastr.error(data.msg, '提示')
+                                    }
+                                    that.getList()
+                                },
+                                error: function () {
+                                    alert("服务器异常！network error！")
+                                }
+                            })
+                        } else {
+
+                            $.ajax({
+                                url: that.baseUrl + "/product",
+                                type: "PUT",
+                                data: JSON.stringify(that.form),
+                                contentType: "application/json",
+                                // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+                                success: function (data) {
+                                    that.open = false
+                                    if (data.code === 200) {
+                                        toastr.success(data.msg, '提示')
+
+                                    } else {
+
+                                        toastr.error(data.msg, '提示')
+                                    }
+                                    that.getList()
+                                },
+                                error: function () {
+                                    alert("服务器异常！network error！")
+                                }
+                            })
+                        }
+
+                    }
+                })
+            },
+            reset() {
+                this.form = {}
+                this.fileStr = []
+                this.fileList = []
+            },
+            //打开详情
+            handleDetail(row) {
+                let that = this;
+                that.form = row
+                that.title = "Details"
+                that.openDetail = true
+
+            },
+            handleDel(id) {
+                let that = this;
+                swal({
+                    title: "您确定要删除该信息吗",
+                    text: "删除后不可恢复！",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: "删除",
+                    cancelButtonText: "我再想想",
+                    closeOnConfirm: false
+                }, function () {
+                    $.ajax({
+                        url: that.baseUrl + "/product",
+                        type: "DELETE",
+                        data: {
+                            id: id,
+                        },
+                        success: function (data) {
+                            windowsAuto(data.code, data.msg)
+                            that.getList()
+                        },
+                        error: function () {
+                            alert("服务器异常！network error！")
+                        }
+                    })
+
+                });
+            },
+            handleEdit(row) {
+                let that = this
+                that.form = row
+                that.open = true
+                that.title = "edit"
+            },
+            handleAdd() {
+                let that = this
+                that.reset()
+                that.open = true
+                that.title = "add"
+            },
+
+            handleCurrentChange() {
+                let that = this;
+                that.getList()
+            },
+
+
+        },
+        watch: {},
+        mounted() {
+            let that = this;
+            if (that.queryParams) {
+                that.getList()
+                that.getSelectList()
+            }
+
+
+        }
+    })
+
+</script>
+</body>
+</html>

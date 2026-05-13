@@ -1,0 +1,2291 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Announcement Details</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <script src="/static/DemoBootStrap/js/vue.js"></script>
+
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/webSite/css/vendor.css">
+    <link rel="stylesheet" type="text/css" href="/static/webSite/style.css">
+    <link href="/static/hAdmin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+
+    <style>
+      /* Enhanced visual navigation bar styles */
+      .enhanced-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        transition: all 0.3s ease;
+      }
+
+      .enhanced-header:hover {
+        box-shadow: 0 6px 25px rgba(0,0,0,0.15);
+      }
+
+      .enhanced-logo {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        padding: 10px 15px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .enhanced-logo:hover {
+        background: rgba(255,255,255,0.2);
+        transform: translateY(-2px);
+        text-decoration: none;
+      }
+
+      .enhanced-logo h2 {
+        color: white;
+        margin: 0;
+        font-size: 24px;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      }
+
+      .enhanced-logo i {
+        color: white;
+        font-size: 28px;
+        margin-right: 10px;
+      }
+
+      .enhanced-nav {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 5px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+
+      .enhanced-menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .enhanced-menu-item {
+        position: relative;
+      }
+
+      .enhanced-menu-link {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .enhanced-menu-link::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.2);
+        transition: left 0.3s ease;
+      }
+
+      .enhanced-menu-link:hover::before {
+        left: 0;
+      }
+
+      .enhanced-menu-link:hover {
+        background: rgba(255,255,255,0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        text-decoration: none;
+        color: white;
+      }
+
+      .enhanced-menu-link.active {
+        background: rgba(255,255,255,0.3);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      }
+
+      .enhanced-menu-link i {
+        margin-right: 8px;
+        font-size: 16px;
+      }
+
+      .enhanced-user-area {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .enhanced-icon-link {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .enhanced-icon-link::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(255,255,255,0.3);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: all 0.5s ease;
+      }
+
+      .enhanced-icon-link:hover::before {
+        width: 100%;
+        height: 100%;
+      }
+
+      .enhanced-icon-link:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        text-decoration: none;
+        color: white;
+      }
+
+      .enhanced-user-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        border: 3px solid rgba(255,255,255,0.3);
+        object-fit: cover;
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .enhanced-user-avatar:hover {
+        border-color: rgba(255,255,255,0.5);
+        transform: scale(1.1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      }
+
+      .enhanced-login-btn {
+        padding: 10px 25px;
+        background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+        border: none;
+        border-radius: 25px;
+        color: white;
+        font-weight: bold;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(238,90,36,0.3);
+      }
+
+      .enhanced-login-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(238,90,36,0.4);
+        text-decoration: none;
+        color: white;
+      }
+
+      /* Navigation search box */
+      .nav-search-box {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 25px;
+        padding: 8px 20px;
+        display: flex;
+        align-items: center;
+        transition: all 0.3s ease;
+      }
+
+      .nav-search-box:hover {
+        background: rgba(255,255,255,0.2);
+      }
+
+      .nav-search-box input {
+        background: none;
+        border: none;
+        color: white;
+        outline: none;
+        width: 150px;
+        margin-left: 10px;
+      }
+
+      .nav-search-box input::placeholder {
+        color: rgba(255,255,255,0.7);
+      }
+
+      .nav-search-box i {
+        color: rgba(255,255,255,0.9);
+      }
+
+      /* Enhanced breadcrumb navigation */
+      .enhanced-breadcrumb {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 15px 25px;
+        margin-bottom: 30px;
+      }
+
+      .enhanced-breadcrumb-item {
+        color: rgba(255,255,255,0.9);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        padding: 5px 10px;
+        border-radius: 5px;
+      }
+
+      .enhanced-breadcrumb-item:hover {
+        background: rgba(255,255,255,0.2);
+        color: white;
+        text-decoration: none;
+      }
+
+      .enhanced-breadcrumb-item.active {
+        color: white;
+        background: rgba(255,255,255,0.2);
+      }
+
+      /* Animation effects */
+      @keyframes slideInDown {
+        from {
+          transform: translateY(-100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .enhanced-header {
+        animation: slideInDown 0.6s ease-out;
+      }
+
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+      }
+
+      .enhanced-icon-link:hover {
+        animation: pulse 1s infinite;
+      }
+
+      /* Responsive design */
+      @media (max-width: 992px) {
+        .enhanced-menu {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .enhanced-menu-link {
+          padding: 10px 15px;
+          font-size: 14px;
+        }
+
+        .enhanced-logo h2 {
+          font-size: 20px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .enhanced-header {
+          padding: 10px 0;
+        }
+
+        .enhanced-nav {
+          order: 3;
+          width: 100%;
+          margin-top: 15px;
+        }
+
+        .enhanced-menu {
+          justify-content: center;
+          flex-wrap: wrap;
+        }
+
+        .enhanced-user-area {
+          justify-content: center;
+        }
+
+        .nav-search-box {
+          display: none;
+        }
+      }
+
+      .home-button:hover {
+        background-color: #007bff !important;
+        color: white !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+      }
+
+      .notice-detail-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 60px 0;
+      }
+
+      .notice-content {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 40px;
+        margin-top: -30px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .notice-meta {
+        color: #6c757d;
+        font-size: 14px;
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 15px;
+        margin-bottom: 30px;
+      }
+
+      .notice-meta i {
+        margin-right: 5px;
+      }
+
+      .notice-body {
+        line-height: 1.8;
+        font-size: 16px;
+        color: #333;
+      }
+
+      .notice-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+
+      .notice-main-layout {
+        display: flex;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+
+      .notice-cover {
+        flex: 0 0 400px;
+      }
+
+      .notice-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .notice-title-section {
+        margin-bottom: 20px;
+      }
+
+      .notice-title-section h2 {
+        font-size: 28px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 15px;
+      }
+
+      .notice-content-section {
+        flex: 1;
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+      }
+
+      .related-topics {
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+      }
+
+      .topic-tag {
+        display: inline-block;
+        background: #e7f3ff;
+        color: #007bff;
+        padding: 5px 15px;
+        border-radius: 20px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        font-size: 14px;
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+
+      .topic-tag:hover {
+        background: #007bff;
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      .topic-tag i {
+        margin-right: 5px;
+      }
+
+      @media (max-width: 768px) {
+        .notice-main-layout {
+          flex-direction: column;
+        }
+
+        .notice-cover {
+          flex: 0 0 auto;
+        }
+      }
+
+      .back-button {
+        margin-bottom: 20px;
+      }
+
+      .comment-section {
+        margin-top: 50px;
+        padding-top: 30px;
+        border-top: 2px solid #e9ecef;
+      }
+
+      .comment-item {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+        position: relative;
+      }
+
+      .comment-item:hover {
+        background: #ffffff;
+        border-color: #007bff;
+        box-shadow: 0 2px 8px rgba(0,123,255,0.1);
+        transform: translateY(-2px);
+      }
+
+      .comment-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .comment-author {
+        font-weight: bold;
+        color: #007bff;
+        display: flex;
+        align-items: center;
+      }
+
+      .comment-author i {
+        margin-right: 5px;
+        font-size: 16px;
+      }
+
+      .current-user-badge {
+        color: #28a745;
+        font-size: 12px;
+        margin-left: 5px;
+        background: #d4edda;
+        padding: 2px 6px;
+        border-radius: 10px;
+      }
+
+      .comment-time {
+        font-size: 12px;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+      }
+
+      .comment-time i {
+        margin-right: 3px;
+      }
+
+      .comment-content {
+        color: #333;
+        line-height: 1.6;
+        margin-bottom: 10px;
+        padding: 10px;
+        background: #ffffff;
+        border-radius: 6px;
+        border-left: 3px solid #007bff;
+      }
+
+      .comment-actions {
+        text-align: right;
+        margin-top: 10px;
+        display: flex;
+        gap: 5px;
+        justify-content: flex-end;
+        align-items: center;
+      }
+
+      .comment-actions .btn {
+        font-size: 12px;
+        padding: 4px 8px;
+      }
+
+      /* Reply styles */
+      .comment-replies {
+        margin-left: 20px;
+        margin-top: 15px;
+        padding-left: 15px;
+        border-left: 3px solid #e9ecef;
+      }
+
+      .reply-item {
+        background: #ffffff;
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 10px;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .reply-item:hover {
+        border-color: #007bff;
+        box-shadow: 0 1px 5px rgba(0,123,255,0.1);
+        transform: translateY(-1px);
+      }
+
+      .reply-item::before {
+        content: '';
+        position: absolute;
+        left: -18px;
+        top: 15px;
+        width: 12px;
+        height: 12px;
+        background: #007bff;
+        border-radius: 50%;
+        opacity: 0.3;
+      }
+
+      .reply-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .reply-author {
+        font-weight: 600;
+        color: #007bff;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+      }
+
+      .reply-author i {
+        margin-right: 4px;
+        font-size: 14px;
+      }
+
+      .reply-to {
+        color: #6c757d;
+        font-size: 12px;
+        margin-left: 8px;
+      }
+
+      .reply-time {
+        font-size: 11px;
+        color: #6c757d;
+      }
+
+      .reply-content {
+        color: #495057;
+        line-height: 1.5;
+        margin-bottom: 8px;
+        padding: 8px;
+        background: #f8f9fa;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      .reply-actions {
+        text-align: right;
+        font-size: 11px;
+      }
+
+      .reply-actions .btn {
+        font-size: 11px;
+        padding: 2px 6px;
+        margin-left: 2px;
+      }
+
+      /* Reply form */
+      .reply-form {
+        margin-top: 15px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        border: 1px dashed #dee2e6;
+        animation: slideDown 0.3s ease-out;
+      }
+
+      .reply-form textarea {
+        border-radius: 4px;
+        border: 1px solid #ced4da;
+        padding: 8px;
+        font-size: 14px;
+        resize: vertical;
+        min-height: 80px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .reply-form textarea:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        outline: none;
+      }
+
+      .reply-form .form-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+      }
+
+      .reply-form .char-count {
+        font-size: 12px;
+        color: #6c757d;
+      }
+
+      .reply-form .btn-group {
+        display: flex;
+        gap: 5px;
+      }
+
+      .reply-form .btn {
+        font-size: 13px;
+        padding: 6px 12px;
+      }
+
+      /* Reply count display */
+      .reply-count {
+        display: inline-flex;
+        align-items: center;
+        background: #e7f3ff;
+        color: #007bff;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        margin-left: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .reply-count:hover {
+        background: #007bff;
+        color: white;
+        transform: translateY(-1px);
+      }
+
+      .reply-count i {
+        margin-right: 3px;
+        font-size: 10px;
+      }
+
+      /* Expand/collapse replies */
+      .toggle-replies {
+        cursor: pointer;
+        color: #007bff;
+        font-size: 13px;
+        margin-top: 8px;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+      }
+
+      .toggle-replies:hover {
+        color: #0056b3;
+        transform: translateY(-1px);
+      }
+
+      .toggle-replies i {
+        margin-right: 3px;
+        transition: transform 0.3s ease;
+      }
+
+      .toggle-replies.expanded i {
+        transform: rotate(90deg);
+      }
+
+      /* Animation */
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          max-height: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          max-height: 500px;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      .fade-in {
+        animation: fadeIn 0.5s ease-out;
+      }
+
+      /* Comment loading state */
+      .comment-loading {
+        text-align: center;
+        padding: 20px;
+        color: #6c757d;
+      }
+
+      .comment-loading i {
+        font-size: 24px;
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      /* Empty state optimization */
+      .empty-comments {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6c757d;
+      }
+
+      .empty-comments i {
+        font-size: 48px;
+        margin-bottom: 15px;
+        opacity: 0.5;
+      }
+
+      .empty-comments p {
+        font-size: 16px;
+        margin-bottom: 0;
+      }
+
+      /* Comment count badge */
+      .comment-count-badge {
+        display: inline-flex;
+        align-items: center;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        box-shadow: 0 2px 8px rgba(0,123,255,0.3);
+        transition: all 0.3s ease;
+      }
+
+      .comment-count-badge:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,123,255,0.4);
+      }
+
+      .comment-count-badge i {
+        margin-right: 6px;
+      }
+
+      /* Success notification optimization */
+      .reply-success {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        animation: slideDown 0.3s ease-out;
+        display: flex;
+        align-items: center;
+      }
+
+      .reply-success i {
+        margin-right: 8px;
+        font-size: 16px;
+      }
+
+      /* Reply highlight effect */
+      .reply-highlight {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        animation: highlight 2s ease-out;
+      }
+
+      @keyframes highlight {
+        0% {
+          background: #fff3cd;
+          border-left-color: #ffc107;
+        }
+        100% {
+          background: transparent;
+          border-left-color: #e9ecef;
+        }
+      }
+
+      /* Scroll to comments button */
+      .scroll-to-comments {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 1000;
+      }
+
+      .scroll-to-comments:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0,123,255,0.4);
+      }
+
+      .scroll-to-comments i {
+        font-size: 20px;
+      }
+
+      /* Multi-level reply style optimization */
+      .comment-replies {
+        margin-left: 20px;
+        margin-top: 15px;
+        padding-left: 15px;
+        border-left: 3px solid #e9ecef;
+      }
+
+      .comment-replies.ml-3 {
+        margin-left: 30px;
+        border-left: 2px solid #dee2e6;
+      }
+
+      .comment-replies.ml-3 .reply-item {
+        background: #fafbfc;
+        border-radius: 4px;
+        margin-bottom: 8px;
+      }
+
+      /* Deep reply styles */
+      .comment-replies .comment-replies {
+        margin-left: 15px;
+        border-left: 2px dashed #e9ecef;
+      }
+
+      .comment-replies .comment-replies .reply-item {
+        background: #f8f9fa;
+        font-size: 13px;
+      }
+
+      /* Responsive optimization */
+      @media (max-width: 768px) {
+        .comment-item {
+          padding: 15px;
+        }
+
+        .comment-replies {
+          margin-left: 10px;
+          padding-left: 10px;
+        }
+
+        .comment-replies.ml-3 {
+          margin-left: 20px;
+        }
+
+        .reply-item {
+          padding: 10px;
+        }
+
+        .reply-form {
+          padding: 12px;
+        }
+
+        .comment-actions {
+          flex-wrap: wrap;
+          gap: 3px;
+        }
+
+        .comment-actions .btn {
+          font-size: 11px;
+          padding: 3px 6px;
+        }
+
+        .reply-count {
+          font-size: 11px;
+          padding: 2px 6px;
+        }
+
+        .scroll-to-comments {
+          bottom: 20px;
+          right: 20px;
+          width: 45px;
+          height: 45px;
+        }
+
+        .scroll-to-comments i {
+          font-size: 18px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .comment-item {
+          padding: 12px;
+        }
+
+        .comment-header {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 5px;
+        }
+
+        .comment-actions {
+          margin-top: 10px;
+        }
+
+        .comment-form {
+          padding: 10px;
+        }
+
+        .reply-form {
+          padding: 10px;
+        }
+
+        .reply-form .form-actions {
+          flex-direction: column;
+          gap: 10px;
+          align-items: stretch;
+        }
+
+        .reply-form .btn-group {
+          justify-content: center;
+        }
+      }
+
+      .comment-form {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+        border: 1px solid #e9ecef;
+      }
+
+      .comment-form textarea {
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        transition: border-color 0.3s ease;
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .comment-form textarea:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        outline: none;
+      }
+
+      .type-badge {
+        background: #007bff;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        display: inline-block;
+        margin-bottom: 15px;
+      }
+
+      /* Print styles */
+      @media print {
+        .enhanced-header,
+        .back-button,
+        .comment-section,
+        .related-topics,
+        footer {
+          display: none !important;
+        }
+
+        .notice-detail-header {
+          background: none !important;
+          color: black !important;
+        }
+
+        .notice-content {
+          box-shadow: none !important;
+          margin-top: 0 !important;
+        }
+
+        body {
+          font-size: 12pt;
+          line-height: 1.4;
+        }
+
+        .notice-title-section h2 {
+          font-size: 20pt;
+        }
+
+        .notice-body {
+          font-size: 12pt;
+        }
+      }
+
+      /* Scrollbar styles */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+      }
+
+      /* Enhanced hover effects */
+      .notice-content {
+        transition: all 0.3s ease;
+      }
+
+      .notice-content:hover {
+        box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        transform: translateY(-2px);
+      }
+
+      /* Enhanced loading animation */
+      .spinner-border {
+        border-color: #ffffff;
+        border-right-color: transparent;
+        animation: spinner-border 0.75s linear infinite;
+      }
+
+      @keyframes spinner-border {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Responsive enhancement */
+      @media (max-width: 576px) {
+        .enhanced-header {
+          padding: 8px 0;
+        }
+
+        .enhanced-logo h2 {
+          font-size: 18px;
+        }
+
+        .enhanced-menu-link {
+          padding: 8px 12px;
+          font-size: 13px;
+        }
+
+        .enhanced-menu-link i {
+          font-size: 14px;
+          margin-right: 5px;
+        }
+
+        .enhanced-icon-link {
+          width: 38px;
+          height: 38px;
+        }
+
+        .enhanced-user-avatar {
+          width: 38px;
+          height: 38px;
+        }
+
+        .nav-search-box {
+          display: none;
+        }
+
+        .enhanced-breadcrumb {
+          padding: 10px 15px;
+        }
+
+        .enhanced-breadcrumb-item {
+          font-size: 14px;
+          padding: 3px 8px;
+        }
+
+        .notice-detail-header h1 {
+          font-size: 2rem;
+        }
+
+        .notice-detail-header .lead {
+          font-size: 1rem;
+        }
+
+        .btn-outline-light {
+          padding: 6px 12px;
+          font-size: 14px;
+        }
+      }
+
+      /* High contrast mode support */
+      @media (prefers-contrast: high) {
+        .enhanced-header {
+          background: #000000;
+        }
+
+        .enhanced-menu-link:hover {
+          background: rgba(255,255,255,0.4);
+        }
+
+        .enhanced-icon-link:hover {
+          background: rgba(255,255,255,0.4);
+        }
+      }
+
+      /* Reduced motion preference support */
+      @media (prefers-reduced-motion: reduce) {
+        .enhanced-header,
+        .enhanced-menu-link,
+        .enhanced-icon-link,
+        .enhanced-logo,
+        .enhanced-breadcrumb-item,
+        .notice-content {
+          transition: none;
+          animation: none;
+        }
+
+        .enhanced-icon-link:hover {
+          animation: none;
+        }
+      }
+    </style>
+
+  </head>
+  <body>
+
+  <div id="app">
+    <!-- Enhanced visual navigation bar -->
+    <header class="enhanced-header">
+      <div class="container-lg py-3">
+        <div class="row align-items-center">
+          <!-- Logo area -->
+          <div class="col-lg-2 col-md-3">
+            <a href="/web/userindex" class="enhanced-logo">
+              <i class="fa fa-paw"></i>
+              <h2 class="mb-0">Pet Services</h2>
+            </a>
+          </div>
+
+          <!-- Navigation menu area -->
+          <div class="col-lg-7 col-md-6">
+            <nav class="enhanced-nav">
+              <ul class="enhanced-menu">
+                <li class="enhanced-menu-item">
+                  <a href="/web/userindex" class="enhanced-menu-link">
+                    <i class="fa fa-home"></i>
+                    <span>Home</span>
+                  </a>
+                </li>
+                <li class="enhanced-menu-item">
+                  <a href="/web/userproductlist" class="enhanced-menu-link">
+                    <i class="fa fa-th-list"></i>
+                    <span>Service List</span>
+                  </a>
+                </li>
+                <li class="enhanced-menu-item">
+                  <a href="/web/userblog" class="enhanced-menu-link active">
+                    <i class="fa fa-bullhorn"></i>
+                    <span>Announcements</span>
+                  </a>
+                </li>
+                <li class="enhanced-menu-item">
+                  <a href="/web/usercontact" class="enhanced-menu-link">
+                    <i class="fa fa-envelope"></i>
+                    <span>Contact Us</span>
+                  </a>
+                </li>
+                <li class="enhanced-menu-item">
+                  <a href="/web/chongzhi" class="enhanced-menu-link">
+                    <i class="fa fa-credit-card"></i>
+                    <span>Recharge</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+
+          <!-- User area and search box -->
+          <div class="col-lg-3 col-md-3">
+            <div class="enhanced-user-area justify-content-end">
+              <!-- Search box -->
+              <div class="nav-search-box">
+                <i class="fa fa-search"></i>
+                <input type="text" placeholder="Search announcements..." @keyup.enter="handleSearch">
+              </div>
+
+              <!-- Shopping cart icon -->
+              <a href="/web/usercart" class="enhanced-icon-link" title="购物车">
+                <i class="fa fa-shopping-cart"></i>
+              </a>
+
+              <!-- User avatar or login button -->
+              <div v-if="userId">
+                <a href="/web/personal" class="enhanced-icon-link" title="个人中心">
+                  <img v-if="userInfo.img" :src="userInfo.img" alt="User Avatar" class="enhanced-user-avatar">
+                  <i v-else class="fa fa-user"></i>
+                </a>
+              </div>
+              <div v-else>
+                <a href="/web/login" class="enhanced-login-btn">
+                  <i class="fa fa-sign-in"></i> Login
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Announcement details header -->
+    <section class="notice-detail-header">
+      <div class="container-lg">
+        <!-- Enhanced breadcrumb navigation -->
+        <nav class="enhanced-breadcrumb">
+          <div class="d-flex align-items-center">
+            <a href="/web/userindex" class="enhanced-breadcrumb-item">
+              <i class="fa fa-home"></i> Home
+            </a>
+            <span class="mx-3 text-white">/</span>
+            <a href="/web/userblog" class="enhanced-breadcrumb-item">
+              <i class="fa fa-bullhorn"></i> Announcement List
+            </a>
+            <span class="mx-3 text-white">/</span>
+            <span class="enhanced-breadcrumb-item active">
+              <i class="fa fa-file-text"></i> Announcement Details
+            </span>
+          </div>
+        </nav>
+
+        <div class="back-button">
+          <a href="/web/userblog" class="btn btn-light">
+            <i class="fa fa-arrow-left"></i> Back to List
+          </a>
+        </div>
+
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h1 class="display-4 mb-3">
+              <i class="fa fa-bullhorn me-3"></i>Announcement Details
+            </h1>
+            <p class="lead mb-0">View the latest platform announcements and activity information</p>
+          </div>
+          <div class="col-md-4 text-md-end">
+            <div class="d-flex gap-2 justify-content-md-end mt-3 mt-md-0">
+              <button class="btn btn-outline-light" @click="shareNotice">
+                <i class="fa fa-share-alt"></i> Share
+              </button>
+              <button class="btn btn-outline-light" @click="printNotice">
+                <i class="fa fa-print"></i> Print
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Announcement content -->
+    <section class="py-5">
+      <div class="container-lg">
+        <div class="notice-content">
+          <!-- Loading -->
+          <div v-if="loading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Loading announcement details...</p>
+          </div>
+
+          <!-- Announcement details -->
+          <div v-else-if="notice.id">
+            <!-- Main content layout: left cover + right title and content -->
+            <div class="notice-main-layout">
+              <!-- Left: Cover image -->
+              <div class="notice-cover">
+                <img v-if="notice.img" :src="notice.img" alt="Announcement Cover" class="notice-image">
+                <div v-else class="notice-image d-flex align-items-center justify-content-center bg-light">
+                  <i class="fa fa-image fa-3x text-muted"></i>
+                </div>
+              </div>
+
+              <!-- Right: Title and content -->
+              <div class="notice-info">
+                <!-- Title area -->
+                <div class="notice-title-section">
+                  <h2>{{ notice.title }}</h2>
+                  <div class="notice-meta">
+                    <span v-if="notice.typeName" class="me-3">
+                      <i class="fa fa-tag"></i> {{ notice.typeName }}
+                    </span>
+                    <span class="me-3">
+                      <i class="fa fa-calendar"></i> {{ notice.createTime }}
+                    </span>
+                    <span>
+                      <i class="fa fa-clock-o"></i> Updated on {{ notice.updateTime }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Content introduction area -->
+                <div class="notice-content-section">
+                  <div class="notice-body">
+                    <p style="white-space: pre-wrap;">{{ notice.content }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Related topic tags -->
+            <div class="related-topics" v-if="relatedTopics.length > 0">
+              <h5 class="mb-3"><i class="fa fa-hashtag"></i> Related Topics</h5>
+              <div>
+                <a v-for="topic in relatedTopics" :key="topic"
+                   :href="'/web/userblog?topic=' + encodeURIComponent(topic)"
+                   class="topic-tag">
+                  <i class="fa fa-hashtag"></i>{{ topic }}
+                </a>
+              </div>
+            </div>
+
+            <!-- Comment section -->
+            <div class="comment-section" id="comments">
+              <div class="mb-4">
+                <span class="comment-count-badge">
+                  <i class="fa fa-comments"></i>
+                  {{ getTotalCommentCount() }} Comments
+                </span>
+              </div>
+
+              <!-- Comment list -->
+              <div v-if="comments.length > 0">
+                <div v-for="comment in comments" :key="comment.id" class="comment-item">
+                  <div class="comment-header">
+                    <div class="comment-author">
+                      <i class="fa fa-user-circle"></i>
+                      {{ comment.username || '匿名用户' }}
+                      <span v-if="comment.isCurrentUser" class="current-user-badge">（我）</span>
+                    </div>
+                    <div class="comment-time">
+                      <i class="fa fa-clock-o"></i>
+                      {{ comment.createTimeFormatted || comment.createTime }}
+                    </div>
+                  </div>
+                  <div class="comment-content">{{ comment.content }}</div>
+
+                  <!-- 回复数量和操作按钮 -->
+                  <div class="comment-actions">
+                    <button class="btn btn-sm btn-outline-primary" @click="toggleReplyForm(comment.id)"
+                            v-if="userId && !showReplyForm[comment.id]">
+                      <i class="fa fa-reply"></i> 回复
+                    </button>
+
+                    <!-- 显示回复数量（优先使用replyCount，其次是replies.length） -->
+                    <span v-if="comment.replyCount > 0 || (comment.replies && comment.replies.length > 0)"
+                          class="reply-count"
+                          @click="toggleReplies(comment.id)">
+                      <i class="fa fa-comments"></i>
+                      {{ comment.replyCount || comment.replies.length }} 条回复
+                    </span>
+
+                    <button class="btn btn-sm btn-outline-danger" @click="deleteComment(comment.id)"
+                            v-if="comment.isCurrentUser">
+                      <i class="fa fa-trash"></i> 删除
+                    </button>
+                  </div>
+
+                  <!-- 回复表单 -->
+                  <div v-if="showReplyForm[comment.id]" class="reply-form">
+                    <div class="reply-author">
+                      <i class="fa fa-reply"></i> 回复 {{ comment.username || '匿名用户' }}
+                    </div>
+                    <textarea v-model="replyContent[comment.id]"
+                              class="form-control mb-2"
+                              rows="3"
+                              :placeholder="'回复 ' + (comment.username || '匿名用户') + '...'"
+                              maxlength="500"></textarea>
+                    <div class="form-actions">
+                      <div class="char-count">
+                        <span :class="{'text-warning': replyContent[comment.id] && replyContent[comment.id].length > 400, 'text-danger': replyContent[comment.id] && replyContent[comment.id].length > 480}">
+                          {{ replyContent[comment.id] ? replyContent[comment.id].length : 0 }}
+                        </span> / 500 字
+                      </div>
+                      <div class="btn-group">
+                        <button class="btn btn-sm btn-secondary" @click="cancelReply(comment.id)">
+                          取消
+                        </button>
+                        <button @click="submitReply(comment.id)" class="btn btn-sm btn-primary"
+                                :disabled="!replyContent[comment.id] || !replyContent[comment.id].trim() || replyContent[comment.id].length > 500">
+                          <i class="fa fa-send"></i> 发表回复
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 回复列表 -->
+                  <div v-if="(comment.replies && comment.replies.length > 0) || comment.replyCount > 0" class="comment-replies">
+                    <!-- 展开收起按钮 -->
+                    <div v-if="(comment.replyCount > 2) || (comment.replies && comment.replies.length > 2)"
+                         class="toggle-replies"
+                         @click="toggleReplies(comment.id)">
+                      <i class="fa" :class="showReplies[comment.id] ? 'fa-chevron-down' : 'fa-chevron-right'"></i>
+                      <span v-if="!showReplies[comment.id]">
+                        查看回复 ({{ comment.replyCount || comment.replies.length }})
+                      </span>
+                      <span v-else>
+                        收起回复
+                      </span>
+                    </div>
+
+                    <!-- 回复列表显示 -->
+                    <div v-show="showReplies[comment.id] || ((comment.replyCount <= 2) && (comment.replies ? comment.replies.length <= 2 : true))">
+                      <div v-for="reply in getDisplayedReplies(comment.replies, comment.id)"
+                           :key="reply.id"
+                           class="reply-item fade-in">
+                        <div class="reply-header">
+                          <div class="reply-author">
+                            <i class="fa fa-user"></i>
+                            {{ reply.username || '匿名用户' }}
+                            <span v-if="reply.isCurrentUser" class="current-user-badge">（我）</span>
+                            <span class="reply-to" v-if="reply.replyToUser">
+                              回复 @{{ reply.replyToUser }}
+                            </span>
+                          </div>
+                          <div class="reply-time">
+                            {{ reply.createTimeFormatted || reply.createTime }}
+                          </div>
+                        </div>
+                        <div class="reply-content">{{ reply.content }}</div>
+                        <div class="reply-actions" v-if="reply.isCurrentUser">
+                          <button class="btn btn-sm btn-outline-danger" @click="deleteComment(reply.id)">
+                            <i class="fa fa-trash"></i> 删除
+                          </button>
+                        </div>
+
+                        <!-- 对回复的回复 -->
+                        <div class="comment-actions mt-2" v-if="userId">
+                          <button class="btn btn-sm btn-outline-secondary" @click="toggleReplyForm(reply.id)">
+                            <i class="fa fa-reply"></i> 回复
+                          </button>
+                        </div>
+
+                        <!-- 对回复的回复表单 -->
+                        <div v-if="showReplyForm[reply.id]" class="reply-form">
+                          <div class="reply-author">
+                            <i class="fa fa-reply"></i> 回复 {{ reply.username || '匿名用户' }}
+                          </div>
+                          <textarea v-model="replyContent[reply.id]"
+                                    class="form-control mb-2"
+                                    rows="3"
+                                    :placeholder="'回复 ' + (reply.username || '匿名用户') + '...'"
+                                    maxlength="500"></textarea>
+                          <div class="form-actions">
+                            <div class="char-count">
+                              <span :class="{'text-warning': replyContent[reply.id] && replyContent[reply.id].length > 400, 'text-danger': replyContent[reply.id] && replyContent[reply.id].length > 480}">
+                                {{ replyContent[reply.id] ? replyContent[reply.id].length : 0 }}
+                              </span> / 500 字
+                            </div>
+                            <div class="btn-group">
+                              <button class="btn btn-sm btn-secondary" @click="cancelReply(reply.id)">
+                                取消
+                              </button>
+                              <button @click="submitReply(reply.id)" class="btn btn-sm btn-primary"
+                                      :disabled="!replyContent[reply.id] || !replyContent[reply.id].trim() || replyContent[reply.id].length > 500">
+                                <i class="fa fa-send"></i> 发表回复
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- 多级回复嵌套显示 -->
+                        <div v-if="reply.replies && reply.replies.length > 0" class="comment-replies ml-3">
+                          <div v-for="subReply in reply.replies" :key="subReply.id" class="reply-item fade-in">
+                            <div class="reply-header">
+                              <div class="reply-author">
+                                <i class="fa fa-user"></i>
+                                {{ subReply.username || '匿名用户' }}
+                                <span v-if="subReply.isCurrentUser" class="current-user-badge">（我）</span>
+                                <span class="reply-to" v-if="subReply.replyToUser">
+                                  回复 @{{ subReply.replyToUser }}
+                                </span>
+                              </div>
+                              <div class="reply-time">
+                                {{ subReply.createTimeFormatted || subReply.createTime }}
+                              </div>
+                            </div>
+                            <div class="reply-content">{{ subReply.content }}</div>
+                            <div class="reply-actions" v-if="subReply.isCurrentUser">
+                              <button class="btn btn-sm btn-outline-danger" @click="deleteComment(subReply.id)">
+                                <i class="fa fa-trash"></i> 删除
+                              </button>
+                            </div>
+
+                            <!-- 对子回复的回复按钮 -->
+                            <div class="comment-actions mt-2" v-if="userId">
+                              <button class="btn btn-sm btn-outline-secondary" @click="toggleReplyForm(subReply.id)">
+                                <i class="fa fa-reply"></i> 回复
+                              </button>
+                            </div>
+
+                            <!-- 对子回复的回复表单 -->
+                            <div v-if="showReplyForm[subReply.id]" class="reply-form">
+                              <div class="reply-author">
+                                <i class="fa fa-reply"></i> 回复 {{ subReply.username || '匿名用户' }}
+                              </div>
+                              <textarea v-model="replyContent[subReply.id]"
+                                        class="form-control mb-2"
+                                        rows="3"
+                                        :placeholder="'回复 ' + (subReply.username || '匿名用户') + '...'"
+                                        maxlength="500"></textarea>
+                              <div class="form-actions">
+                                <div class="char-count">
+                                  <span :class="{'text-warning': replyContent[subReply.id] && replyContent[subReply.id].length > 400, 'text-danger': replyContent[subReply.id] && replyContent[subReply.id].length > 480}">
+                                    {{ replyContent[subReply.id] ? replyContent[subReply.id].length : 0 }}
+                                  </span> / 500 字
+                                </div>
+                                <div class="btn-group">
+                                  <button class="btn btn-sm btn-secondary" @click="cancelReply(subReply.id)">
+                                    取消
+                                  </button>
+                                  <button @click="submitReply(subReply.id)" class="btn btn-sm btn-primary"
+                                          :disabled="!replyContent[subReply.id] || !replyContent[subReply.id].trim() || replyContent[subReply.id].length > 500">
+                                    <i class="fa fa-send"></i> 发表回复
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- 加载更多按钮 -->
+                      <div v-if="hasMoreReplies(comment)" class="text-center mt-3">
+                        <button class="btn btn-sm btn-outline-primary"
+                                @click="loadMoreReplies(comment.id)"
+                                :disabled="loadingMoreReplies[comment.id]">
+                          <i class="fa fa fa-refresh" :class="{'fa-spin': loadingMoreReplies[comment.id]}"></i>
+                          {{ loadingMoreReplies[comment.id] ? '加载中...' : '加载更多回复' }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-else class="text-center text-muted py-4">
+                <i class="fa fa-comment-o fa-3x mb-3"></i>
+                <p>暂无评论，快来发表第一条评论吧！</p>
+              </div>
+
+              <!-- 发表评论 -->
+              <div class="comment-form" v-if="userId">
+                <h5 class="mb-3"><i class="fa fa-edit"></i> 发表评论</h5>
+                <textarea v-model="newComment" class="form-control mb-2" rows="4"
+                          placeholder="请输入您的评论..." maxlength="500"></textarea>
+                <div class="d-flex justify-content-between align-items-center">
+                  <small class="text-muted">
+                    <span :class="{'text-warning': newComment.length > 400, 'text-danger': newComment.length > 480}">
+                      {{ newComment.length }}
+                    </span> / 500 字
+                  </small>
+                  <button @click="submitComment" class="btn btn-primary"
+                          :disabled="!newComment.trim() || newComment.length > 500">
+                    <i class="fa fa-send"></i> 发表评论
+                  </button>
+                </div>
+              </div>
+              <div v-else class="alert alert-info">
+                <i class="fa fa-info-circle"></i> 请先<a href="/web/login" class="alert-link">登录</a>后再发表评论
+              </div>
+            </div>
+          </div>
+
+          <!-- 未找到公告 -->
+          <div v-else class="text-center py-5">
+            <i class="fa fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+            <h4>未找到该公告</h4>
+            <p class="text-muted">该公告可能已被删除或不存在</p>
+            <a href="/web/userblog" class="btn btn-primary">返回列表</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="footer-bottom">
+      <div class="container-lg">
+        <div class="row">
+          <div class="col-md-6 copyright">
+            <p>@ 2024 - Pet Service Booking Platform.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll to comments button -->
+    <div v-if="getTotalCommentCount() > 0"
+         class="scroll-to-comments"
+         @click="scrollToComments"
+         title="View Comments">
+      <i class="fa fa-comments"></i>
+    </div>
+  </div>
+
+  <script src="/static/webSite/js/jquery-1.11.0.min.js"></script>
+  <script src="/static/webSite/js/plugins.js"></script>
+  <script src="/static/webSite/js/script.js"></script>
+  <script src="/static/js/GloJs.js"></script>
+  <script src="/static/hAdmin/js/plugins/sweetalert/sweetalert.min.js"></script>
+  
+  <script>
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          baseUrl: gloRequestUrl,
+          notice: {},
+          comments: [],
+          newComment: '',
+          loading: true,
+          userId: localStorage.getItem("userId"),
+          role: localStorage.getItem("role"),
+          userInfo: {},
+          noticeId: null,
+          relatedTopics: [], // Related topic tags
+          // Reply function related data
+          showReplyForm: {}, // Control reply form display for each comment
+          replyContent: {}, // Store reply content for each comment
+          showReplies: {}, // Control reply list show/hide for each comment
+          loadingMoreReplies: {}, // Control loading more replies status
+          replyPage: {}, // 记录每个评论的回复分页
+        }
+      },
+      methods: {
+        // 获取URL参数
+        getQueryParam(param) {
+          const urlParams = new URLSearchParams(window.location.search);
+          return urlParams.get(param);
+        },
+
+        // 获取公告详情
+        getNoticeDetail() {
+          let that = this;
+          that.loading = true;
+
+          $.ajax({
+            url: that.baseUrl + "/webnotice/detail",
+            type: "GET",
+            data: { id: that.noticeId },
+            success: function (data) {
+              that.loading = false;
+              if (data.code === 200 && data.data) {
+                that.notice = data.data;
+                // 提取相关主题标签
+                that.extractRelatedTopics();
+                // 加载评论（暂时使用模拟数据，后续可以实现真实的评论功能）
+                that.loadComments();
+              } else {
+                that.notice = {};
+              }
+            },
+            error: function () {
+              that.loading = false;
+              console.log("获取公告详情失败");
+            }
+          });
+        },
+
+        // 提取相关主题标签（从标题和内容中提取#标签）
+        extractRelatedTopics() {
+          let that = this;
+          let topics = [];
+
+          // 从标题和内容中提取#标签
+          let text = (that.notice.title || '') + ' ' + (that.notice.content || '');
+          let matches = text.match(/#[\u4e00-\u9fa5a-zA-Z0-9_]+/g);
+
+          if (matches) {
+            topics = matches.map(tag => tag.substring(1)); // 去掉#号
+            // 去重
+            topics = [...new Set(topics)];
+          }
+
+          // 如果没有提取到标签，根据类型添加默认标签
+          if (topics.length === 0 && that.notice.typeName) {
+            topics.push(that.notice.typeName);
+          }
+
+          that.relatedTopics = topics;
+        },
+
+        // 加载评论
+        loadComments() {
+          let that = this;
+
+          if (!that.noticeId) {
+            return;
+          }
+
+          // 使用增强的评论树接口获取评论及其回复（支持展开收起）
+          let apiUrl = that.baseUrl + "/comment/tree-expand/" + that.noticeId;
+          if (that.userId) {
+            apiUrl += "?currentUserId=" + that.userId;
+          }
+          $.ajax({
+            url: apiUrl,
+            type: "GET",
+            success: function (data) {
+              if (data.code === 200) {
+                that.comments = data.data || [];
+                // 标记当前用户的评论和回复
+                that.markCurrentUserComments(that.comments);
+                // 初始化回复相关的状态
+                that.initializeReplyStates();
+              } else {
+                that.comments = [];
+              }
+            },
+            error: function (xhr, status, error) {
+              // 如果评论树接口失败，回退到原来的接口
+              let fallbackUrl = that.baseUrl + "/comment/notice/" + that.noticeId;
+              if (that.userId) {
+                fallbackUrl += "?currentUserId=" + that.userId;
+              }
+              $.ajax({
+                url: fallbackUrl,
+                type: "GET",
+                success: function (data) {
+                  if (data.code === 200) {
+                    that.comments = data.data || [];
+                    // 标记当前用户的评论
+                    that.comments.forEach(comment => {
+                      comment.isCurrentUser = (comment.userId == that.userId);
+                      comment.replies = []; // 初始化为空回复数组
+                    });
+                    // 初始化回复相关的状态
+                    that.initializeReplyStates();
+                  } else {
+                    that.comments = [];
+                  }
+                },
+                error: function () {
+                  that.comments = [];
+                }
+              });
+            }
+          });
+        },
+
+        // 递归标记当前用户的评论和回复
+        markCurrentUserComments(comments) {
+          if (!comments) return;
+
+          comments.forEach(comment => {
+            comment.isCurrentUser = (comment.userId == this.userId);
+            if (comment.replies && comment.replies.length > 0) {
+              this.markCurrentUserComments(comment.replies);
+              // 初始化回复的状态
+              comment.replies.forEach(reply => {
+                this.$set(this.showReplyForm, reply.id, false);
+                this.$set(this.replyContent, reply.id, '');
+                this.$set(this.loadingMoreReplies, reply.id, false);
+                this.$set(this.replyPage, reply.id, 1);
+                this.$set(this.showReplies, reply.id, true);
+
+                // 递归处理子回复
+                if (reply.replies) {
+                  this.markCurrentUserComments(reply.replies);
+                }
+              });
+            }
+          });
+        },
+
+        // 初始化回复相关的状态
+        initializeReplyStates() {
+          if (!this.comments) return;
+
+          this.comments.forEach(comment => {
+            // 默认不显示回复表单
+            this.$set(this.showReplyForm, comment.id, false);
+            this.$set(this.replyContent, comment.id, '');
+            this.$set(this.loadingMoreReplies, comment.id, false);
+            this.$set(this.replyPage, comment.id, 1);
+
+            // 根据replyCount判断是否需要收起（如果有回复计数且大于2）
+            if (comment.replyCount > 2) {
+              this.$set(this.showReplies, comment.id, false);
+            } else {
+              this.$set(this.showReplies, comment.id, true);
+            }
+
+            // 递归处理回复的回复
+            if (comment.replies) {
+              comment.replies.forEach(reply => {
+                this.$set(this.showReplyForm, reply.id, false);
+                this.$set(this.replyContent, reply.id, '');
+                this.$set(this.loadingMoreReplies, reply.id, false);
+                this.$set(this.replyPage, reply.id, 1);
+                this.$set(this.showReplies, reply.id, true);
+              });
+            }
+          });
+        },
+
+        // 提交评论
+        submitComment() {
+          let that = this;
+          if (!that.newComment.trim()) {
+            swal({
+              title: "提示",
+              text: "请输入评论内容",
+              type: "warning"
+            });
+            return;
+          }
+
+          if (!that.userId) {
+            swal({
+              title: "提示",
+              text: "请先登录后再发表评论",
+              type: "warning"
+            });
+            return;
+          }
+
+          if (that.newComment.length > 500) {
+            swal({
+              title: "提示",
+              text: "评论内容不能超过500字",
+              type: "warning"
+            });
+            return;
+          }
+
+          // 调用评论API
+          $.ajax({
+            url: that.baseUrl + "/comment/submit",
+            type: "POST",
+            data: {
+              noticeId: that.noticeId,
+              userId: that.userId,
+              content: that.newComment.trim()
+            },
+            success: function (data) {
+              if (data.code === 200) {
+                swal({
+                  title: "成功",
+                  text: "评论发表成功！",
+                  type: "success"
+                });
+                // 清空输入框
+                that.newComment = '';
+                // 重新加载评论列表
+                that.loadComments();
+              } else {
+                swal({
+                  title: "失败",
+                  text: data.msg || "评论发表失败",
+                  type: "error"
+                });
+              }
+            },
+            error: function () {
+              swal({
+                title: "错误",
+                text: "网络异常，请稍后重试",
+                type: "error"
+              });
+            }
+          });
+        },
+
+        // 删除评论
+        deleteComment(commentId) {
+          let that = this;
+          swal({
+            title: "确认删除",
+            text: "确定要删除这条评论吗？",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "确定删除",
+            cancelButtonText: "取消",
+            closeOnConfirm: false
+          }, function() {
+            $.ajax({
+              url: that.baseUrl + "/comment/del",
+              type: "DELETE",
+              data: { id: commentId },
+              success: function (data) {
+                if (data.code === 200) {
+                  swal({
+                    title: "成功",
+                    text: "评论删除成功！",
+                    type: "success"
+                  });
+                  // 重新加载评论列表
+                  that.loadComments();
+                } else {
+                  swal({
+                    title: "失败",
+                    text: data.msg || "评论删除失败",
+                    type: "error"
+                  });
+                }
+              },
+              error: function () {
+                swal({
+                  title: "错误",
+                  text: "网络异常，请稍后重试",
+                  type: "error"
+                });
+              }
+            });
+          });
+        },
+
+        // 搜索公告
+        handleSearch(event) {
+          let keyword = event.target.value.trim();
+          if (keyword) {
+            window.location.href = '/web/userblog?search=' + encodeURIComponent(keyword);
+          }
+        },
+
+        // 分享公告
+        shareNotice() {
+          let that = this;
+          if (navigator.share) {
+            navigator.share({
+              title: that.notice.title,
+              text: that.notice.content ? that.notice.content.substring(0, 100) + '...' : '',
+              url: window.location.href
+            }).then(() => {
+              console.log('分享成功');
+            }).catch((error) => {
+              console.log('分享失败:', error);
+            });
+          } else {
+            // 复制链接到剪贴板
+            navigator.clipboard.writeText(window.location.href).then(() => {
+              swal({
+                title: "分享成功",
+                text: "链接已复制到剪贴板",
+                type: "success"
+              });
+            }).catch(() => {
+              swal({
+                title: "分享失败",
+                text: "请手动复制链接",
+                type: "error"
+              });
+            });
+          }
+        },
+
+        // 打印公告
+        printNotice() {
+          window.print();
+        },
+
+        // 切换回复表单显示/隐藏
+        toggleReplyForm(commentId) {
+          this.$set(this.showReplyForm, commentId, !this.showReplyForm[commentId]);
+          if (this.showReplyForm[commentId]) {
+            // 清空并聚焦回复内容
+            this.$set(this.replyContent, commentId, '');
+            this.$nextTick(() => {
+              const textarea = document.querySelector(`textarea[v-model="replyContent[${commentId}]"]`);
+              if (textarea) {
+                textarea.focus();
+              }
+            });
+          }
+        },
+
+        // 取消回复
+        cancelReply(commentId) {
+          this.$set(this.showReplyForm, commentId, false);
+          this.$set(this.replyContent, commentId, '');
+        },
+
+        // 提交回复
+        submitReply(parentCommentId) {
+          let that = this;
+          const content = that.replyContent[parentCommentId];
+
+          if (!content || !content.trim()) {
+            swal({
+              title: "提示",
+              text: "请输入回复内容",
+              type: "warning"
+            });
+            return;
+          }
+
+          if (!that.userId) {
+            swal({
+              title: "提示",
+              text: "请先登录后再发表回复",
+              type: "warning"
+            });
+            return;
+          }
+
+          if (content.length > 500) {
+            swal({
+              title: "提示",
+              text: "回复内容不能超过500字",
+              type: "warning"
+            });
+            return;
+          }
+
+          // 调用回复API
+          $.ajax({
+            url: that.baseUrl + "/comment/reply",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+              noticeId: that.noticeId,
+              userId: that.userId,
+              parentId: parentCommentId,
+              content: content.trim()
+            }),
+            success: function (data) {
+              if (data.code === 200) {
+                swal({
+                  title: "成功",
+                  text: "回复发表成功！",
+                  type: "success"
+                });
+                // 清空回复表单
+                that.cancelReply(parentCommentId);
+                // 重新加载评论
+                that.loadComments();
+              } else {
+                swal({
+                  title: "失败",
+                  text: data.msg || "回复发表失败",
+                  type: "error"
+                });
+              }
+            },
+            error: function () {
+              swal({
+                title: "错误",
+                text: "网络异常，请稍后重试",
+                type: "error"
+              });
+            }
+          });
+        },
+
+        // 切换回复列表显示/隐藏
+        toggleReplies(commentId) {
+          this.$set(this.showReplies, commentId, !this.showReplies[commentId]);
+        },
+
+        // 切换回复列表展开/收起
+        toggleReplyList(commentId) {
+          this.$set(this.showReplies, commentId, !this.showReplies[commentId]);
+        },
+
+        // 获取显示的回复列表（考虑展开/收起状态）
+        getDisplayedReplies(replies, commentId) {
+          if (!replies) return [];
+
+          // 如果回复数量少于等于3条，或者已展开，显示全部
+          if (replies.length <= 3 || this.showReplies[commentId]) {
+            return replies;
+          }
+
+          // 否则只显示前3条
+          return replies.slice(0, 3);
+        },
+
+        // 加载更多回复
+        loadMoreReplies(parentCommentId) {
+          let that = this;
+
+          if (that.loadingMoreReplies[parentCommentId]) {
+            return; // 防止重复加载
+          }
+
+          that.$set(that.loadingMoreReplies, parentCommentId, true);
+
+          let currentPage = that.replyPage[parentCommentId] || 1;
+          let offset = currentPage * 10; // 每页10条
+
+          $.ajax({
+            url: that.baseUrl + "/comment/replies/" + parentCommentId,
+            type: "GET",
+            data: {
+              offset: offset,
+              limit: 10,
+              currentUserId: that.userId
+            },
+            success: function (data) {
+              if (data.code === 200 && data.data && data.data.length > 0) {
+                // 找到对应的评论并添加新回复
+                let comment = that.findCommentById(that.comments, parentCommentId);
+                if (comment) {
+                  if (!comment.replies) {
+                    comment.replies = [];
+                  }
+                  comment.replies = comment.replies.concat(data.data);
+                  // 更新页码
+                  that.$set(that.replyPage, parentCommentId, currentPage + 1);
+                  // 标记当前用户的回复
+                  that.markCurrentUserComments(data.data);
+                }
+              }
+              that.$set(that.loadingMoreReplies, parentCommentId, false);
+            },
+            error: function () {
+              that.$set(that.loadingMoreReplies, parentCommentId, false);
+              swal({
+                title: "错误",
+                text: "加载更多回复失败",
+                type: "error"
+              });
+            }
+          });
+        },
+
+        // 递归查找评论
+        findCommentById(comments, commentId) {
+          if (!comments) return null;
+
+          for (let comment of comments) {
+            if (comment.id === commentId) {
+              return comment;
+            }
+            // 在回复中查找
+            if (comment.replies) {
+              let found = this.findCommentById(comment.replies, commentId);
+              if (found) return found;
+            }
+          }
+          return null;
+        },
+
+        // 判断是否还有更多回复可以加载
+        hasMoreReplies(comment) {
+          if (!comment) return false;
+
+          // 如果有replyCount字段，比较当前回复数量和总数
+          if (comment.replyCount !== undefined && comment.replies) {
+            return comment.replies.length < comment.replyCount;
+          }
+
+          // 如果没有replyCount但有replies，且当前回复数量大于等于10，可能有更多
+          if (comment.replies && comment.replies.length >= 10) {
+            return true;
+          }
+
+          return false;
+        },
+
+        // 获取总评论数量（包括回复）
+        getTotalCommentCount() {
+          if (!this.comments || this.comments.length === 0) {
+            return 0;
+          }
+
+          let totalCount = this.comments.length;
+          this.comments.forEach(comment => {
+            if (comment.replies) {
+              totalCount += comment.replies.length;
+            }
+          });
+
+          return totalCount;
+        },
+
+        // 滚动到评论区
+        scrollToComments() {
+          const element = document.getElementById('comments');
+          if (element) {
+            element.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+          }
+        },
+
+        // 获取用户信息
+        getUserInfo() {
+          let that = this;
+          if (that.userId) {
+            $.ajax({
+              url: that.baseUrl + "/sysuser/detail",
+              type: "GET",
+              data: { id: that.userId },
+              success: function (data) {
+                if (data.code !== 500) {
+                  that.userInfo = data.data;
+                }
+              },
+              error: function () {
+                console.log("获取用户信息失败");
+              }
+            });
+          }
+        }
+      },
+      mounted() {
+        let that = this;
+        // 获取URL中的公告ID
+        that.noticeId = that.getQueryParam('id');
+
+        if (that.noticeId) {
+          that.getNoticeDetail();
+        } else {
+          that.loading = false;
+        }
+
+        that.getUserInfo();
+      }
+    })
+  </script>
+  </body>
+</html>
+

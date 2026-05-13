@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javaPro.myProject.modules.order.dao.OrderDao">
+
+    <resultMap type="com.javaPro.myProject.modules.order.entity.Order" id="OrderMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="carid" column="carid" jdbcType="VARCHAR"/>
+        <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+        <result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
+        <result property="userid" column="userid" jdbcType="INTEGER"/>
+        <result property="spare1" column="spare1" jdbcType="VARCHAR"/>
+        <result property="spare2" column="spare2" jdbcType="VARCHAR"/>
+        <result property="username" column="username" jdbcType="VARCHAR"/>
+        <result property="account" column="account" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="OrderMap">
+        select
+            o.id, carid, o.createtime, o.updatetime, userid, spare1, spare2,o.remark
+        from `order` o
+        left join sysuser u on u.id = o.userid
+        where o.id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="OrderMap">
+        select
+        o.id, carid, o.createtime, o.updatetime, o.userid, o.spare1, o.spare2,
+               u.username,o.remark,u.phonenumber as account, p.companyid,
+               oe.content
+        from `order` o
+        left join sysuser u on u.id = o.userid
+        left join shopcart s on s.id = o.carid
+        left join product p on p.id = s.productid
+        left join order_evalute oe on oe.orderid = o.id
+        <where>
+            <if test="id != null">
+                and o.id = #{id}
+            </if>
+            <if test="carid != null">
+                and carid = #{carid}
+            </if>
+            <if test="companyid != null">
+                and p.companyid = #{companyid}
+            </if>
+
+            <if test="userid != null">
+                and o.userid = #{userid}
+            </if>
+            <if test="spare1 != null and spare1 != ''">
+                and o.spare1 = #{spare1}
+            </if>
+            <if test="spare2 != null and spare2 != ''">
+                and o.spare2 = #{spare2}
+            </if>
+        </where>
+        order by createtime desc
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from `order`
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="carid != null">
+                and carid = #{carid}
+            </if>
+            <if test="createtime != null">
+                and createtime = #{createtime}
+            </if>
+            <if test="updatetime != null">
+                and updatetime = #{updatetime}
+            </if>
+            <if test="userid != null">
+                and userid = #{userid}
+            </if>
+            <if test="spare1 != null and spare1 != ''">
+                and spare1 = #{spare1}
+            </if>
+            <if test="spare2 != null and spare2 != ''">
+                and spare2 = #{spare2}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into `order`(carid, createtime, updatetime, userid, spare1, spare2)
+        values (#{carid}, now(), now(), #{userid}, #{spare1}, #{spare2})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into `order`(carid, createtime, updatetime, userid, spare1, spare2)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.carid}, #{entity.createtime}, #{entity.updatetime}, #{entity.userid}, #{entity.spare1}, #{entity.spare2})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into `order`(carid, createtime, updatetime, userid, spare1, spare2)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.carid}, #{entity.createtime}, #{entity.updatetime}, #{entity.userid}, #{entity.spare1}, #{entity.spare2})
+        </foreach>
+        on duplicate key update
+        carid = values(carid),
+        createtime = values(createtime),
+        updatetime = values(updatetime),
+        userid = values(userid),
+        spare1 = values(spare1),
+        spare2 = values(spare2)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update `order`
+        <set>
+            <if test="carid != null">
+                carid = #{carid},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime},
+            </if>
+
+                updatetime =now(),
+
+            <if test="userid != null">
+                userid = #{userid},
+            </if>
+            <if test="spare1 != null and spare1 != ''">
+                spare1 = #{spare1},
+            </if>
+            <if test="spare2 != null and spare2 != ''">
+                spare2 = #{spare2},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from `order` where id = #{id}
+    </delete>
+
+    <!-- 根据服务商ID统计订单数量 -->
+    <select id="countByCompanyId" resultType="java.lang.Long">
+        select count(1)
+        from `order` o
+        left join shopcart s on s.id = o.carid
+        left join product p on p.id = s.productid
+        where p.companyid = #{companyId}
+    </select>
+
+    <!-- 根据服务商ID获取总收入 -->
+    <select id="getTotalRevenueByCompanyId" resultType="java.lang.Double">
+        select COALESCE(sum(CAST(s.totalprice as DECIMAL(10,2))), 0)
+        from `order` o
+        left join shopcart s on s.id = o.carid
+        left join product p on p.id = s.productid
+        where p.companyid = #{companyId}
+    </select>
+
+    <!-- 根据日期和服务商ID获取订单数量 -->
+    <select id="getOrderCountByDateAndCompanyId" resultType="java.lang.Long">
+        select count(1)
+        from `order` o
+        left join shopcart s on s.id = o.carid
+        left join product p on p.id = s.productid
+        where p.companyid = #{companyId}
+        and DATE(o.createtime) = DATE(#{date})
+    </select>
+
+    <!-- 获取服务商最近订单 -->
+    <select id="getRecentOrdersByCompanyId" resultType="java.util.Map">
+        select
+            o.id,
+            u.username,
+            p.productname as serviceName,
+            s.totalprice as amount,
+            o.spare1 as status,
+            DATE_FORMAT(o.createtime, '%Y-%m-%d %H:%i') as createtime
+        from `order` o
+        left join sysuser u on u.id = o.userid
+        left join shopcart s on s.id = o.carid
+        left join product p on p.id = s.productid
+        where p.companyid = #{companyId}
+        order by o.createtime desc
+        limit #{limit}
+    </select>
+
+    <!-- 根据产品ID统计历史订单数量（包含购买数量） -->
+    <select id="getOrderQuantityByProductId" resultType="java.lang.Long">
+        select COALESCE(SUM(s.number), 0)
+        from `order` o
+        left join shopcart s on s.id = o.carid
+        where s.productid = #{productId}
+    </select>
+
+    <!-- 根据用户ID和产品ID统计该用户对该产品的订单数量（包含购买数量） -->
+    <select id="getOrderQuantityByUserAndProduct" resultType="java.lang.Long">
+        select COALESCE(SUM(s.number), 0)
+        from `order` o
+        left join shopcart s on s.id = o.carid
+        where s.productid = #{productId} and o.userid = #{userId}
+    </select>
+
+</mapper>
+

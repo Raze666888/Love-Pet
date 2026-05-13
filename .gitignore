@@ -1,0 +1,58 @@
+# Maven
+target/
+*.jar
+*.war
+*.ear
+
+# IDE
+.idea/
+*.iml
+*.iws
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Database
+*.db
+*.sqlite
+
+# Application specific
+application-local.properties
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+<<<<<<< HEAD
+# 不推送包含真实密钥的配置文件
+src/main/resources/application.yml
+src/main/resources/application-prod.yml
+=======
+# 忽略配置文件（含敏感信息）
+src/main/resources/application.yml
+src/main/resources/application-prod.yml
+src/main/resources/application-docker.yml
+src/main/resources/application.properties
+
+# IDE 配置文件
+.idea/
+.vscode/
+*.iml
+
+# 编译产物
+target/
+*.class
+
+# 系统文件
+.DS_Store
+Thumbs.db
+>>>>>>> 2a2b5f6f7504d22199f04c99537463dab663ba38

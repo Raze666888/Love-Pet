@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="renderer" content="webkit">
+
+  <title>Pet Service Booking Platform</title>
+
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+
+  <!--[if lt IE 9]>
+  <meta http-equiv="refresh" content="0;ie.html"/>
+  <![endif]-->
+  <script src="../static/DemoBootStrap/js/vue.js"></script>
+  <link href="/static/hAdmin/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+  <link href="/static/hAdmin/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+  <link href="/static/hAdmin/css/animate.css" rel="stylesheet">
+  <link href="/static/hAdmin/css/style.css?v=4.1.0" rel="stylesheet">
+</head>
+
+<body class="fixed-sidebar full-height-layout gray-bg"  style="overflow:hidden">
+<div id="wrapper">
+  <span id="gloUrl" style="display: none"></span>
+  <!--Left Navigation Start-->
+  <nav class="navbar-default navbar-static-side" role="navigation" style="touch-action: none;">
+    <div class="nav-close"><i class="fa fa-times-circle"></i>
+    </div>
+    <div class="sidebar-collapse">
+      <ul class="nav" id="side-menu">
+        <li class="nav-header">
+          <div class="dropdown profile-element">
+            <a data-toggle="dropdown" class="dropdown-toggle J_menuItem" href="/web/welcome">
+                                <span class="clear">
+                                    <span class="block m-t-xs" style="font-size:17px;">
+                                        <strong class="font-bold">Pet Service Booking Platform</strong>
+                                    </span>
+                                </span>
+            </a>
+          </div>
+          <div class="logo-element">E
+          </div>
+        </li>
+        <li class="hidden-folded padder m-t m-b-sm text-muted text-xs">
+          <span class="ng-scope">Personal</span>
+        </li>
+        <li>
+          <a class="J_menuItem" href="/web/personal">
+            <i class="fa fa-tv"></i>
+            <span class="nav-label">Personal Center</span>
+          </a>
+        </li>
+
+
+        <li class="line dk adminFun"></li>
+        <li class="hidden-folded padder m-t m-b-sm text-muted text-xs adminFun">
+          <span class="ng-scope">Information</span>
+        </li>
+        <li class="adminFun">
+
+          <a href="#">
+            <i class="fa  fa-users"></i>
+            <span class="nav-label">User Management</span>
+            <span class="fa arrow"></span>
+          </a>
+          <ul class="nav nav-second-level">
+            <li><a class="J_menuItem" href="/web/user">User Management</a></li>
+          </ul>
+        </li>
+        <li class="adminFun">
+
+          <a href="#">
+            <i class="fa  fa-bank"></i>
+            <span class="nav-label">Pet Service Provider Management</span>
+            <span class="fa arrow"></span>
+          </a>
+          <ul class="nav nav-second-level">
+            <li><a class="J_menuItem" href="/web/company">Pet Service Provider Management</a></li>
+          </ul>
+        </li>
+        <li class="adminFun">
+
+          <a href="#">
+            <i class="fa  fa-bank"></i>
+            <span class="nav-label">Recharge Review</span>
+            <span class="fa arrow"></span>
+          </a>
+          <ul class="nav nav-second-level">
+            <li><a class="J_menuItem" href="/web/tmoney">Recharge Management</a></li>
+          </ul>
+        </li>
+
+
+
+        <li class="line dk userUnDo"></li>
+        <li class="hidden-folded padder m-t m-b-sm text-muted text-xs userUnDo">
+          <span class="ng-scope">Pet Services</span>
+        </li>
+        <li class="userUnDo">
+
+          <a href="#">
+            <i class="fa  fa-tags"></i>
+            <span class="nav-label">Pet Service Category Management</span>
+            <span class="fa arrow"></span>
+          </a>
+          <ul class="nav nav-second-level">
+            <li><a class="J_menuItem" href="/web/producttype">Pet Service Category Management</a></li>
+          </ul>
+        </li>
+        <li class="userUnDo">
+
+          <a href="#">
+            <i class="fa  fa-bars"></i>
+            <span class="nav-label">Pet Service Management</span>
+            <span class="fa arrow"></span>
+          </a>
+          <ul class="nav nav-second-level">
+            <li><a class="J_menuItem" href="/web/product">Pet Service Management</a></li>
+          </ul>
+        </li>
+        <li class="line dk "></li>
+        <li class="hidden-folded padder m-t m-b-sm text-muted text-xs ">
+          <span class="ng-scope">Business</span>
+        </li>
+
+        <li class="">
+
+          <a href="#">
+            <i class="fa  fa-book"></i>
+            <span class="nav-label">Order Management</span>
+            <span class="fa arrow"></span>
+          </a>
+          <ul class="nav nav-second-level">
+            <li><a class="J_menuItem" href="/web/order">Order Management</a></li>
+          </ul>
+        </li>
+        <li class="adminFun">
+          <a href="#">
+            <i class="fa  fa-book"></i>
+            <span class="nav-label">Message Management</span>
+            <span class="fa arrow"></span>
+          </a>
+          <ul class="nav nav-second-level">
+            <li><a class="J_menuItem" href="/web/message">Message Management</a></li>
+          </ul>
+        </li>
+        <li class="line dk userUnDo"></li>
+        <li class="hidden-folded padder m-t m-b-sm text-muted text-xs userUnDo">
+          <span class="ng-scope">System</span>
+        </li>
+        <li class="adminFun">
+
+          <a href="#">
+            <i class="fa  fa-tags"></i>
+            <span class="nav-label">Activity Type Management</span>
+            <span class="fa arrow"></span>
+          </a>
+          <ul class="nav nav-second-level">
+            <li><a class="J_menuItem" href="/web/type">Activity Type Management</a></li>
+          </ul>
+        </li>
+        <li class="userUnDo">
+
+          <a href="#">
+            <i class="fa  fa-bullhorn"></i>
+            <span class="nav-label">Activity Announcements</span>
+            <span class="fa arrow"></span>
+          </a>
+          <ul class="nav nav-second-level">
+            <li><a class="J_menuItem" href="/web/notice">Activity Announcements</a></li>
+          </ul>
+        </li>
+
+        <li class="line dk adminFun"></li>
+        <li class="hidden-folded padder m-t m-b-sm text-muted text-xs adminFun">
+          <span class="ng-scope">Visualization</span>
+        </li>
+        <li class="adminFun">
+
+          <a href="#">
+            <i class="fa fa fa-edit"></i>
+            <span class="nav-label">Visualization</span>
+            <span class="fa arrow"></span>
+          </a>
+          <ul class="nav nav-second-level">
+            <li><a target="_blank" href="/web/sta">Visualization</a></li>
+          </ul>
+        </li>
+
+
+      </ul>
+    </div>
+  </nav>
+  <!--Left Navigation End-->
+  <!--Right Section Start-->
+  <div id="page-wrapper" class="gray-bg dashbard-1">
+    <div class="row border-bottom">
+      <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header"><a class="navbar-minimalize minimalize-styl-2 btn btn-success " href="#"><i
+                class="fa fa-bars"></i> </a>
+
+          <div class="form-group" style="margin-top: 20px">
+            <h3 id="rightTitle">Pet Service Booking Platform</h3>
+          </div>
+
+        </div>
+        <div class="text-right" style="margin-top: 10px;margin-right: 50px">
+          <button class="btn btn-danger" id="logout">Logout</button>
+
+        </div>
+      </nav>
+    </div>
+    <div class="row J_mainContent" id="content-main">
+      <iframe id="J_iframe" width="100%" height="100%" src="/web/welcome" frameborder="0"
+              seamless></iframe>
+    </div>
+  </div>
+  <!--Right Section End-->
+</div>
+
+<!-- Global JS -->
+<script src="/static/hAdmin/js/jquery.min.js?v=2.1.4"></script>
+<script src="/static/hAdmin/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="/static/hAdmin/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+<script src="/static/hAdmin/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+<script src="/static/hAdmin/js/plugins/layer/layer.min.js"></script>
+
+<!-- Custom JS -->
+<script src="/static/hAdmin/js/hAdmin.js?v=4.1.0"></script>
+<script type="text/javascript" src="/static/hAdmin/js/index.js"></script>
+<script src="/static/js/GloJs.js"></script>
+<!-- Third-Party Plugins -->
+<script src="/static/hAdmin/js/plugins/pace/pace.min.js"></script>
+<script>
+
+  $(function (){
+    let Glo_BaseUrl = $("#gloUrl").attr("gloUValue")
+    let Glo_user = localStorage.getItem("userId")
+    let role = getRoleSetMenu()
+    if (role === "1"){
+      $("#rightTitle").text("Pet Service Booking Platform - Admin Panel")
+    }else if (role === "2"){
+      $("#rightTitle").text("Pet Service Booking Platform - Member Panel")
+    }else if (role === "3"){
+      $("#rightTitle").text("Pet Service Booking Platform - Merchant Panel")
+    }
+
+
+    $("#logout").click(function (){
+      $.ajax({
+        url: Glo_BaseUrl + "/admin/logout",
+        type: "get",
+        data: {
+
+        },
+        success: function (data) {
+          localStorage.removeItem("userId")
+          window.location.href = Glo_BaseUrl + "/login"
+        },
+        error: function () {
+          alert("Server error! Network error!")
+        }
+      })
+    })
+  })
+
+</script>
+</body>
+
+</html>

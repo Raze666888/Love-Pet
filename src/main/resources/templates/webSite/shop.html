@@ -1,0 +1,2197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Pet Service List</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <script src="/static/DemoBootStrap/js/vue.js"></script>
+
+    <link rel="stylesheet" href="/static/webSite/css/swiper-bundle.min.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/webSite/css/vendor.css">
+    <link rel="stylesheet" type="text/css" href="/static/webSite/style.css">
+    <link href="/static/hAdmin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
+    <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+
+    <!-- 高德地图API -->
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=e4ba17441f45301a0d054097d3e9b933"></script>
+
+    <style>
+      /* 种类导航悬停效果 */
+      .cat-item {
+        transition: all 0.3s ease;
+        border-radius: 5px;
+        margin: 2px 0;
+      }
+
+      .cat-item:hover {
+        background-color: #f8f9fa;
+        transform: translateX(5px);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      }
+
+      .cat-item .nav-link {
+        padding: 8px 12px;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        color: #333;
+      }
+
+      .cat-item:hover .nav-link {
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+      }
+
+      /* 产品卡片悬停效果 */
+      .product-item {
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+      }
+
+      .product-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        border-color: #007bff;
+      }
+
+      /* 时间筛选和评分筛选悬停效果 */
+      .time-filter .form-control:hover,
+      .time-filter .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+      }
+
+      .rating-filter .cat-item {
+        transition: all 0.3s ease;
+        border-radius: 5px;
+        margin: 2px 0;
+      }
+
+      .rating-filter .cat-item:hover {
+        background-color: #fff3cd;
+        transform: translateX(5px);
+      }
+
+      .rating-filter .cat-item:hover .nav-link {
+        background-color: #ffc107;
+        color: #212529;
+      }
+
+      /* 搜索框悬停效果 */
+      .widget-search-bar .form-control:hover,
+      .widget-search-bar .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+      }
+
+      /* 按钮悬停效果增强 */
+      .btn-cart:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+      }
+
+      .btn-outline-dark:hover {
+        transform: scale(1.1);
+      }
+
+      /* 筛选条件展开/收起按钮样式 */
+      .filter-toggle-btn {
+        transition: all 0.3s ease;
+        border-radius: 20px;
+        font-weight: 500;
+      }
+
+      .filter-toggle-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+      }
+
+      .filter-toggle-btn .fa {
+        transition: transform 0.3s ease;
+      }
+
+      .filter-toggle-btn[aria-expanded="true"] .fa-chevron-down {
+        transform: rotate(180deg);
+      }
+
+      .filter-toggle-btn[aria-expanded="false"] .fa-chevron-down {
+        transform: rotate(0deg);
+      }
+
+      /* 高级筛选按钮样式 */
+      .advanced-filter-btn {
+        transition: all 0.3s ease;
+        border-radius: 15px;
+      }
+
+      .advanced-filter-btn:hover {
+        transform: translateX(5px);
+        box-shadow: 0 2px 8px rgba(0,123,255,0.2);
+      }
+
+      .advanced-filter-btn .fa {
+        transition: transform 0.3s ease;
+      }
+
+      .advanced-filter-btn[aria-expanded="true"] .fa-cog {
+        transform: rotate(90deg);
+      }
+
+      /* 筛选卡片动画 */
+      .filter-card {
+        transition: all 0.3s ease;
+      }
+
+      .filter-card:hover {
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      }
+
+      /* 折叠内容动画 */
+      .collapse {
+        transition: all 0.3s ease;
+      }
+
+      /* 筛选条件卡片内容动画 */
+      .card-body {
+        transition: all 0.3s ease;
+      }
+
+      /* 筛选表单控件样式增强 */
+      .form-select:focus,
+      .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+        transform: translateY(-1px);
+      }
+
+      /* 筛选标签样式 */
+      .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.5rem;
+      }
+
+      /* 高级筛选卡片样式 */
+      .card-body .card {
+        border: 1px solid #e3f2fd;
+        background: linear-gradient(135deg, #f8f9ff 0%, #e3f2fd 100%);
+      }
+
+      /* 操作按钮组样式 */
+      .d-flex.gap-2 .btn {
+        transition: all 0.3s ease;
+      }
+
+      .d-flex.gap-2 .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+
+      /* 价格筛选相关样式 */
+      .price-filter-input {
+        transition: all 0.3s ease;
+      }
+
+      .price-filter-input:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40,167,69,0.25);
+      }
+
+      .quick-price-btn {
+        transition: all 0.3s ease;
+        border-radius: 20px;
+      }
+
+      .quick-price-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+      }
+
+      .quick-price-btn.active {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+        color: white;
+      }
+
+      /* 错误提示样式 */
+      .text-danger {
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+
+      .text-success {
+        font-size: 0.875rem;
+        font-weight: 500;
+      }
+
+      /* 筛选标签增强 */
+      .form-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .form-label i {
+        font-size: 1.1em;
+      }
+
+      /* 输入组样式增强 */
+      .input-group-text {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-color: #ced4da;
+        font-weight: 500;
+      }
+
+      /* 按钮组样式 */
+      .d-flex.gap-2 .btn {
+        border-radius: 20px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .d-flex.gap-2 .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+
+      .d-flex.gap-2 .btn:disabled {
+        opacity: 0.6;
+        transform: none;
+        box-shadow: none;
+      }
+
+      /* 分隔线样式 */
+      hr {
+        border-color: #dee2e6;
+        opacity: 0.5;
+      }
+
+      /* 响应式优化 */
+      @media (max-width: 768px) {
+        .filter-toggle-btn {
+          font-size: 0.875rem;
+          padding: 0.375rem 0.75rem;
+        }
+
+        .advanced-filter-btn {
+          font-size: 0.875rem;
+          padding: 0.25rem 0.5rem;
+        }
+
+        .d-flex.flex-wrap.gap-2 {
+          gap: 0.5rem !important;
+        }
+
+        .quick-price-btn {
+          font-size: 0.8rem;
+          padding: 0.25rem 0.5rem;
+        }
+      }
+
+      /* 视图切换按钮样式 */
+      .view-toggle-section .btn-group .btn {
+        transition: all 0.3s ease;
+      }
+
+      .view-toggle-section .btn-group .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+      }
+
+      /* 距离信息徽章样式 */
+      .distance-info {
+        display: inline-block;
+      }
+
+      .distance-info .badge {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.6rem;
+      }
+
+      /* 地图容器样式 */
+      .providers-map-view {
+        animation: fadeIn 0.3s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* 地图信息窗体样式优化 */
+      .amap-info-content {
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+    </style>
+
+  </head>
+  <body>
+<div id="app">
+
+    <div class="preloader-wrapper">
+      <div class="preloader">
+      </div>
+    </div>
+
+    <header>
+      <div class="container-fluid">
+        <div class="row py-3 border-bottom">
+
+          <div class="col-sm-4 col-lg-2 text-center text-sm-start d-flex gap-3 justify-content-center justify-content-md-start">
+            <div class="d-flex align-items-center my-3 my-sm-0">
+              <a href="/web/userindex">
+                <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar" class="img-fluid"
+                     style="width: 50px;height: 50px; border-radius: 50%; border: 2px solid #007bff;">
+                <img v-else src="/static/webSite/images/logo.png" style="width: 50px;height: 50px;" alt="logo" class="img-fluid">
+              </a>
+            </div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                    aria-controls="offcanvasNavbar">
+              <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
+            </button>
+          </div>
+
+          <div class="col-md-2 ">
+            <div class="search-bar row bg-light p-2 rounded-4">
+
+              <div class="col-11 col-md-10" style="text-align: center">
+                Pet Service Booking Platform
+              </div>
+
+            </div>
+          </div>
+
+          <div class="col-md-8">
+            <ul class="navbar-nav list-unstyled d-flex flex-row gap-3 gap-lg-5 justify-content-center flex-wrap align-items-center mb-0 fw-bold text-uppercase text-dark">
+              <li class="nav-item ">
+                <a href="/web/userindex" class="nav-link">Home</a>
+              </li>
+
+              <li class="nav-item text-primary" >
+                <a href="/web/userproductlist"  class="nav-link  ">Pet Service List</a>
+              </li>
+              <li class="nav-item">
+                <a href="/web/usercart"  class="nav-link ">Shopping Cart</a>
+              </li>
+              <li class="nav-item">
+                <a href="/web/usercontact"  class="nav-link ">Contact Us</a>
+              </li>
+              <li class="nav-item">
+                <a href="/web/userblog"  class="nav-link ">News/Announcements</a>
+              </li>
+              <li class="nav-item">
+                <a href="/web/chongzhi"  class="nav-link " title="Recharge">Recharge Center</a>
+              </li>
+              <li class="nav-item">
+                <a href="/web/personal" class="nav-link d-flex align-items-center" title="Personal Center">
+                  <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar"
+                       style="width: 30px; height: 30px; border-radius: 50%; margin-right: 5px; border: 2px solid #007bff;">
+                  <i v-else class="fa fa-user"></i>
+                  <span v-if="userInfo && userInfo.username" style="margin-left: 5px;">{{userInfo.username}}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+
+
+        </div>
+      </div>
+    </header>
+    <section class="jarallax py-5">
+      <img src="/static/webSite/images/banner-1.jpg" class="jarallax-img">
+      <div class="hero-content py-0 py-md-5">
+        <div class="container-lg d-flex flex-column d-md-block align-items-center">
+          <nav class="breadcrumb" style="color: whitesmoke">
+            <a class="breadcrumb-item nav-link" href="/web/userindex">Home</a>
+
+            <span class="breadcrumb-item active" aria-current="page" style="color: #ffffff;">Pet Service List</span>
+          </nav>
+          <h1 style="color: whitesmoke">Pet Services</h1>
+        </div>
+      </div>
+    </section>
+
+    <div class="py-4">
+      <div class="container-lg">
+        <!-- 筛选功能区域 -->
+        <div class="filter-section mb-4">
+          <div class="card filter-card">
+            <div class="card-header bg-light">
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 text-primary">
+                  <i class="fa fa-filter me-2"></i> Filter Conditions
+                  <small class="text-muted ms-2">Quickly find the pet services you need</small>
+                  <small class="text-info ms-2" style="font-size: 0.75rem;" title="Keyboard shortcut: Ctrl+F to toggle filter conditions">
+                    <i class="fa fa-keyboard-o"></i> Ctrl+F
+                  </small>
+                </h5>
+                <button class="btn btn-outline-primary btn-sm filter-toggle-btn"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#filterCollapse"
+                        aria-expanded="true"
+                        aria-controls="filterCollapse"
+                        id="filterToggleBtn">
+                  <i class="fa fa-chevron-down me-1"></i>
+                  <span id="toggleText">Collapse Filter</span>
+                </button>
+              </div>
+            </div>
+            <div class="collapse show" id="filterCollapse">
+              <div class="card-body">
+                <div class="row g-3">
+                  <!-- Search Box -->
+                  <div class="col-md-3">
+                    <label class="form-label">Name Search</label>
+                    <div class="input-group">
+                      <input v-model="queryParams.productname" class="form-control" type="text" placeholder="Search by name" @keyup.enter="handleSearch">
+                      <button class="btn btn-outline-secondary" @click="handleSearch" type="button">
+                        <i class="fa fa-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Category Filter -->
+                  <div class="col-md-3">
+                    <label class="form-label">Service Category</label>
+                    <select class="form-select" v-model="selectedCategory" @change="handleCategoryChange">
+                      <option value="all">All Categories</option>
+                      <option v-for="item in producttypeList" :key="item.id" :value="item.id">
+                        {{item.typeName}}
+                      </option>
+                    </select>
+                  </div>
+
+                  <!-- Time Slot Filter -->
+                  <div class="col-md-3">
+                    <label class="form-label">Service Time Slot</label>
+                    <select class="form-select" v-model="selectedTimeSlot" @change="handleTimeSlotChange">
+                      <option value="">All Time</option>
+                      <option value="morning">Morning (08:00-12:00)</option>
+                      <option value="afternoon">Afternoon (12:00-18:00)</option>
+                      <option value="evening">Evening (18:00-22:00)</option>
+                      <option value="allday">All Day (08:00-22:00)</option>
+                    </select>
+                  </div>
+
+                  <!-- Rating Filter -->
+                  <div class="col-md-3">
+                    <label class="form-label">Service Provider Rating</label>
+                    <select class="form-select" v-model="selectedRating" @change="handleRatingChange">
+                      <option value="">All Ratings</option>
+                      <option value="4.5">4.5 stars and above</option>
+                      <option value="4.0">4.0 stars and above</option>
+                      <option value="3.5">3.5 stars and above</option>
+                      <option value="3.0">3.0 stars and above</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Distance Filter Row -->
+                <div class="row g-3 mt-2">
+                  <!-- Distance Filter -->
+                  <div class="col-md-3">
+                    <label class="form-label">
+                      <i class="fa fa-location-arrow text-success"></i> Distance Filter
+                    </label>
+                    <select class="form-select" v-model="selectedDistance" @change="handleDistanceChange">
+                      <option value="">No Distance Limit</option>
+                      <option value="1">Within 1 km</option>
+                      <option value="3">Within 3 km</option>
+                      <option value="5">Within 5 km</option>
+                      <option value="10">Within 10 km</option>
+                      <option value="20">Within 20 km</option>
+                      <option value="custom">Custom Distance...</option>
+                    </select>
+                  </div>
+
+                  <!-- User Location Information Display -->
+                  <div class="col-md-9">
+                    <label class="form-label">
+                      <i class="fa fa-map-marker text-primary"></i> My Location
+                    </label>
+                    <div class="d-flex align-items-center">
+                      <span v-if="userLocation.address" class="text-muted me-3">
+                        <i class="fa fa-check-circle text-success"></i> {{userLocation.address}}
+                      </span>
+                      <span v-else class="text-warning me-3">
+                        <i class="fa fa-exclamation-triangle"></i> Location not obtained
+                      </span>
+                      <button class="btn btn-sm btn-outline-primary" @click="getUserLocation()">
+                        <i class="fa fa-refresh"></i> Relocate
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Advanced Filter Collapse Area -->
+                <div class="row mt-3">
+                  <div class="col-12">
+                    <button class="btn btn-outline-info btn-sm advanced-filter-btn"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#advancedFilter"
+                            aria-expanded="false"
+                            aria-controls="advancedFilter"
+                            id="advancedFilterBtn">
+                      <i class="fa fa-cog me-1"></i>
+                      <span id="advancedToggleText">Expand Advanced Filter</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="collapse mt-3" id="advancedFilter">
+                  <div class="card card-body">
+                    <div class="row g-3">
+
+                      <!-- Custom Time Slot Filter -->
+                      <div class="col-md-6">
+                        <label class="form-label">
+                          <i class="fa fa-clock-o text-primary"></i> Custom Time Filter
+                        </label>
+                        <div class="row g-2">
+                          <div class="col-6">
+                            <div class="input-group input-group-sm">
+                              <span class="input-group-text">
+                                <i class="fa fa-play text-success"></i>
+                              </span>
+                              <input type="time"
+                                     class="form-control"
+                                     v-model="customTimeRange.start"
+                                     @change="validateTimeRange"
+                                     placeholder="Start Time">
+                            </div>
+                            <small class="text-muted">Start Time</small>
+                          </div>
+                          <div class="col-6">
+                            <div class="input-group input-group-sm">
+                              <span class="input-group-text">
+                                <i class="fa fa-stop text-danger"></i>
+                              </span>
+                              <input type="time"
+                                     class="form-control"
+                                     v-model="customTimeRange.end"
+                                     @change="validateTimeRange"
+                                     placeholder="End Time">
+                            </div>
+                            <small class="text-muted">End Time</small>
+                          </div>
+                        </div>
+                        <div class="mt-2">
+                          <button type="button"
+                                  class="btn btn-outline-primary btn-sm me-2"
+                                  @click="applyCustomTimeFilter"
+                                  :disabled="!customTimeRange.start || !customTimeRange.end"
+                                  title="Apply time filter immediately (optional, you can also click 'Apply Filter and View Results' below)">
+                            <i class="fa fa-clock-o"></i> Apply Now
+                          </button>
+                          <button type="button"
+                                  class="btn btn-outline-secondary btn-sm"
+                                  @click="clearCustomTimeFilter">
+                            <i class="fa fa-times"></i> Clear
+                          </button>
+                        </div>
+                        <div v-if="customTimeRange.start && customTimeRange.end" class="mt-2">
+                          <small class="text-success">
+                            <i class="fa fa-check-circle"></i>
+                            Filter Time Slot: {{customTimeRange.start}} - {{customTimeRange.end}}
+                          </small>
+                        </div>
+                        <div v-if="timeRangeError" class="mt-2">
+                          <small class="text-danger">
+                            <i class="fa fa-exclamation-triangle"></i>
+                            {{timeRangeError}}
+                          </small>
+                        </div>
+                      </div>
+
+                      <!-- Custom Price Filter -->
+                      <div class="col-md-6">
+                        <label class="form-label">
+                          <i class="fa fa-money text-success"></i> Custom Price Filter
+                        </label>
+                        <div class="row g-2">
+                          <div class="col-6">
+                            <div class="input-group input-group-sm">
+                              <span class="input-group-text">
+                                <i class="fa fa-arrow-down text-success"></i>
+                              </span>
+                              <input type="number"
+                                     class="form-control"
+                                     v-model.number="customPriceRange.min"
+                                     @input="validatePriceRange"
+                                     placeholder="Minimum Price"
+                                     min="0"
+                                     step="0.01">
+                            </div>
+                            <small class="text-muted">Minimum Price (¥)</small>
+                          </div>
+                          <div class="col-6">
+                            <div class="input-group input-group-sm">
+                              <span class="input-group-text">
+                                <i class="fa fa-arrow-up text-danger"></i>
+                              </span>
+                              <input type="number"
+                                     class="form-control"
+                                     v-model.number="customPriceRange.max"
+                                     @input="validatePriceRange"
+                                     placeholder="Maximum Price"
+                                     min="0"
+                                     step="0.01">
+                            </div>
+                            <small class="text-muted">Maximum Price (¥)</small>
+                          </div>
+                        </div>
+                        <div class="mt-2">
+                          <button type="button"
+                                  class="btn btn-outline-success btn-sm me-2"
+                                  @click="applyCustomPriceFilter"
+                                  :disabled="!isValidPriceRange"
+                                  title="Apply price filter immediately (optional, you can also click 'Apply Filter and View Results' below)">
+                            <i class="fa fa-money"></i> Apply Now
+                          </button>
+                          <button type="button"
+                                  class="btn btn-outline-secondary btn-sm"
+                                  @click="clearCustomPriceFilter">
+                            <i class="fa fa-times"></i> Clear
+                          </button>
+                        </div>
+                        <div v-if="customPriceRange.min !== null && customPriceRange.max !== null" class="mt-2">
+                          <small class="text-success">
+                            <i class="fa fa-check-circle"></i>
+                            Price Range: ¥{{customPriceRange.min}} - ¥{{customPriceRange.max}}
+                          </small>
+                        </div>
+                        <div v-if="priceRangeError" class="mt-2">
+                          <small class="text-danger">
+                            <i class="fa fa-exclamation-triangle"></i>
+                            {{priceRangeError}}
+                          </small>
+                        </div>
+                      </div>
+
+                      <!-- Quick Price Filter -->
+                      <div class="col-12">
+                        <label class="form-label">
+                          <i class="fa fa-flash text-warning"></i> Quick Price Filter
+                        </label>
+                        <div class="d-flex flex-wrap gap-2">
+                          <button type="button"
+                                  class="btn btn-outline-info btn-sm"
+                                  @click="applyQuickPriceFilter(0, 50)">
+                            <i class="fa fa-tag"></i> ¥0-50
+                          </button>
+                          <button type="button"
+                                  class="btn btn-outline-info btn-sm"
+                                  @click="applyQuickPriceFilter(50, 100)">
+                            <i class="fa fa-tag"></i> ¥50-100
+                          </button>
+                          <button type="button"
+                                  class="btn btn-outline-info btn-sm"
+                                  @click="applyQuickPriceFilter(100, 200)">
+                            <i class="fa fa-tag"></i> ¥100-200
+                          </button>
+                          <button type="button"
+                                  class="btn btn-outline-info btn-sm"
+                                  @click="applyQuickPriceFilter(200, 500)">
+                            <i class="fa fa-tag"></i> ¥200-500
+                          </button>
+                          <button type="button"
+                                  class="btn btn-outline-info btn-sm"
+                                  @click="applyQuickPriceFilter(500, null)">
+                            <i class="fa fa-tag"></i> ¥500 and above
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- Action Buttons -->
+                      <div class="col-12">
+                        <hr class="my-3">
+                        <label class="form-label">
+                          <i class="fa fa-cogs text-secondary"></i> Actions
+                        </label>
+                        <div class="alert alert-info py-2 mb-3" role="alert">
+                          <i class="fa fa-lightbulb-o"></i>
+                          <strong>Usage Tip:</strong> After setting time and price, click
+                          <span class="badge bg-info">Apply Filter and View Results</span>
+                          to apply all filter conditions and display results with one click!
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                          <button type="button" class="btn btn-info btn-lg" @click="applyAndShowFilters">
+                            <i class="fa fa-filter"></i> Apply Filter and View Results
+                          </button>
+                          <button type="button" class="btn btn-outline-success" @click="handleSearch">
+                            <i class="fa fa-search"></i> Search All
+                          </button>
+                          <button type="button" class="btn btn-outline-secondary" @click="handleResetFilter">
+                            <i class="fa fa-refresh"></i> Reset Filter
+                          </button>
+                        </div>
+                        <div class="mt-2">
+                          <small class="text-muted">
+                            <i class="fa fa-info-circle"></i>
+                            "Apply Filter and View Results" will automatically apply the time and price filter conditions set above, no need to click apply buttons separately
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- View Toggle Buttons -->
+        <div class="view-toggle-section mb-4">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                  <i class="fa fa-eye me-2"></i>View Mode
+                </h5>
+                <div class="btn-group" role="group">
+                  <button type="button"
+                          class="btn"
+                          :class="{'btn-primary': viewMode === 'list', 'btn-outline-primary': viewMode !== 'list'}"
+                          @click="viewMode = 'list'">
+                    <i class="fa fa-list me-1"></i> All Pet Service Data
+                  </button>
+                  <button type="button"
+                          class="btn"
+                          :class="{'btn-primary': viewMode === 'map', 'btn-outline-primary': viewMode !== 'map'}"
+                          @click="switchToMapView()">
+                    <i class="fa fa-map-marker me-1"></i> All Service Provider Data
+                  </button>
+                </div>
+              </div>
+              <div v-if="!userLocation.longitude" class="alert alert-warning mt-3 mb-0">
+                <i class="fa fa-exclamation-triangle me-2"></i>
+                Your location information has not been obtained. Distance filtering and map functions may not work properly.
+                <button class="btn btn-sm btn-warning ms-2" @click="getUserLocation()">
+                  <i class="fa fa-location-arrow"></i> Get My Location
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Service Provider Map View -->
+        <div v-show="viewMode === 'map'" class="providers-map-view mb-4">
+          <div class="card">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0">
+                <i class="fa fa-map me-2"></i>Service Provider Location Map
+                <small class="ms-2">(Centered on your location)</small>
+              </h5>
+            </div>
+            <div class="card-body p-0">
+              <div id="providers-map" style="width: 100%; height: 600px;"></div>
+            </div>
+            <div class="card-footer">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <span class="badge bg-primary me-2">
+                    <i class="fa fa-map-marker"></i> Blue Marker: My Location
+                  </span>
+                  <span class="badge bg-danger">
+                    <i class="fa fa-map-marker"></i> Red Marker: Service Provider Location
+                  </span>
+                </div>
+                <div>
+                  <span class="text-muted">Found {{providerMarkers.length}} service providers</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product List Area -->
+        <div class="row" v-show="viewMode === 'list'">
+          <div class="col-12">
+            <div class="filter-shop d-flex justify-content-between">
+              <div class="showing-product">
+                <p>All Pet Service Data</p>
+              </div>
+
+            </div>
+
+            <!-- Debug Info -->
+            <div class="alert alert-info" v-if="dataList.length === 0">
+              <h5>Debug Information:</h5>
+              <p>Data list length: {{dataList.length}}</p>
+              <p>Total: {{total}}</p>
+              <p>Loading status: {{loading}}</p>
+              <p>User ID: {{userId}}</p>
+              <p>Base URL: {{baseUrl}}</p>
+            </div>
+
+            <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
+
+              <div class="col" v-for="item in dataList">
+                <div class="product-item">
+                  <figure>
+                    <a :href="'/web/usersingle?id='+item.id" title="Product Title">
+                      <img :src="item.img" style="width: 120px;height: 120px;" alt="Product Thumbnail" class="tab-image">
+                    </a>
+                  </figure>
+                  <div class="d-flex flex-column text-center">
+                    <h3 class="fs-6 fw-normal"><a :href="'/web/usersingle?id='+item.id">{{item.productname}}</a> </h3>
+                    <div>
+                    Sales: <span>{{item.spare1}}</span>
+                    </div>
+                    <div class="d-flex justify-content-center align-items-center gap-2">
+                      <del v-if="item.spare2 && !isNaN(parseFloat(item.spare2)) && parseFloat(item.spare2) < 10" class="text-muted">￥ {{item.kedanjia}}</del>
+                      <span class="text-dark fw-semibold">￥ {{calculateItemPrice(item)}}</span>
+                      <span v-if="item.spare2 && !isNaN(parseFloat(item.spare2)) && parseFloat(item.spare2) < 10" class="badge border border-dark-subtle rounded-0 fw-normal px-1 fs-7 lh-1 text-body-tertiary">{{item.spare2}} off</span>
+                    </div>
+                    <!-- Distance Information -->
+                    <div v-if="item.distanceText" class="distance-info mt-2">
+                      <span class="badge bg-success">
+                        <i class="fa fa-location-arrow me-1"></i>
+                        Distance: {{item.distanceText}}
+                      </span>
+                    </div>
+                    <div class="button-area p-3 pt-0">
+                      <div class="row g-1 mt-2">
+                        <div class="col-3"><input class="form-control border-dark-subtle input-number quantity" type="number"
+                                                  v-model="item.number"
+
+                                                  value="1"></div>
+                        <div class="col-7"><a class="btn btn-primary rounded-1 p-2 fs-7 btn-cart"
+                                              @click="handleAddCart(item.id,item.number)"  href="javascript:void(0)"><i
+                                class="fa fa-shopping-cart"></i> Add to Cart</a></div>
+                        <div class="col-2">
+                          <a class="btn btn-outline-dark rounded-1 p-2 fs-6"
+                             href="javascript:void(0)">
+                            <i class="fa fa-heart" @click="handleCancelLike(item.id)" style="color: red" v-if="item.likeFlag"></i>
+                            <i class="fa fa-heart-o" @click="handleAddLike(item.id)"  v-if="!item.likeFlag"></i>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+            </div>
+            <!-- / product-grid -->
+            <div style="width: 100%;text-align: center">
+              <el-pagination
+                      :current-page.sync="queryParams.pageNum"
+                      :page-size="queryParams.pageSize"
+                      :total="total"
+                      @current-change="handleCurrentChange"
+                      background
+                      layout="total, prev, pager, next">
+              </el-pagination>
+            </div>
+
+          </main>
+
+        </div>
+      </div>
+    </div>
+
+  <section class="pb-4 my-4">
+    <div class="container-lg" >
+
+      <div class="bg-warning pt-5 rounded-5" >
+        <div class="container" style="background-image: url('/static/webSite/images/bottomBanner.jpg')">
+          <div class="row justify-content-center align-items-center">
+            <div class="col-md-4">
+              <h2 class="mt-5">Add to Cart to Purchase</h2>
+              <p>If you encounter any problems, please contact us</p>
+              <div class="d-flex gap-2 flex-wrap mb-5">
+                <a class="btn btn-danger" href="/web/usercart" title="Go to Cart">Go to Cart <i class="fa fa-shopping-cart"></i></a>
+                <a class="btn btn-primary" href="/web/personal?activeName=third" title="Go to Orders">Go to Orders <i class="fa fa-list"></i></a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+    <section class="py-4">
+      <div class="container-lg">
+        <h2 class="my-4">Favorites Ranking:</h2>
+        <div >
+          <a v-for="item in dataList" :href="'/web/usersingle?id='+item.id" class="btn btn-warning me-2 mb-2">{{item.productname}}</a>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="py-5">
+      <div class="container-lg">
+        <div class="row row-cols-1 row-cols-sm-3 row-cols-lg-5">
+          <div class="col">
+            <div class="card mb-3 border border-dark-subtle p-3">
+              <div class="text-dark mb-3">
+               <i class="fa fa-battery-4"></i>
+              </div>
+              <div class="card-body p-0">
+                <h5>Pet Service Guarantee</h5>
+                <p class="card-text">Legitimate channels, qualified audits.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card mb-3 border border-dark-subtle p-3">
+              <div class="text-dark mb-3">
+<i class="fa fa-bell"></i>              </div>
+              <div class="card-body p-0">
+                <h5>100% Authentic</h5>
+                <p class="card-text">Activities and discounts are real and valid.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card mb-3 border border-dark-subtle p-3">
+              <div class="text-dark mb-3">
+               <i class="fa fa-shopping-cart"></i>
+              </div>
+              <div class="card-body p-0">
+                <h5>One-Click Shopping Cart</h5>
+                <p class="card-text">Flexible and convenient, quick ordering.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card mb-3 border border-dark-subtle p-3">
+              <div class="text-dark mb-3">
+                <i class="fa fa-bar-chart"></i>
+              </div>
+              <div class="card-body p-0">
+                <h5>Contact Us for Issues</h5>
+                <p class="card-text">24/7 customer support.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card mb-3 border border-dark-subtle p-3">
+              <div class="text-dark mb-3">
+                <i class="fa fa-user"></i>
+              </div>
+              <div class="card-body p-0">
+                <h5>Personal Customization</h5>
+                <p class="card-text">Modify personal information, show personality.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <div id="footer-bottom">
+      <div class="container-lg">
+        <div class="row">
+          <div class="col-md-6 copyright">
+            <p>@  2025 - Pet Service Booking Platform.</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+</div>
+
+    <script src="/static/webSite/js/jquery-1.11.0.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <script src="/static/webSite/js/plugins.js"></script>
+    <script src="/static/webSite/js/script.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="/static/js/GloJs.js"></script>
+<script src="/static/webSite/js/swiper-bundle.js"></script>
+<script src="/static/hAdmin/js/plugins/toastr/toastr.min.js"></script>
+<script>
+
+  new Vue({
+    el: "#app",
+    data() {
+      return {
+        baseUrl: gloRequestUrl,
+        dataList: [],
+        producttypeList: [],
+        fileList: [],
+        fileStr: [],
+        total: 0,
+        searchKey: "",
+        loading: true,
+        userId: localStorage.getItem("userId"),
+        role: localStorage.getItem("role"),
+        userInfo: {},
+        form: {},
+        open: false,
+        openDetail: false,
+        queryParams: {
+          pageSize: 10,
+          pageNum: 1,
+          serviceStartTime: '',
+          serviceEndTime: '',
+          companyRating: null,
+          minPrice: null,
+          maxPrice: null,
+        },
+        customTimeRange: {
+          start: '',
+          end: ''
+        },
+        customPriceRange: {
+          min: null,
+          max: null
+        },
+        // Error message information
+        timeRangeError: '',
+        priceRangeError: '',
+        // New filter variables
+        selectedCategory: 'all',
+        selectedTimeSlot: '',
+        selectedRating: '',
+
+        // New: View mode
+        viewMode: 'list', // 'list' or 'map'
+
+        // New: Distance filter
+        selectedDistance: '',
+        customDistance: null,
+
+        // New: User location
+        userLocation: {
+          longitude: null,
+          latitude: null,
+          address: ''
+        },
+
+        // New: Service provider map related
+        providersMap: null,
+        providerMarkers: [],
+        userMarker: null,
+
+        title: "",
+        rules: {
+          title: [
+            {required: true, message: 'Please enter', trigger: 'blur'},
+
+          ],
+
+        }
+      }
+    },
+    computed: {
+      // Validate if price range is valid
+      isValidPriceRange() {
+        if (this.customPriceRange.min === null && this.customPriceRange.max === null) {
+          return false;
+        }
+        if (this.customPriceRange.min !== null && this.customPriceRange.min < 0) {
+          return false;
+        }
+        if (this.customPriceRange.max !== null && this.customPriceRange.max < 0) {
+          return false;
+        }
+        if (this.customPriceRange.min !== null && this.customPriceRange.max !== null) {
+          return this.customPriceRange.min <= this.customPriceRange.max;
+        }
+        return true;
+      }
+    },
+    methods: {
+      // Get user information
+      getUserInfo(){
+        let that = this
+        if (that.userId) {
+          $.ajax({
+            url: that.baseUrl + "/sysuser/detail",
+            type: "GET",
+            data: {id: that.userId},
+            success: function (data) {
+              if (data.code !== 500) {
+                that.userInfo = data.data
+              }
+            },
+            error: function () {
+              console.log("Failed to get user information")
+            }
+          });
+        }
+      },
+      // Add to cart
+      handleAddCart(id,number){
+        let that = this
+        if (number === null || number === 0 || number == undefined){
+          toastr.error("Quantity cannot be empty", 'Notice')
+          return false
+        }
+        let param = {
+          productid:id,
+          userid:that.userId,
+          number:number,
+        }
+        $.ajax({
+          url: that.baseUrl + "/shopcart",
+          type: "post",
+          data: JSON.stringify(param),
+          contentType: "application/json",
+          // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+          success: function (data) {
+            that.open = false
+            if (data.code === 200) {
+              toastr.success(data.msg, 'Notice')
+
+            } else {
+
+              toastr.error(data.msg, 'Notice')
+            }
+            that.getList()
+          },
+          error: function () {
+            alert("Server error! Network error!")
+          }
+        })
+      },
+      // Add to favorites
+      handleAddLike(id){
+        let that = this
+
+        let param = {
+          productid:id,
+          userid:that.userId,
+
+        }
+        $.ajax({
+          url: that.baseUrl + "/userlike",
+          type: "post",
+          data: JSON.stringify(param),
+          contentType: "application/json",
+          // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+          success: function (data) {
+            that.open = false
+            if (data.code === 200) {
+              toastr.success(data.msg, 'Notice')
+
+            } else {
+
+              toastr.error(data.msg, 'Notice')
+            }
+            that.getList()
+          },
+          error: function () {
+            alert("Server error! Network error!")
+          }
+        })
+      },    // Remove from favorites
+      handleCancelLike(id){
+        let that = this
+
+        let param = {
+          productid:id,
+          userid:that.userId,
+
+        }
+        $.ajax({
+          url: that.baseUrl + "/userlike/delete",
+          type: "DELETE",
+          data: JSON.stringify(param),
+          contentType: "application/json",
+          // headers: { 'Content-Type': 'application/json;charset=utf-8' },
+          success: function (data) {
+            that.open = false
+            if (data.code === 200) {
+              toastr.warning(data.msg, 'Notice')
+
+            } else {
+
+              toastr.warning(data.msg, 'Notice')
+            }
+            that.getList()
+          },
+          error: function () {
+            alert("Server error! Network error!")
+          }
+        })
+      },
+      getproductTypeList() {
+        let that = this;
+        let param = {
+          "pageSize": 999,
+          "pageNum": that.queryParams.pageNum,
+
+        }
+        $.ajax({
+          url: that.baseUrl + "/producttype",
+          type: "GET",
+          data: param,
+          success: function (data) {
+            if (data.code !== 500) {
+
+              that.producttypeList = data.list
+
+            }
+          },
+          error: function () {
+            windowsAuto(500, "Server error! Network error!")
+          }
+        });
+      },
+      handleCurrentChange() {
+        let that = this;
+        that.getList()
+      },
+      // Handle search
+      handleSearch() {
+        let that = this;
+        that.queryParams.pageNum = 1; // Reset to first page
+        that.getList();
+      },
+      // Handle time filter
+      handleTimeFilter() {
+        let that = this;
+        that.queryParams.pageNum = 1; // Reset to first page
+        that.getList();
+      },
+      // Handle preset time slot filter
+      handlePresetTimeFilter(event) {
+        let that = this;
+        const value = event.target.value;
+        switch(value) {
+          case 'morning':
+            that.queryParams.serviceStartTime = '08:00';
+            that.queryParams.serviceEndTime = '12:00';
+            break;
+          case 'afternoon':
+            that.queryParams.serviceStartTime = '12:00';
+            that.queryParams.serviceEndTime = '18:00';
+            break;
+          case 'evening':
+            that.queryParams.serviceStartTime = '18:00';
+            that.queryParams.serviceEndTime = '22:00';
+            break;
+          case 'allday':
+            that.queryParams.serviceStartTime = '08:00';
+            that.queryParams.serviceEndTime = '22:00';
+            break;
+          default:
+            // Do nothing, keep current time settings
+            return;
+        }
+        that.queryParams.pageNum = 1; // Reset to first page
+        that.getList();
+      },
+      // Clear time filter
+      clearTimeFilter() {
+        let that = this;
+        that.queryParams.serviceStartTime = '';
+        that.queryParams.serviceEndTime = '';
+        that.queryParams.pageNum = 1; // Reset to first page
+        that.getList();
+      },
+      // Handle quick time slot filter
+      handleQuickTimeFilter(timeType) {
+        let that = this;
+        switch(timeType) {
+          case 'morning':
+            that.queryParams.serviceStartTime = '08:00';
+            that.queryParams.serviceEndTime = '12:00';
+            break;
+          case 'afternoon':
+            that.queryParams.serviceStartTime = '12:00';
+            that.queryParams.serviceEndTime = '18:00';
+            break;
+          case 'evening':
+            that.queryParams.serviceStartTime = '18:00';
+            that.queryParams.serviceEndTime = '22:00';
+            break;
+          case 'allday':
+            that.queryParams.serviceStartTime = '08:00';
+            that.queryParams.serviceEndTime = '22:00';
+            break;
+          case 'clear':
+            that.queryParams.serviceStartTime = '';
+            that.queryParams.serviceEndTime = '';
+            break;
+          default:
+            that.queryParams.serviceStartTime = '';
+            that.queryParams.serviceEndTime = '';
+            break;
+        }
+        that.queryParams.pageNum = 1; // Reset to first page
+        that.getList();
+      },
+      // Handle rating filter
+      handleRatingFilter(rating) {
+        let that = this;
+        that.queryParams.companyRating = rating === 'all' ? null : rating;
+        that.queryParams.pageNum = 1; // Reset to first page
+        that.getList();
+      },
+
+      // New filter methods
+      handleCategoryChange() {
+        let that = this;
+        if (that.selectedCategory === 'all') {
+          that.getList('all');
+        } else {
+          that.getList(that.selectedCategory);
+        }
+      },
+
+      handleTimeSlotChange() {
+        let that = this;
+        that.handleQuickTimeFilter(that.selectedTimeSlot);
+      },
+
+      handleRatingChange() {
+        let that = this;
+        that.queryParams.companyRating = that.selectedRating ? parseFloat(that.selectedRating) : null;
+        that.queryParams.pageNum = 1;
+        that.getList();
+      },
+
+      handleResetFilter() {
+        let that = this;
+        that.selectedCategory = 'all';
+        that.selectedTimeSlot = '';
+        that.selectedRating = '';
+        that.selectedDistance = '';
+        that.customDistance = null;
+        that.queryParams.productname = '';
+        that.queryParams.serviceStartTime = '';
+        that.queryParams.serviceEndTime = '';
+        that.queryParams.companyRating = null;
+        that.queryParams.minPrice = null;
+        that.queryParams.maxPrice = null;
+        that.queryParams.maxDistance = null;
+        that.customTimeRange.start = '';
+        that.customTimeRange.end = '';
+        that.customPriceRange.min = null;
+        that.customPriceRange.max = null;
+        that.timeRangeError = '';
+        that.priceRangeError = '';
+        that.queryParams.pageNum = 1;
+        that.getList('all');
+        toastr.info("All filter conditions have been reset", 'Notice');
+      },
+
+      // Validate time range
+      validateTimeRange() {
+        let that = this;
+        that.timeRangeError = '';
+
+        if (that.customTimeRange.start && that.customTimeRange.end) {
+          if (that.customTimeRange.start >= that.customTimeRange.end) {
+            that.timeRangeError = 'Start time must be less than end time';
+            return false;
+          }
+        }
+        return true;
+      },
+
+      // Validate price range
+      validatePriceRange() {
+        let that = this;
+        that.priceRangeError = '';
+
+        if (that.customPriceRange.min !== null && that.customPriceRange.min < 0) {
+          that.priceRangeError = 'Price cannot be negative';
+          return false;
+        }
+
+        if (that.customPriceRange.max !== null && that.customPriceRange.max < 0) {
+          that.priceRangeError = 'Price cannot be negative';
+          return false;
+        }
+
+        if (that.customPriceRange.min !== null && that.customPriceRange.max !== null) {
+          if (that.customPriceRange.min > that.customPriceRange.max) {
+            that.priceRangeError = 'Minimum price cannot be greater than maximum price';
+            return false;
+          }
+        }
+        return true;
+      },
+
+      // Apply custom time filter
+      applyCustomTimeFilter() {
+        let that = this;
+
+        if (!that.customTimeRange.start || !that.customTimeRange.end) {
+          toastr.error("Please select a complete time range", 'Notice');
+          return;
+        }
+
+        if (that.customTimeRange.start >= that.customTimeRange.end) {
+          toastr.error("Start time must be less than end time", 'Notice');
+          return;
+        }
+
+        // Set query parameters
+        that.queryParams.serviceStartTime = that.customTimeRange.start;
+        that.queryParams.serviceEndTime = that.customTimeRange.end;
+        that.queryParams.pageNum = 1; // Reset to first page
+
+        // Execute search
+        that.getList();
+
+        toastr.success(`Filtered services for time slot ${that.customTimeRange.start} - ${that.customTimeRange.end}`, 'Filter Success');
+      },
+
+      // Clear custom time filter
+      clearCustomTimeFilter() {
+        let that = this;
+        that.customTimeRange.start = '';
+        that.customTimeRange.end = '';
+        that.queryParams.serviceStartTime = '';
+        that.queryParams.serviceEndTime = '';
+        that.timeRangeError = '';
+        that.queryParams.pageNum = 1; // Reset to first page
+        that.getList();
+        toastr.info("Time filter cleared", 'Notice');
+      },
+
+      // Apply custom price filter
+      applyCustomPriceFilter() {
+        let that = this;
+
+        if (!that.validatePriceRange()) {
+          return;
+        }
+
+        if (that.customPriceRange.min === null && that.customPriceRange.max === null) {
+          toastr.error("Please enter price range", 'Notice');
+          return;
+        }
+
+        // Set query parameters
+        that.queryParams.minPrice = that.customPriceRange.min;
+        that.queryParams.maxPrice = that.customPriceRange.max;
+        that.queryParams.pageNum = 1; // Reset to first page
+
+        // Execute search
+        that.getList();
+
+        let priceText = '';
+        if (that.customPriceRange.min !== null && that.customPriceRange.max !== null) {
+          priceText = `¥${that.customPriceRange.min} - ¥${that.customPriceRange.max}`;
+        } else if (that.customPriceRange.min !== null) {
+          priceText = `¥${that.customPriceRange.min} and above`;
+        } else if (that.customPriceRange.max !== null) {
+          priceText = `¥${that.customPriceRange.max} and below`;
+        }
+
+        toastr.success(`Price range filtered: ${priceText}`, 'Filter Success');
+      },
+
+      // Clear custom price filter
+      clearCustomPriceFilter() {
+        let that = this;
+        that.customPriceRange.min = null;
+        that.customPriceRange.max = null;
+        that.queryParams.minPrice = null;
+        that.queryParams.maxPrice = null;
+        that.priceRangeError = '';
+        that.queryParams.pageNum = 1; // Reset to first page
+        that.getList();
+        toastr.info("Price filter cleared", 'Notice');
+      },
+
+      // Quick price filter
+      applyQuickPriceFilter(minPrice, maxPrice) {
+        let that = this;
+
+        that.customPriceRange.min = minPrice;
+        that.customPriceRange.max = maxPrice;
+        that.queryParams.minPrice = minPrice;
+        that.queryParams.maxPrice = maxPrice;
+        that.queryParams.pageNum = 1; // Reset to first page
+        that.priceRangeError = '';
+
+        // Execute search
+        that.getList();
+
+        let priceText = '';
+        if (maxPrice === null) {
+          priceText = `¥${minPrice} and above`;
+        } else {
+          priceText = `¥${minPrice} - ¥${maxPrice}`;
+        }
+
+        toastr.success(`Quick price filter applied: ${priceText}`, 'Filter Success');
+      },
+
+      // Apply filters and show results
+      applyAndShowFilters() {
+        let that = this;
+        let hasChanges = false;
+        let appliedFilters = [];
+
+        // Automatically apply custom time filter
+        if (that.customTimeRange.start && that.customTimeRange.end) {
+          if (that.validateTimeRange()) {
+            that.queryParams.serviceStartTime = that.customTimeRange.start;
+            that.queryParams.serviceEndTime = that.customTimeRange.end;
+            appliedFilters.push(`Time: ${that.customTimeRange.start} - ${that.customTimeRange.end}`);
+            hasChanges = true;
+          } else {
+            toastr.error("Invalid time range setting, please check and try again", 'Filter Failed');
+            return;
+          }
+        }
+
+        // Automatically apply custom price filter
+        if (that.customPriceRange.min !== null || that.customPriceRange.max !== null) {
+          if (that.validatePriceRange()) {
+            that.queryParams.minPrice = that.customPriceRange.min;
+            that.queryParams.maxPrice = that.customPriceRange.max;
+
+            let priceText = '';
+            if (that.customPriceRange.min !== null && that.customPriceRange.max !== null) {
+              priceText = `¥${that.customPriceRange.min} - ¥${that.customPriceRange.max}`;
+            } else if (that.customPriceRange.min !== null) {
+              priceText = `¥${that.customPriceRange.min} and above`;
+            } else if (that.customPriceRange.max !== null) {
+              priceText = `¥${that.customPriceRange.max} and below`;
+            }
+            appliedFilters.push(`Price: ${priceText}`);
+            hasChanges = true;
+          } else {
+            toastr.error("Invalid price range setting, please check and try again", 'Filter Failed');
+            return;
+          }
+        }
+
+        // Collect all current filter conditions
+        let allFilters = [];
+
+        if (that.queryParams.productname) {
+          allFilters.push(`Name: ${that.queryParams.productname}`);
+        }
+        if (that.selectedCategory !== 'all') {
+          let categoryName = that.producttypeList.find(item => item.id == that.selectedCategory)?.typeName || 'Unknown';
+          allFilters.push(`Category: ${categoryName}`);
+        }
+        if (that.queryParams.serviceStartTime && that.queryParams.serviceEndTime) {
+          allFilters.push(`Time: ${that.queryParams.serviceStartTime} - ${that.queryParams.serviceEndTime}`);
+        }
+        if (that.queryParams.companyRating) {
+          allFilters.push(`Rating: ${that.queryParams.companyRating} stars and above`);
+        }
+        if (that.queryParams.minPrice !== null || that.queryParams.maxPrice !== null) {
+          let priceText = '';
+          if (that.queryParams.minPrice !== null && that.queryParams.maxPrice !== null) {
+            priceText = `¥${that.queryParams.minPrice} - ¥${that.queryParams.maxPrice}`;
+          } else if (that.queryParams.minPrice !== null) {
+            priceText = `¥${that.queryParams.minPrice} and above`;
+          } else if (that.queryParams.maxPrice !== null) {
+            priceText = `¥${that.queryParams.maxPrice} and below`;
+          }
+          allFilters.push(`Price: ${priceText}`);
+        }
+
+        // Reset to first page
+        that.queryParams.pageNum = 1;
+
+        // Execute search
+        that.getList();
+
+        // Show results
+        if (hasChanges && appliedFilters.length > 0) {
+          toastr.success(`Auto-applied: ${appliedFilters.join(', ')}`, 'Filter Success');
+        }
+
+        if (allFilters.length === 0) {
+          toastr.info("No filter conditions applied, showing all results", 'Filter Status');
+        } else {
+          toastr.info(`Current filter conditions: ${allFilters.join(', ')}`, 'Filter Status');
+        }
+      },
+
+      // Show current filter conditions (keep original method for use elsewhere)
+      showCurrentFilters() {
+        let that = this;
+        let filters = [];
+
+        if (that.queryParams.productname) {
+          filters.push(`Name: ${that.queryParams.productname}`);
+        }
+        if (that.selectedCategory !== 'all') {
+          let categoryName = that.producttypeList.find(item => item.id == that.selectedCategory)?.typeName || 'Unknown';
+          filters.push(`Category: ${categoryName}`);
+        }
+        if (that.queryParams.serviceStartTime && that.queryParams.serviceEndTime) {
+          filters.push(`Time: ${that.queryParams.serviceStartTime} - ${that.queryParams.serviceEndTime}`);
+        }
+        if (that.queryParams.companyRating) {
+          filters.push(`Rating: ${that.queryParams.companyRating} stars and above`);
+        }
+        if (that.queryParams.minPrice !== null || that.queryParams.maxPrice !== null) {
+          let priceText = '';
+          if (that.queryParams.minPrice !== null && that.queryParams.maxPrice !== null) {
+            priceText = `¥${that.queryParams.minPrice} - ¥${that.queryParams.maxPrice}`;
+          } else if (that.queryParams.minPrice !== null) {
+            priceText = `¥${that.queryParams.minPrice} and above`;
+          } else if (that.queryParams.maxPrice !== null) {
+            priceText = `¥${that.queryParams.maxPrice} and below`;
+          }
+          filters.push(`Price: ${priceText}`);
+        }
+
+        if (filters.length === 0) {
+          toastr.info("No filter conditions applied", 'Filter Status');
+        } else {
+          toastr.info(`Current filter conditions: ${filters.join(', ')}`, 'Filter Status');
+        }
+      },
+
+      // Initialize filter expand/collapse functionality
+      initFilterToggle() {
+        const filterToggleBtn = document.getElementById('filterToggleBtn');
+        const advancedFilterBtn = document.getElementById('advancedFilterBtn');
+        const filterCollapse = document.getElementById('filterCollapse');
+        const advancedFilter = document.getElementById('advancedFilter');
+
+        // Main filter expand/collapse
+        if (filterCollapse && filterToggleBtn) {
+          filterCollapse.addEventListener('show.bs.collapse', function () {
+            const toggleText = document.getElementById('toggleText');
+            const icon = filterToggleBtn.querySelector('.fa-chevron-down');
+            if (toggleText) toggleText.textContent = 'Collapse Filter';
+            if (icon) icon.style.transform = 'rotate(180deg)';
+            filterToggleBtn.setAttribute('aria-expanded', 'true');
+
+            // Add expand animation effect
+            filterToggleBtn.classList.add('btn-primary');
+            filterToggleBtn.classList.remove('btn-outline-primary');
+          });
+
+          filterCollapse.addEventListener('hide.bs.collapse', function () {
+            const toggleText = document.getElementById('toggleText');
+            const icon = filterToggleBtn.querySelector('.fa-chevron-down');
+            if (toggleText) toggleText.textContent = 'Expand Filter';
+            if (icon) icon.style.transform = 'rotate(0deg)';
+            filterToggleBtn.setAttribute('aria-expanded', 'false');
+
+            // Add collapse animation effect
+            filterToggleBtn.classList.remove('btn-primary');
+            filterToggleBtn.classList.add('btn-outline-primary');
+          });
+        }
+
+        // Advanced filter expand/collapse
+        if (advancedFilter && advancedFilterBtn) {
+          advancedFilter.addEventListener('show.bs.collapse', function () {
+            const advancedToggleText = document.getElementById('advancedToggleText');
+            const icon = advancedFilterBtn.querySelector('.fa-cog');
+            if (advancedToggleText) advancedToggleText.textContent = 'Collapse Advanced Filter';
+            if (icon) icon.style.transform = 'rotate(90deg)';
+            advancedFilterBtn.setAttribute('aria-expanded', 'true');
+
+            // Add expand animation effect
+            advancedFilterBtn.classList.add('btn-info');
+            advancedFilterBtn.classList.remove('btn-outline-info');
+          });
+
+          advancedFilter.addEventListener('hide.bs.collapse', function () {
+            const advancedToggleText = document.getElementById('advancedToggleText');
+            const icon = advancedFilterBtn.querySelector('.fa-cog');
+            if (advancedToggleText) advancedToggleText.textContent = 'Expand Advanced Filter';
+            if (icon) icon.style.transform = 'rotate(0deg)';
+            advancedFilterBtn.setAttribute('aria-expanded', 'false');
+
+            // Add collapse animation effect
+            advancedFilterBtn.classList.remove('btn-info');
+            advancedFilterBtn.classList.add('btn-outline-info');
+          });
+        }
+
+        // Add keyboard shortcut support
+        document.addEventListener('keydown', function(event) {
+          // Ctrl + F toggle main filter conditions
+          if (event.ctrlKey && event.key === 'f') {
+            event.preventDefault();
+            if (filterToggleBtn) {
+              filterToggleBtn.click();
+            }
+          }
+
+          // Ctrl + Shift + F toggle advanced filter
+          if (event.ctrlKey && event.shiftKey && event.key === 'F') {
+            event.preventDefault();
+            if (advancedFilterBtn) {
+              advancedFilterBtn.click();
+            }
+          }
+        });
+      },
+
+      // Get list
+      getList(typeId) {
+        let that = this;
+        console.log(that.queryParams)
+        // Get query string (part after question mark)
+        const queryString = window.location.search;
+
+// Create URLSearchParams instance
+        const params = new URLSearchParams(queryString);
+        let type =   params.get("type")
+        that.loading = true
+        // Only set userid when user is logged in
+        if (that.userId) {
+          that.queryParams.userid = that.userId
+        }
+        if (typeId == 'all'){
+          window.location.href = "/web/userproductlist"
+        }
+        // Only set producttype when typeId is specified, otherwise keep existing producttype or get from URL parameters
+        if (typeId !== undefined && typeId !== null) {
+          that.queryParams.producttype = typeId;
+        } else if (!that.queryParams.producttype && type) {
+          that.queryParams.producttype = type;
+        }
+
+
+        $.ajax({
+          url: that.baseUrl + "/product",
+          type: "GET",
+          data: that.queryParams,
+          success: function (data) {
+            console.log("API Response:", data);
+            console.log("Data list:", data.list);
+            console.log("Data total:", data.total);
+            if (data.code !== 500) {
+              that.loading = false
+              that.dataList = data.list
+              that.total = data.total
+
+              // Calculate distance and add to product data
+              if (that.userLocation.longitude && that.userLocation.latitude) {
+                that.dataList.forEach(item => {
+                  // Assume product data contains service provider's longitude and latitude information
+                  if (item.companyLongitude && item.companyLatitude) {
+                    const distance = that.calculateDistance(
+                      that.userLocation.latitude,
+                      that.userLocation.longitude,
+                      item.companyLatitude,
+                      item.companyLongitude
+                    );
+                    item.distance = distance;
+                    item.distanceText = that.formatDistance(distance);
+                  }
+                });
+
+                // If distance filter is set, filter data
+                if (that.queryParams.maxDistance) {
+                  that.dataList = that.dataList.filter(item => {
+                    return item.distance && item.distance <= that.queryParams.maxDistance;
+                  });
+                  that.total = that.dataList.length;
+                }
+              }
+
+              console.log("Updated dataList:", that.dataList);
+              console.log("Updated total:", that.total);
+            } else {
+              console.error("API returned error code 500:", data.msg);
+            }
+          },
+          error: function (xhr, status, error) {
+            console.error("AJAX Error:", error);
+            console.error("Status:", status);
+            console.error("Response:", xhr.responseText);
+            windowsAuto(500, "Server error! Network error!")
+          }
+        });
+      },
+
+      handleDel(id) {
+        let that = this;
+        swal({
+          title: "Are you sure you want to delete this information?",
+          text: "Cannot be recovered after deletion!",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#DD6B55",
+          confirmButtonText: "Delete",
+          cancelButtonText: "Let me think again",
+          closeOnConfirm: false
+        }, function () {
+          $.ajax({
+            url: that.baseUrl + "/webnotice/del",
+            type: "DELETE",
+            data: {
+              id: id,
+            },
+            success: function (data) {
+              windowsAuto(data.code, data.msg)
+              that.getList()
+            },
+            error: function () {
+              alert("Server error! Network error!")
+            }
+          })
+
+        });
+      },
+
+      // Calculate item price (considering discount)
+      calculateItemPrice(item) {
+        if (!item || !item.kedanjia) {
+          return '0.00';
+        }
+
+        const originalPrice = parseFloat(item.kedanjia);
+        if (isNaN(originalPrice)) {
+          return '0.00';
+        }
+
+        // If there is a discount and it's valid
+        if (item.spare2 && !isNaN(parseFloat(item.spare2))) {
+          const discount = parseFloat(item.spare2);
+          if (discount > 0 && discount < 10) {
+            return (originalPrice * discount / 10).toFixed(2);
+          }
+        }
+
+        // Return original price when no discount or discount is invalid
+        return originalPrice.toFixed(2);
+      },
+
+      // Get user location
+      getUserLocation() {
+        const that = this;
+
+        if (!navigator.geolocation) {
+          toastr.error('Your browser does not support location services', 'Notice');
+          return;
+        }
+
+        toastr.info('Getting your location...', 'Notice');
+
+        navigator.geolocation.getCurrentPosition(
+          function(position) {
+            that.userLocation.longitude = position.coords.longitude;
+            that.userLocation.latitude = position.coords.latitude;
+
+            // Use reverse geocoding to get address
+            AMap.plugin('AMap.Geocoder', function() {
+              const geocoder = new AMap.Geocoder();
+              geocoder.getAddress([that.userLocation.longitude, that.userLocation.latitude], function(status, result) {
+                if (status === 'complete' && result.info === 'OK') {
+                  that.userLocation.address = result.regeocode.formattedAddress;
+                  toastr.success('Location obtained successfully: ' + that.userLocation.address, 'Notice');
+                }
+              });
+            });
+          },
+          function(error) {
+            let errorMsg = 'Failed to get location';
+            switch(error.code) {
+              case error.PERMISSION_DENIED:
+                errorMsg = 'You denied the location permission request';
+                break;
+              case error.POSITION_UNAVAILABLE:
+                errorMsg = 'Location information is not available';
+                break;
+              case error.TIMEOUT:
+                errorMsg = 'Location request timed out';
+                break;
+            }
+            toastr.error(errorMsg, 'Notice');
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+          }
+        );
+      },
+
+      // Distance filter handling
+      handleDistanceChange() {
+        const that = this;
+
+        if (!this.userLocation.longitude || !this.userLocation.latitude) {
+          toastr.warning('Please get your location information first', 'Notice');
+          this.selectedDistance = '';
+          return;
+        }
+
+        if (this.selectedDistance === 'custom') {
+          this.$prompt('Please enter distance (kilometers)', 'Custom Distance', {
+            confirmButtonText: 'OK',
+            cancelButtonText: 'Cancel',
+            inputPattern: /^\d+(\.\d+)?$/,
+            inputErrorMessage: 'Please enter a valid number'
+          }).then(({ value }) => {
+            that.customDistance = parseFloat(value);
+            that.queryParams.maxDistance = that.customDistance;
+            that.handleSearch();
+          }).catch(() => {
+            that.selectedDistance = '';
+          });
+        } else if (this.selectedDistance) {
+          this.queryParams.maxDistance = parseFloat(this.selectedDistance);
+          this.handleSearch();
+        } else {
+          this.queryParams.maxDistance = null;
+          this.handleSearch();
+        }
+      },
+
+      // Switch to map view
+      switchToMapView() {
+        this.viewMode = 'map';
+
+        if (!this.userLocation.longitude || !this.userLocation.latitude) {
+          toastr.warning('Getting your location...', 'Notice');
+          this.getUserLocation();
+        }
+
+        this.$nextTick(() => {
+          this.initProvidersMap();
+        });
+      },
+
+      // Initialize service provider map
+      initProvidersMap() {
+        const that = this;
+
+        if (!this.providersMap) {
+          const center = [
+            this.userLocation.longitude || 116.397428,
+            this.userLocation.latitude || 39.90923
+          ];
+
+          this.providersMap = new AMap.Map('providers-map', {
+            zoom: 13,
+            center: center,
+            resizeEnable: true
+          });
+
+          // Add user location marker
+          if (this.userLocation.longitude && this.userLocation.latitude) {
+            this.userMarker = new AMap.Marker({
+              position: center,
+              map: this.providersMap,
+              icon: new AMap.Icon({
+                image: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png',
+                size: new AMap.Size(25, 34),
+                imageSize: new AMap.Size(25, 34)
+              }),
+              title: 'My Location',
+              zIndex: 999
+            });
+
+            // Add user location info window
+            const userInfoWindow = new AMap.InfoWindow({
+              content: `
+                <div style="padding: 10px;">
+                  <h5><i class="fa fa-user"></i> My Location</h5>
+                  <p>${that.userLocation.address || 'Location information loading...'}</p>
+                </div>
+              `
+            });
+
+            this.userMarker.on('click', function() {
+              userInfoWindow.open(that.providersMap, center);
+            });
+          }
+        }
+
+        // Load service provider data
+        this.loadProviders();
+      },
+
+      // Load service provider data
+      loadProviders() {
+        const that = this;
+
+        $.ajax({
+          url: that.baseUrl + "/company/queryAll",
+          type: "GET",
+          success: function(data) {
+            if (data.code === 200 && data.data) {
+              that.displayProvidersOnMap(data.data);
+            } else {
+              toastr.error('Failed to load service provider data', 'Notice');
+            }
+          },
+          error: function() {
+            toastr.error('Server error', 'Notice');
+          }
+        });
+      },
+
+      // Display service providers on map
+      displayProvidersOnMap(providers) {
+        const that = this;
+
+        // Clear old markers
+        this.providerMarkers.forEach(marker => {
+          marker.setMap(null);
+        });
+        this.providerMarkers = [];
+
+        let validProviders = 0;
+
+        providers.forEach(provider => {
+          if (provider.longitude && provider.latitude) {
+            validProviders++;
+
+            // Calculate distance
+            let distance = null;
+            let distanceText = '';
+            if (that.userLocation.longitude && that.userLocation.latitude) {
+              distance = that.calculateDistance(
+                that.userLocation.latitude,
+                that.userLocation.longitude,
+                provider.latitude,
+                provider.longitude
+              );
+              distanceText = that.formatDistance(distance);
+            }
+
+            const marker = new AMap.Marker({
+              position: [provider.longitude, provider.latitude],
+              map: that.providersMap,
+              title: provider.username || 'Service Provider',
+              icon: new AMap.Icon({
+                image: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png',
+                size: new AMap.Size(19, 31),
+                imageSize: new AMap.Size(19, 31)
+              })
+            });
+
+            // Create info window
+            const infoContent = `
+              <div style="padding: 15px; min-width: 250px;">
+                <h5 style="margin-bottom: 10px; color: #007bff;">
+                  <i class="fa fa-building"></i> ${provider.username || 'Service Provider'}
+                </h5>
+                <p style="margin: 5px 0;">
+                  <i class="fa fa-map-marker" style="color: #dc3545;"></i>
+                  <strong>Address:</strong>${provider.address || 'Address not set'}
+                </p>
+                ${distanceText ? `
+                <p style="margin: 5px 0;">
+                  <i class="fa fa-road" style="color: #28a745;"></i>
+                  <strong>Distance:</strong>${distanceText}
+                </p>
+                ` : ''}
+                <p style="margin: 5px 0;">
+                  <i class="fa fa-star" style="color: #ffc107;"></i>
+                  <strong>Rating:</strong>${provider.avgRating ? provider.avgRating.toFixed(1) + ' stars' : 'No rating yet'}
+                  ${provider.ratingCount ? '(' + provider.ratingCount + ' reviews)' : ''}
+                </p>
+                ${provider.serviceArea ? `
+                <p style="margin: 5px 0;">
+                  <i class="fa fa-globe" style="color: #17a2b8;"></i>
+                  <strong>Service Area:</strong>${provider.serviceArea}
+                </p>
+                ` : ''}
+              </div>
+            `;
+
+            const infoWindow = new AMap.InfoWindow({
+              content: infoContent,
+              offset: new AMap.Pixel(0, -30)
+            });
+
+            marker.on('click', function() {
+              infoWindow.open(that.providersMap, marker.getPosition());
+            });
+
+            // Mouse hover effect
+            marker.on('mouseover', function() {
+              marker.setAnimation('AMAP_ANIMATION_BOUNCE');
+            });
+
+            marker.on('mouseout', function() {
+              marker.setAnimation('AMAP_ANIMATION_NONE');
+            });
+
+            that.providerMarkers.push(marker);
+          }
+        });
+
+        if (validProviders === 0) {
+          toastr.warning('No service provider location information available', 'Notice');
+        } else {
+          toastr.success(`Loaded ${validProviders} service provider locations`, 'Notice');
+        }
+      },
+
+      // Calculate distance (Haversine formula)
+      calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Earth radius (kilometers)
+        const dLat = this.toRadians(lat2 - lat1);
+        const dLon = this.toRadians(lon2 - lon1);
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(this.toRadians(lat1)) * Math.cos(this.toRadians(lat2)) *
+                  Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+      },
+
+      // Convert degrees to radians
+      toRadians(degrees) {
+        return degrees * Math.PI / 180;
+      },
+
+      // Format distance
+      formatDistance(distance) {
+        if (distance < 1) {
+          return Math.round(distance * 1000) + ' meters';
+        } else if (distance < 10) {
+          return distance.toFixed(1) + ' km';
+        } else {
+          return Math.round(distance) + ' km';
+        }
+      },
+
+    },
+    watch: {},
+    mounted() {
+      let that = this;
+      that.getUserInfo()
+      that.getproductTypeList()
+      that.getList()
+
+      // Initialize filter expand/collapse functionality
+      that.$nextTick(() => {
+        that.initFilterToggle();
+      });
+
+      // Get user location
+      that.getUserLocation();
+    }
+  })
+
+</script>
+  </body>
+</html>

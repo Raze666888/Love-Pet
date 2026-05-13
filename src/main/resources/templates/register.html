@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Pet Service Booking Platform Registration</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- description -->
+<meta name="description" content="Registration Form - Responsive Template">
+<link rel="shortcut icon" href="/static/register/images/favicon.ico">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="/static/register/css/bootstrap.min.css">
+<!-- Material Design Icons CSS -->
+<link rel="stylesheet" href="/static/register/css/materialdesignicons.css">
+<!-- Bootstrap Checkbox CSS -->
+<link rel="stylesheet" href="/static/register/css/awesome-bootstrap-checkbox.css">
+<!-- Rippler CSS -->
+<link rel="stylesheet" href="/static/register/css/rippler.min.css">
+<!-- Rippler CSS -->
+<link rel="stylesheet" href="/static/register/css/select2.min.css">
+<!-- Daterangepicker CSS -->
+<link rel="stylesheet" href="/static/register/css/daterangepicker.css">
+<!-- Bootstrap Checkbox CSS -->
+<link rel="stylesheet" href="/static/register/css/awesome-bootstrap-checkbox.css">
+<!-- Style CSS -->
+<link rel="stylesheet" href="/static/register/css/style.css">
+<!-- Responsive  CSS -->
+<link rel="stylesheet" href="/static/register/css/responsive.css">
+	<link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+</head>
+<body>
+<span id="gloUrl" style="display: none"></span>
+<div class="container">
+
+	<div class="registration-main">
+		<form class="form-horizontal registration-form" style="background-color: rgba(250,250,250,0.85)" role="form">
+			<h2><i class="mdi mdi-notebook"></i>Pet Service Booking Platform Registration</h2>
+
+			<div class="row form-group">
+				<label for="account" class="col-sm-2 control-label"><i class="mdi mdi-account"></i></label>
+				<div class="col-sm-10">
+					<input type="text" id="account" placeholder="Login Account" class="form-control" autofocus>
+				</div>
+			</div>
+
+			<div class="row form-group">
+				<label for="password" class="col-sm-2 control-label"><i class="mdi mdi-onepassword"></i></label>
+				<div class="col-sm-10">
+					<input type="password" id="password" placeholder="Login Password" class="form-control">
+				</div>
+			</div>
+			<div class="row form-group">
+				<label for="username" class="col-sm-2 control-label"><i class="mdi mdi-access-point"></i></label>
+				<div class="col-sm-10">
+					<input type="text" id="username" placeholder="Your Name" class="form-control" autofocus>
+				</div>
+			</div>
+			<div class="row form-group">
+				<label for="phonenumber" class="col-sm-2 control-label"><i class="mdi mdi-phone"></i></label>
+				<div class="col-sm-10">
+					<input id="phonenumber" class="form-control " type="text" placeholder="Phone Number" >
+				</div>
+			</div>
+			<div class="row form-group">
+				<label class="col-sm-2 control-label"><i class="mdi mdi-format-list-bulleted"></i> </label>
+				<div class="col-sm-10">
+					<div class="rs-select2 js-select-simple select--no-search">
+						<select name="gender" id="sex">
+							<option disabled="disabled" selected="selected">Gender</option>
+							<option value="男">Male</option>
+							<option value="女">Female</option>
+						</select>
+						<div class="select-dropdown"></div>
+					</div>
+				</div>
+			</div>
+			<div class="row form-group">
+				<label class="col-sm-2 control-label"><i class="mdi mdi-format-list-bulleted"></i> </label>
+				<div class="col-sm-10">
+					<div class="rs-select2 js-select-simple select--no-search">
+						<select  id="role">
+
+							<option value="2" selected="selected">User</option>
+							<option value="3">Service Provider</option>
+						</select>
+						<div class="select-dropdown"></div>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="row form-group text-center">
+				<div class="col-sm-12">
+					<button type="button" id="register" class="btn btn-primary btn-hover">Confirm Registration</button>
+					<a  href="/toLoginPage" class="btn btn-primary btn-hover">Go to Login</a>
+				</div>
+			</div>
+		</form> <!-- /form -->
+	</div>
+</div> <!-- ./container -->
+<script>
+    // 如果页面被嵌入iframe中，强制跳出iframe，显示无侧边栏的独立注册页
+    if (window.self !== window.top) {
+        window.top.location.href = window.self.location.href;
+    }
+</script>
+<!-- jquery latest version -->
+<script src="/static/register/js/jquery.min.js"></script>
+<!-- popper.min.js -->
+<script src="/static/register/js/popper.min.js"></script>
+<!-- bootstrap js -->
+<script src="/static/register/js/bootstrap.min.js"></script>
+<!-- Jquery Rippler js -->
+<script src="/static/register/js/jquery.rippler.min.js"></script>
+<!-- Select2 Min js -->
+<script src="/static/register/js/select2.min.js"></script>
+<!-- Moment Min js -->
+<script src="/static/register/js/moment.min.js"></script>
+<!-- Daterangepicker js -->
+<script src="/static/register/js/daterangepicker.js"></script>
+<!-- Datepicker js -->
+<script src="/static/register/js/datepicker.js"></script>
+<!-- select2 js -->
+<script src="/static/register/js/select2.js"></script>
+<!-- script js -->
+<script src="/static/register/js/registration.js"></script>
+<script src="/static/hAdmin/js/plugins/toastr/toastr.min.js"></script>
+
+<script src="/static/js/GloJs.js"></script>
+<script>
+	//$(function(){ }实际上是匿名函数。这是JQuery的语法，$表示JQuery对象
+	$(function (){
+		let Glo_BaseUrl = $("#gloUrl").attr("gloUValue")
+
+		$("#register").click(function (){//点击事件
+
+			if ($("#account").val() !== ""){
+				if ($("#password").val() === ""){
+					toastr.error("密码不能为空！", '注册失败！')
+					return false;
+				}
+				if ($("#username").val() === ""){
+					toastr.error("姓名不能为空！", '注册失败！')
+					return false;
+				}
+				if ($("#role").val() === "" || $("#role").val() === null){
+					toastr.error("角色不能为空！", '注册失败！')
+					return false;
+				}
+				$.ajax({
+					//Glo_BaseUrl 公共的部分
+					url: Glo_BaseUrl + "/toRegister",
+					//更新添加数据库
+					type: "post",
+					data: {
+						//向后端传的参数
+						"account":$("#account").val(),
+						"password":$("#password").val(),
+						"username":$("#username").val(),
+						"phonenumber":$("#phonenumber").val(),
+						"gender":$("#sex").val(),
+						"role":$("#role").val(),
+					},
+					success: function (data) {//后端返回的数据
+						if (data.code === 200){
+							//setItem(“key”,“value”)：存储名字为key的一个值value，如果key存在，就更新value
+							//getItem(“key”)：获取名称为key的值，如果key不存在则返回null**
+							localStorage.setItem("userId",data.data)
+							toastr.success(data.message, '注册成功！正在自动跳转至登录页面......')
+							setTimeout(function (){
+								window.location.href = Glo_BaseUrl + "/web/login"
+							},1000)
+
+						}else {
+							toastr.error(data.message, '注册失败！')
+
+
+
+						}
+					},
+					error: function () {
+						alert("服务器异常！network error！")
+					}
+				})
+			}else {
+				toastr.error("账号不能为空！", '注册失败！')
+				//消息提示（toastr.options 配置提示框,通过自定义配置，达到不同的效果）
+
+			}
+
+		})
+	})
+
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高级筛选功能测试</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcdn.net/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <style>
+        /* 价格筛选相关样式 */
+        .price-filter-input {
+            transition: all 0.3s ease;
+        }
+
+        .price-filter-input:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 0.2rem rgba(40,167,69,0.25);
+        }
+
+        .quick-price-btn {
+            transition: all 0.3s ease;
+            border-radius: 20px;
+        }
+
+        .quick-price-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,123,255,0.3);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-group-text {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-color: #ced4da;
+            font-weight: 500;
+        }
+
+        .test-section {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            background-color: #f8f9fa;
+        }
+
+        .result-display {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4" id="app">
+        <h1 class="text-center mb-4">🔍 高级筛选功能测试</h1>
+        
+        <!-- 测试说明 -->
+        <div class="test-section">
+            <h3>🧪 测试说明</h3>
+            <div class="alert alert-success" role="alert">
+                <h5><i class="fa fa-star"></i> 新功能亮点</h5>
+                <p class="mb-0">现在只需设置好时间和价格，直接点击 <strong>"应用筛选并查看结果"</strong> 即可一键应用所有筛选条件！</p>
+            </div>
+            <ul>
+                <li><strong>一键筛选</strong>: 设置时间和价格后，点击"应用筛选并查看结果"自动应用所有条件</li>
+                <li><strong>自定义时间筛选</strong>: 选择时间范围，支持实时验证</li>
+                <li><strong>自定义价格筛选</strong>: 输入价格范围，支持单边或双边筛选</li>
+                <li><strong>快捷价格筛选</strong>: 点击预设价格按钮，快速设置价格范围</li>
+                <li><strong>立即应用按钮</strong>: 可选的快速应用单个筛选条件</li>
+                <li><strong>错误处理</strong>: 输入无效数据时的友好提示</li>
+            </ul>
+        </div>
+
+        <!-- 高级筛选区域 -->
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fa fa-cogs"></i> 高级筛选测试区域
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <!-- 自定义时间段筛选 -->
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <i class="fa fa-clock-o text-primary"></i> 自定义时间筛选
+                        </label>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-play text-success"></i>
+                                    </span>
+                                    <input type="time" 
+                                           class="form-control" 
+                                           v-model="customTimeRange.start" 
+                                           @change="validateTimeRange"
+                                           placeholder="开始时间">
+                                </div>
+                                <small class="text-muted">开始时间</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-stop text-danger"></i>
+                                    </span>
+                                    <input type="time" 
+                                           class="form-control" 
+                                           v-model="customTimeRange.end" 
+                                           @change="validateTimeRange"
+                                           placeholder="结束时间">
+                                </div>
+                                <small class="text-muted">结束时间</small>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <button type="button"
+                                    class="btn btn-outline-primary btn-sm me-2"
+                                    @click="applyCustomTimeFilter"
+                                    :disabled="!customTimeRange.start || !customTimeRange.end"
+                                    title="立即应用时间筛选（可选）">
+                                <i class="fa fa-clock-o"></i> 立即应用
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-secondary btn-sm"
+                                    @click="clearCustomTimeFilter">
+                                <i class="fa fa-times"></i> 清除
+                            </button>
+                        </div>
+                        <div v-if="customTimeRange.start && customTimeRange.end && !timeRangeError" class="mt-2">
+                            <small class="text-success">
+                                <i class="fa fa-check-circle"></i> 
+                                筛选时间段: {{customTimeRange.start}} - {{customTimeRange.end}}
+                            </small>
+                        </div>
+                        <div v-if="timeRangeError" class="mt-2">
+                            <small class="text-danger">
+                                <i class="fa fa-exclamation-triangle"></i> 
+                                {{timeRangeError}}
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- 自定义价格筛选 -->
+                    <div class="col-md-6">
+                        <label class="form-label">
+                            <i class="fa fa-money text-success"></i> 自定义价格筛选
+                        </label>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-arrow-down text-success"></i>
+                                    </span>
+                                    <input type="number" 
+                                           class="form-control price-filter-input" 
+                                           v-model.number="customPriceRange.min" 
+                                           @input="validatePriceRange"
+                                           placeholder="最低价格"
+                                           min="0"
+                                           step="0.01">
+                                </div>
+                                <small class="text-muted">最低价格 (元)</small>
+                            </div>
+                            <div class="col-6">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-arrow-up text-danger"></i>
+                                    </span>
+                                    <input type="number" 
+                                           class="form-control price-filter-input" 
+                                           v-model.number="customPriceRange.max" 
+                                           @input="validatePriceRange"
+                                           placeholder="最高价格"
+                                           min="0"
+                                           step="0.01">
+                                </div>
+                                <small class="text-muted">最高价格 (元)</small>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <button type="button"
+                                    class="btn btn-outline-success btn-sm me-2"
+                                    @click="applyCustomPriceFilter"
+                                    :disabled="!isValidPriceRange"
+                                    title="立即应用价格筛选（可选）">
+                                <i class="fa fa-money"></i> 立即应用
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-secondary btn-sm"
+                                    @click="clearCustomPriceFilter">
+                                <i class="fa fa-times"></i> 清除
+                            </button>
+                        </div>
+                        <div v-if="customPriceRange.min !== null && customPriceRange.max !== null && !priceRangeError" class="mt-2">
+                            <small class="text-success">
+                                <i class="fa fa-check-circle"></i> 
+                                价格范围: ¥{{customPriceRange.min}} - ¥{{customPriceRange.max}}
+                            </small>
+                        </div>
+                        <div v-if="priceRangeError" class="mt-2">
+                            <small class="text-danger">
+                                <i class="fa fa-exclamation-triangle"></i> 
+                                {{priceRangeError}}
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- 快捷价格筛选 -->
+                    <div class="col-12">
+                        <label class="form-label">
+                            <i class="fa fa-flash text-warning"></i> 快捷价格筛选
+                        </label>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="button" 
+                                    class="btn btn-outline-info btn-sm quick-price-btn" 
+                                    @click="applyQuickPriceFilter(0, 50)">
+                                <i class="fa fa-tag"></i> ¥0-50
+                            </button>
+                            <button type="button" 
+                                    class="btn btn-outline-info btn-sm quick-price-btn" 
+                                    @click="applyQuickPriceFilter(50, 100)">
+                                <i class="fa fa-tag"></i> ¥50-100
+                            </button>
+                            <button type="button" 
+                                    class="btn btn-outline-info btn-sm quick-price-btn" 
+                                    @click="applyQuickPriceFilter(100, 200)">
+                                <i class="fa fa-tag"></i> ¥100-200
+                            </button>
+                            <button type="button" 
+                                    class="btn btn-outline-info btn-sm quick-price-btn" 
+                                    @click="applyQuickPriceFilter(200, 500)">
+                                <i class="fa fa-tag"></i> ¥200-500
+                            </button>
+                            <button type="button" 
+                                    class="btn btn-outline-info btn-sm quick-price-btn" 
+                                    @click="applyQuickPriceFilter(500, null)">
+                                <i class="fa fa-tag"></i> ¥500以上
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 操作按钮 -->
+                    <div class="col-12">
+                        <hr class="my-3">
+                        <label class="form-label">
+                            <i class="fa fa-cogs text-secondary"></i> 操作
+                        </label>
+                        <div class="alert alert-info py-2 mb-3" role="alert">
+                            <i class="fa fa-lightbulb-o"></i>
+                            <strong>使用提示：</strong> 设置好时间和价格后，直接点击
+                            <span class="badge bg-info">应用筛选并查看结果</span>
+                            即可一键应用所有筛选条件！
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button type="button" class="btn btn-info btn-lg" @click="applyAndShowFilters">
+                                <i class="fa fa-filter"></i> 应用筛选并查看结果
+                            </button>
+                            <button type="button" class="btn btn-outline-success" @click="handleSearch">
+                                <i class="fa fa-search"></i> 搜索全部
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" @click="handleResetFilter">
+                                <i class="fa fa-refresh"></i> 重置筛选
+                            </button>
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <i class="fa fa-info-circle"></i>
+                                "应用筛选并查看结果"会自动应用上方设置的时间和价格筛选条件
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 测试结果显示 -->
+        <div class="test-section">
+            <h3>📊 测试结果</h3>
+            <div class="result-display" id="testResults">
+                <p class="text-muted">请进行测试操作，结果将在这里显示...</p>
+            </div>
+        </div>
+
+        <!-- 当前筛选状态 -->
+        <div class="test-section">
+            <h3>📋 当前筛选状态</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>时间筛选</h5>
+                    <p v-if="queryParams.serviceStartTime && queryParams.serviceEndTime" class="text-success">
+                        <i class="fa fa-check"></i> {{queryParams.serviceStartTime}} - {{queryParams.serviceEndTime}}
+                    </p>
+                    <p v-else class="text-muted">
+                        <i class="fa fa-times"></i> 未设置时间筛选
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <h5>价格筛选</h5>
+                    <p v-if="queryParams.minPrice !== null || queryParams.maxPrice !== null" class="text-success">
+                        <i class="fa fa-check"></i> 
+                        <span v-if="queryParams.minPrice !== null && queryParams.maxPrice !== null">
+                            ¥{{queryParams.minPrice}} - ¥{{queryParams.maxPrice}}
+                        </span>
+                        <span v-else-if="queryParams.minPrice !== null">
+                            ¥{{queryParams.minPrice}} 以上
+                        </span>
+                        <span v-else>
+                            ¥{{queryParams.maxPrice}} 以下
+                        </span>
+                    </p>
+                    <p v-else class="text-muted">
+                        <i class="fa fa-times"></i> 未设置价格筛选
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.14/vue.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        // 配置toastr
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "3000"
+        };
+
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    queryParams: {
+                        serviceStartTime: '',
+                        serviceEndTime: '',
+                        minPrice: null,
+                        maxPrice: null,
+                    },
+                    customTimeRange: {
+                        start: '',
+                        end: ''
+                    },
+                    customPriceRange: {
+                        min: null,
+                        max: null
+                    },
+                    timeRangeError: '',
+                    priceRangeError: '',
+                }
+            },
+            computed: {
+                isValidPriceRange() {
+                    if (this.customPriceRange.min === null && this.customPriceRange.max === null) {
+                        return false;
+                    }
+                    if (this.customPriceRange.min !== null && this.customPriceRange.min < 0) {
+                        return false;
+                    }
+                    if (this.customPriceRange.max !== null && this.customPriceRange.max < 0) {
+                        return false;
+                    }
+                    if (this.customPriceRange.min !== null && this.customPriceRange.max !== null) {
+                        return this.customPriceRange.min <= this.customPriceRange.max;
+                    }
+                    return true;
+                }
+            },
+            methods: {
+                addTestResult(message, type = 'info') {
+                    const timestamp = new Date().toLocaleTimeString();
+                    const icon = type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-triangle' : 'info-circle';
+                    const color = type === 'success' ? 'success' : type === 'error' ? 'danger' : 'info';
+                    
+                    const testResults = document.getElementById('testResults');
+                    testResults.innerHTML += `<p class="mb-1 text-${color}"><span class="badge bg-${color}">${timestamp}</span> <i class="fa fa-${icon}"></i> ${message}</p>`;
+                    testResults.scrollTop = testResults.scrollHeight;
+                },
+
+                validateTimeRange() {
+                    this.timeRangeError = '';
+                    
+                    if (this.customTimeRange.start && this.customTimeRange.end) {
+                        if (this.customTimeRange.start >= this.customTimeRange.end) {
+                            this.timeRangeError = '开始时间必须小于结束时间';
+                            this.addTestResult('时间范围验证失败: 开始时间必须小于结束时间', 'error');
+                            return false;
+                        } else {
+                            this.addTestResult('时间范围验证通过', 'success');
+                        }
+                    }
+                    return true;
+                },
+
+                validatePriceRange() {
+                    this.priceRangeError = '';
+                    
+                    if (this.customPriceRange.min !== null && this.customPriceRange.min < 0) {
+                        this.priceRangeError = '价格不能为负数';
+                        this.addTestResult('价格验证失败: 价格不能为负数', 'error');
+                        return false;
+                    }
+                    
+                    if (this.customPriceRange.max !== null && this.customPriceRange.max < 0) {
+                        this.priceRangeError = '价格不能为负数';
+                        this.addTestResult('价格验证失败: 价格不能为负数', 'error');
+                        return false;
+                    }
+                    
+                    if (this.customPriceRange.min !== null && this.customPriceRange.max !== null) {
+                        if (this.customPriceRange.min > this.customPriceRange.max) {
+                            this.priceRangeError = '最低价格不能大于最高价格';
+                            this.addTestResult('价格范围验证失败: 最低价格不能大于最高价格', 'error');
+                            return false;
+                        } else {
+                            this.addTestResult('价格范围验证通过', 'success');
+                        }
+                    }
+                    return true;
+                },
+
+                applyCustomTimeFilter() {
+                    if (!this.validateTimeRange()) {
+                        return;
+                    }
+
+                    if (!this.customTimeRange.start || !this.customTimeRange.end) {
+                        toastr.error("请选择完整的时间范围", '提示');
+                        this.addTestResult('时间筛选失败: 请选择完整的时间范围', 'error');
+                        return;
+                    }
+
+                    this.queryParams.serviceStartTime = this.customTimeRange.start;
+                    this.queryParams.serviceEndTime = this.customTimeRange.end;
+
+                    toastr.success(`已筛选 ${this.customTimeRange.start} - ${this.customTimeRange.end} 时间段的服务`, '筛选成功');
+                    this.addTestResult(`应用时间筛选: ${this.customTimeRange.start} - ${this.customTimeRange.end}`, 'success');
+                },
+
+                clearCustomTimeFilter() {
+                    this.customTimeRange.start = '';
+                    this.customTimeRange.end = '';
+                    this.queryParams.serviceStartTime = '';
+                    this.queryParams.serviceEndTime = '';
+                    this.timeRangeError = '';
+                    
+                    toastr.info("已清除时间筛选", '提示');
+                    this.addTestResult('清除时间筛选', 'info');
+                },
+
+                applyCustomPriceFilter() {
+                    if (!this.validatePriceRange()) {
+                        return;
+                    }
+
+                    if (this.customPriceRange.min === null && this.customPriceRange.max === null) {
+                        toastr.error("请输入价格范围", '提示');
+                        this.addTestResult('价格筛选失败: 请输入价格范围', 'error');
+                        return;
+                    }
+
+                    this.queryParams.minPrice = this.customPriceRange.min;
+                    this.queryParams.maxPrice = this.customPriceRange.max;
+
+                    let priceText = '';
+                    if (this.customPriceRange.min !== null && this.customPriceRange.max !== null) {
+                        priceText = `¥${this.customPriceRange.min} - ¥${this.customPriceRange.max}`;
+                    } else if (this.customPriceRange.min !== null) {
+                        priceText = `¥${this.customPriceRange.min} 以上`;
+                    } else if (this.customPriceRange.max !== null) {
+                        priceText = `¥${this.customPriceRange.max} 以下`;
+                    }
+
+                    toastr.success(`已筛选价格范围: ${priceText}`, '筛选成功');
+                    this.addTestResult(`应用价格筛选: ${priceText}`, 'success');
+                },
+
+                clearCustomPriceFilter() {
+                    this.customPriceRange.min = null;
+                    this.customPriceRange.max = null;
+                    this.queryParams.minPrice = null;
+                    this.queryParams.maxPrice = null;
+                    this.priceRangeError = '';
+                    
+                    toastr.info("已清除价格筛选", '提示');
+                    this.addTestResult('清除价格筛选', 'info');
+                },
+
+                applyQuickPriceFilter(minPrice, maxPrice) {
+                    this.customPriceRange.min = minPrice;
+                    this.customPriceRange.max = maxPrice;
+                    this.queryParams.minPrice = minPrice;
+                    this.queryParams.maxPrice = maxPrice;
+                    this.priceRangeError = '';
+
+                    let priceText = '';
+                    if (maxPrice === null) {
+                        priceText = `¥${minPrice} 以上`;
+                    } else {
+                        priceText = `¥${minPrice} - ¥${maxPrice}`;
+                    }
+
+                    toastr.success(`已应用快捷价格筛选: ${priceText}`, '筛选成功');
+                    this.addTestResult(`快捷价格筛选: ${priceText}`, 'success');
+                },
+
+                handleSearch() {
+                    toastr.info("执行搜索操作", '提示');
+                    this.addTestResult('执行搜索操作', 'info');
+                },
+
+                handleResetFilter() {
+                    this.queryParams.serviceStartTime = '';
+                    this.queryParams.serviceEndTime = '';
+                    this.queryParams.minPrice = null;
+                    this.queryParams.maxPrice = null;
+                    this.customTimeRange.start = '';
+                    this.customTimeRange.end = '';
+                    this.customPriceRange.min = null;
+                    this.customPriceRange.max = null;
+                    this.timeRangeError = '';
+                    this.priceRangeError = '';
+
+                    toastr.info("已重置所有筛选条件", '提示');
+                    this.addTestResult('重置所有筛选条件', 'info');
+                },
+
+                applyAndShowFilters() {
+                    let hasChanges = false;
+                    let appliedFilters = [];
+
+                    // 自动应用自定义时间筛选
+                    if (this.customTimeRange.start && this.customTimeRange.end) {
+                        if (this.validateTimeRange()) {
+                            this.queryParams.serviceStartTime = this.customTimeRange.start;
+                            this.queryParams.serviceEndTime = this.customTimeRange.end;
+                            appliedFilters.push(`时间: ${this.customTimeRange.start} - ${this.customTimeRange.end}`);
+                            hasChanges = true;
+                        } else {
+                            toastr.error("时间范围设置无效，请检查后重试", '筛选失败');
+                            this.addTestResult('时间范围设置无效', 'error');
+                            return;
+                        }
+                    }
+
+                    // 自动应用自定义价格筛选
+                    if (this.customPriceRange.min !== null || this.customPriceRange.max !== null) {
+                        if (this.validatePriceRange()) {
+                            this.queryParams.minPrice = this.customPriceRange.min;
+                            this.queryParams.maxPrice = this.customPriceRange.max;
+
+                            let priceText = '';
+                            if (this.customPriceRange.min !== null && this.customPriceRange.max !== null) {
+                                priceText = `¥${this.customPriceRange.min} - ¥${this.customPriceRange.max}`;
+                            } else if (this.customPriceRange.min !== null) {
+                                priceText = `¥${this.customPriceRange.min} 以上`;
+                            } else if (this.customPriceRange.max !== null) {
+                                priceText = `¥${this.customPriceRange.max} 以下`;
+                            }
+                            appliedFilters.push(`价格: ${priceText}`);
+                            hasChanges = true;
+                        } else {
+                            toastr.error("价格范围设置无效，请检查后重试", '筛选失败');
+                            this.addTestResult('价格范围设置无效', 'error');
+                            return;
+                        }
+                    }
+
+                    // 收集所有当前筛选条件
+                    let allFilters = [];
+                    if (this.queryParams.serviceStartTime && this.queryParams.serviceEndTime) {
+                        allFilters.push(`时间: ${this.queryParams.serviceStartTime} - ${this.queryParams.serviceEndTime}`);
+                    }
+                    if (this.queryParams.minPrice !== null || this.queryParams.maxPrice !== null) {
+                        let priceText = '';
+                        if (this.queryParams.minPrice !== null && this.queryParams.maxPrice !== null) {
+                            priceText = `¥${this.queryParams.minPrice} - ¥${this.queryParams.maxPrice}`;
+                        } else if (this.queryParams.minPrice !== null) {
+                            priceText = `¥${this.queryParams.minPrice} 以上`;
+                        } else if (this.queryParams.maxPrice !== null) {
+                            priceText = `¥${this.queryParams.maxPrice} 以下`;
+                        }
+                        allFilters.push(`价格: ${priceText}`);
+                    }
+
+                    // 显示结果
+                    if (hasChanges && appliedFilters.length > 0) {
+                        toastr.success(`已自动应用: ${appliedFilters.join(', ')}`, '筛选成功');
+                        this.addTestResult(`自动应用筛选: ${appliedFilters.join(', ')}`, 'success');
+                    }
+
+                    if (allFilters.length === 0) {
+                        toastr.info("当前没有应用任何筛选条件，显示全部结果", '筛选状态');
+                        this.addTestResult('没有筛选条件，显示全部结果', 'info');
+                    } else {
+                        toastr.info(`当前筛选条件: ${allFilters.join(', ')}`, '筛选状态');
+                        this.addTestResult(`当前筛选条件: ${allFilters.join(', ')}`, 'success');
+                    }
+                },
+
+                showCurrentFilters() {
+                    let filters = [];
+
+                    if (this.queryParams.serviceStartTime && this.queryParams.serviceEndTime) {
+                        filters.push(`时间: ${this.queryParams.serviceStartTime} - ${this.queryParams.serviceEndTime}`);
+                    }
+                    if (this.queryParams.minPrice !== null || this.queryParams.maxPrice !== null) {
+                        let priceText = '';
+                        if (this.queryParams.minPrice !== null && this.queryParams.maxPrice !== null) {
+                            priceText = `¥${this.queryParams.minPrice} - ¥${this.queryParams.maxPrice}`;
+                        } else if (this.queryParams.minPrice !== null) {
+                            priceText = `¥${this.queryParams.minPrice} 以上`;
+                        } else if (this.queryParams.maxPrice !== null) {
+                            priceText = `¥${this.queryParams.maxPrice} 以下`;
+                        }
+                        filters.push(`价格: ${priceText}`);
+                    }
+
+                    if (filters.length === 0) {
+                        toastr.info("当前没有应用任何筛选条件", '筛选状态');
+                        this.addTestResult('当前没有应用任何筛选条件', 'info');
+                    } else {
+                        toastr.info(`当前筛选条件: ${filters.join(', ')}`, '筛选状态');
+                        this.addTestResult(`当前筛选条件: ${filters.join(', ')}`, 'info');
+                    }
+                }
+            },
+            mounted() {
+                this.addTestResult('高级筛选功能测试页面初始化完成', 'success');
+            }
+        });
+    </script>
+</body>
+</html>

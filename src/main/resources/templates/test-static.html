@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>静态资源测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-image {
+            max-width: 200px;
+            height: auto;
+            border: 2px solid #ddd;
+            margin: 10px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .image-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>静态资源访问测试页面</h1>
+    
+    <div class="test-section">
+        <h2>1. WebSite 图片测试</h2>
+        <p>测试 /static/webSite/images/ 路径下的图片：</p>
+        <div class="image-container">
+            <div>
+                <p>Logo PNG:</p>
+                <img src="/static/webSite/images/logo.png" alt="Logo PNG" class="test-image" 
+                     onerror="this.nextElementSibling.style.display='block'; this.style.display='none';">
+                <div class="error" style="display:none;">❌ 图片加载失败</div>
+            </div>
+            
+            <div>
+                <p>Banner 1:</p>
+                <img src="/static/webSite/images/banner-1.jpg" alt="Banner 1" class="test-image"
+                     onerror="this.nextElementSibling.style.display='block'; this.style.display='none';">
+                <div class="error" style="display:none;">❌ 图片加载失败</div>
+            </div>
+            
+            <div>
+                <p>Product Thumb 1:</p>
+                <img src="/static/webSite/images/product-thumb-1.png" alt="Product Thumb 1" class="test-image"
+                     onerror="this.nextElementSibling.style.display='block'; this.style.display='none';">
+                <div class="error" style="display:none;">❌ 图片加载失败</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Static IMG 图片测试</h2>
+        <p>测试 /static/img/ 路径下的图片：</p>
+        <div class="image-container">
+            <div>
+                <p>Admin 头像:</p>
+                <img src="/static/img/admin.jpg" alt="Admin" class="test-image"
+                     onerror="this.nextElementSibling.style.display='block'; this.style.display='none';">
+                <div class="error" style="display:none;">❌ 图片加载失败</div>
+            </div>
+            
+            <div>
+                <p>No Photo:</p>
+                <img src="/static/img/noPhoto.png" alt="No Photo" class="test-image"
+                     onerror="this.nextElementSibling.style.display='block'; this.style.display='none';">
+                <div class="error" style="display:none;">❌ 图片加载失败</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Product 图片测试</h2>
+        <p>测试 /product/ 路径下的图片：</p>
+        <div class="image-container">
+            <div>
+                <p>Product Admin:</p>
+                <img src="/product/admin.jpg" alt="Product Admin" class="test-image"
+                     onerror="this.nextElementSibling.style.display='block'; this.style.display='none';">
+                <div class="error" style="display:none;">❌ 图片加载失败</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. CSS 和 JS 资源测试</h2>
+        <p>测试CSS和JS文件是否能正常加载：</p>
+        <div>
+            <p>Bootstrap CSS: <span id="bootstrap-status">检测中...</span></p>
+            <p>Vue.js: <span id="vue-status">检测中...</span></p>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>5. 上传文件测试</h2>
+        <p>测试 /uploads/ 路径下的图片：</p>
+        <div class="image-container">
+            <div>
+                <p>上传的图片1:</p>
+                <img src="/uploads/c8c22a14-d486-46b2-be7f-c296edfc982f.jpg" alt="Upload 1" class="test-image"
+                     onerror="this.nextElementSibling.style.display='block'; this.style.display='none';">
+                <div class="error" style="display:none;">❌ 图片加载失败</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 检测CSS是否加载成功
+        function checkCSS() {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = '/static/webSite/css/vendor.css';
+            link.onload = function() {
+                document.getElementById('bootstrap-status').innerHTML = '<span class="success">✅ CSS加载成功</span>';
+            };
+            link.onerror = function() {
+                document.getElementById('bootstrap-status').innerHTML = '<span class="error">❌ CSS加载失败</span>';
+            };
+            document.head.appendChild(link);
+        }
+        
+        // 检测JS是否加载成功
+        function checkJS() {
+            const script = document.createElement('script');
+            script.src = '/static/DemoBootStrap/js/vue.js';
+            script.onload = function() {
+                document.getElementById('vue-status').innerHTML = '<span class="success">✅ JS加载成功</span>';
+            };
+            script.onerror = function() {
+                document.getElementById('vue-status').innerHTML = '<span class="error">❌ JS加载失败</span>';
+            };
+            document.head.appendChild(script);
+        }
+        
+        // 页面加载完成后执行检测
+        window.onload = function() {
+            checkCSS();
+            checkJS();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地址选择器调试</title>
+    <link href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" rel="stylesheet">
+    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+</head>
+<body>
+    <div id="app">
+        <h1>地址选择器调试页面</h1>
+
+        <div style="margin: 20px 0;">
+            <el-button @click="checkFunctions" type="primary">检查函数可用性</el-button>
+            <el-button @click="testLoadProvinces" type="success">测试加载省份</el-button>
+            <el-button @click="clearDebugInfo" type="warning">清空日志</el-button>
+        </div>
+
+        <div style="margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 4px;">
+            <h3>省份选择器</h3>
+            <el-select v-model="selectedProvince" placeholder="请选择省份" style="width: 300px;" :loading="loading">
+                <el-option
+                    v-for="province in provinces"
+                    :key="province.adcode"
+                    :label="province.name"
+                    :value="province.name">
+                </el-option>
+            </el-select>
+            <p>已加载 {{provinces.length}} 个省份</p>
+            <p>选中: {{selectedProvince || '未选择'}}</p>
+        </div>
+
+        <div style="margin: 20px 0; padding: 20px; background: #f5f5f5; border-radius: 4px;">
+            <h3>调试信息</h3>
+            <div v-for="(log, index) in debugLogs" :key="index" style="font-family: monospace; font-size: 12px; margin: 2px 0;">
+                {{log}}
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入map-config.js -->
+    <script src="src/main/resources/static/js/map-config.js"></script>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data() {
+                return {
+                    provinces: [],
+                    selectedProvince: '',
+                    loading: false,
+                    debugLogs: []
+                };
+            },
+            methods: {
+                addLog(message) {
+                    const timestamp = new Date().toLocaleTimeString();
+                    this.debugLogs.unshift(`[${timestamp}] ${message}`);
+                    if (this.debugLogs.length > 20) {
+                        this.debugLogs = this.debugLogs.slice(0, 20);
+                    }
+                },
+                clearDebugInfo() {
+                    this.debugLogs = [];
+                },
+                checkFunctions() {
+                    this.addLog('=== 检查函数可用性 ===');
+
+                    // 检查高德地图API
+                    if (typeof AMap !== 'undefined') {
+                        this.addLog('✓ 高德地图API已加载');
+                    } else {
+                        this.addLog('✗ 高德地图API未加载');
+                    }
+
+                    // 检查各种函数
+                    const functions = [
+                        'loadAmapApi',
+                        'loadProvinces',
+                        'loadCities',
+                        'loadDistricts',
+                        'getStaticProvinces',
+                        'getStaticCities',
+                        'getStaticDistricts'
+                    ];
+
+                    functions.forEach(funcName => {
+                        if (typeof window[funcName] === 'function') {
+                            this.addLog(`✓ ${funcName} 函数可用`);
+                        } else {
+                            this.addLog(`✗ ${funcName} 函数不可用`);
+                        }
+                    });
+                },
+                testLoadProvinces() {
+                    this.addLog('=== 测试加载省份数据 ===');
+                    this.loading = true;
+
+                    // 尝试使用map-config.js的函数
+                    if (typeof window.loadProvinces === 'function') {
+                        this.addLog('使用 loadProvinces 函数');
+                        window.loadProvinces((provinces) => {
+                            this.addLog(`收到 ${provinces.length} 个省份`);
+                            this.provinces = provinces.map(p => ({
+                                name: p.name,
+                                adcode: p.adcode,
+                                level: p.level
+                            }));
+                            this.loading = false;
+                            this.addLog(`处理完成，共 ${this.provinces.length} 个省份`);
+                        });
+                    } else if (typeof getStaticProvinces === 'function') {
+                        this.addLog('使用 getStaticProvinces 函数');
+                        const staticData = getStaticProvinces();
+                        this.provinces = staticData;
+                        this.loading = false;
+                        this.addLog(`静态数据加载完成，共 ${this.provinces.length} 个省份`);
+                    } else {
+                        this.addLog('所有函数都不可用，使用硬编码数据');
+                        this.provinces = [
+                            { name: '北京市', adcode: '110000', level: 'province' },
+                            { name: '上海市', adcode: '310000', level: 'province' },
+                            { name: '广东省', adcode: '440000', level: 'province' },
+                            { name: '河南省', adcode: '410000', level: 'province' },
+                            { name: '湖南省', adcode: '430000', level: 'province' }
+                        ];
+                        this.loading = false;
+                        this.addLog('硬编码数据加载完成');
+                    }
+                }
+            },
+            mounted() {
+                this.addLog('Vue应用已挂载');
+                this.checkFunctions();
+                setTimeout(() => {
+                    this.testLoadProvinces();
+                }, 1000);
+            }
+        });
+    </script>
+</body>
+</html>

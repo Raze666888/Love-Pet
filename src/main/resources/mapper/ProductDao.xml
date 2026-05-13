@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.javaPro.myProject.modules.product.dao.ProductDao">
+
+    <resultMap type="com.javaPro.myProject.modules.product.entity.Product" id="ProductMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="productname" column="productname" jdbcType="VARCHAR"/>
+        <result property="productdes" column="productdes" jdbcType="VARCHAR"/>
+        <result property="img" column="img" jdbcType="VARCHAR"/>
+        <result property="chengben" column="chengben" jdbcType="VARCHAR"/>
+        <result property="kedanjia" column="kedanjia" jdbcType="VARCHAR"/>
+        <result property="kucun" column="kucun" jdbcType="VARCHAR"/>
+        <result property="fahuotianshu" column="fahuotianshu" jdbcType="VARCHAR"/>
+        <result property="chandi" column="chandi" jdbcType="VARCHAR"/>
+        <result property="guige" column="guige" jdbcType="VARCHAR"/>
+        <result property="companyid" column="companyid" jdbcType="INTEGER"/>
+        <result property="createtime" column="createtime" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="updatetime" column="updatetime" jdbcType="TIMESTAMP"/>
+        <result property="producttype" column="producttype" jdbcType="INTEGER"/>
+        <result property="spare1" column="spare1" jdbcType="VARCHAR"/>
+        <result property="spare2" column="spare2" jdbcType="VARCHAR"/>
+        <result property="typeName" column="type_name" jdbcType="VARCHAR"/>
+        <result property="detailimg" column="detailimg" jdbcType="VARCHAR"/>
+        <result property="serviceStartTime" column="service_start_time" jdbcType="VARCHAR"/>
+        <result property="serviceEndTime" column="service_end_time" jdbcType="VARCHAR"/>
+        <result property="companyName" column="company_name" jdbcType="VARCHAR"/>
+        <result property="companyRating" column="company_rating" jdbcType="DOUBLE"/>
+        <result property="companyRatingCount" column="company_rating_count" jdbcType="INTEGER"/>
+        <result property="companyServiceArea" column="company_service_area" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="ProductMap">
+        select
+            p.id, p.productname, p.productdes, p.img, p.chengben, p.kedanjia, p.kucun, p.fahuotianshu, p.chandi, p.guige,
+            p.companyid, p.createtime, p.status, p.updatetime, p.producttype, p.spare1, p.spare2, p.detailimg,
+            p.service_start_time, p.service_end_time,
+            t.type_name,
+            c.companyname as company_name, c.avg_rating as company_rating,
+            c.rating_count as company_rating_count, c.service_area as company_service_area
+        from product p
+                 left join producttype t on t.id = p.producttype
+                 left join company c on c.id = p.companyid
+        where p.id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="ProductMap">
+        select
+          p.id, p.productname, p.productdes, p.img, p.chengben, p.kedanjia, p.kucun, p.fahuotianshu, p.chandi, p.guige,
+               p.companyid, p.createtime, p.status, p.updatetime, p.producttype, p.spare1, p.spare2, p.detailimg,
+               p.service_start_time, p.service_end_time,
+               t.type_name,
+               c.companyname as company_name, c.avg_rating as company_rating,
+               c.rating_count as company_rating_count, c.service_area as company_service_area
+        from product p
+        left join producttype t on t.id = p.producttype
+        left join company c on c.id = p.companyid
+        <where>
+            <if test="id != null">
+                and p.id = #{id}
+            </if>
+            <if test="productname != null and productname != ''">
+                and p.productname like concat('%',#{productname},'%')
+            </if>
+            <if test="productdes != null and productdes != ''">
+                and p.productdes = #{productdes}
+            </if>
+
+            <if test="chengben != null and chengben != ''">
+                and p.chengben = #{chengben}
+            </if>
+            <if test="kedanjia != null and kedanjia != ''">
+                and p.kedanjia = #{kedanjia}
+            </if>
+            <if test="kucun != null and kucun != ''">
+                and p.kucun = #{kucun}
+            </if>
+            <if test="fahuotianshu != null and fahuotianshu != ''">
+                and p.fahuotianshu = #{fahuotianshu}
+            </if>
+            <if test="chandi != null and chandi != ''">
+                and p.chandi = #{chandi}
+            </if>
+            <if test="guige != null and guige != ''">
+                and p.guige = #{guige}
+            </if>
+            <if test="companyid != null">
+                and p.companyid = #{companyid}
+            </if>
+
+            <if test="status != null and status != ''">
+                and p.status = #{status}
+            </if>
+
+            <if test="producttype != null and producttype != ''">
+                and p.producttype = #{producttype}
+            </if>
+            <if test="spare1 != null and spare1 != ''">
+                and p.spare1 = #{spare1}
+            </if>
+            <if test="spare2 != null and spare2 != ''">
+                and p.spare2 = #{spare2}
+            </if>
+            <!-- 时间段筛选 - 修改逻辑让全天服务也能在各时间段显示 -->
+            <if test="serviceStartTime != null and serviceStartTime != '' and serviceEndTime != null and serviceEndTime != ''">
+                and (
+                    <!-- 服务时间段与筛选时间段有重叠 -->
+                    (p.service_start_time &lt;= #{serviceEndTime} and p.service_end_time &gt;= #{serviceStartTime})
+                    or
+                    <!-- 全天服务 (08:00-22:00) 包含在所有时间段中 -->
+                    (p.service_start_time = '08:00' and p.service_end_time = '22:00')
+                )
+            </if>
+            <!-- 评分筛选 -->
+            <if test="companyRating != null">
+                and c.avg_rating &gt;= #{companyRating}
+            </if>
+            <!-- 价格区间筛选 -->
+            <if test="minPrice != null">
+                and CAST(p.kedanjia AS DECIMAL(10,2)) &gt;= #{minPrice}
+            </if>
+            <if test="maxPrice != null">
+                and CAST(p.kedanjia AS DECIMAL(10,2)) &lt;= #{maxPrice}
+            </if>
+
+        </where>
+order by p.createtime desc
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from product p
+        left join company c on c.id = p.companyid
+        <where>
+            <if test="id != null">
+                and p.id = #{id}
+            </if>
+            <if test="productname != null and productname != ''">
+                and p.productname = #{productname}
+            </if>
+            <if test="productdes != null and productdes != ''">
+                and p.productdes = #{productdes}
+            </if>
+            <if test="img != null and img != ''">
+                and p.img = #{img}
+            </if>
+            <if test="chengben != null and chengben != ''">
+                and p.chengben = #{chengben}
+            </if>
+            <if test="kedanjia != null and kedanjia != ''">
+                and p.kedanjia = #{kedanjia}
+            </if>
+            <if test="kucun != null and kucun != ''">
+                and p.kucun = #{kucun}
+            </if>
+            <if test="fahuotianshu != null and fahuotianshu != ''">
+                and p.fahuotianshu = #{fahuotianshu}
+            </if>
+            <if test="chandi != null and chandi != ''">
+                and p.chandi = #{chandi}
+            </if>
+            <if test="guige != null and guige != ''">
+                and p.guige = #{guige}
+            </if>
+            <if test="companyid != null">
+                and p.companyid = #{companyid}
+            </if>
+            <if test="createtime != null">
+                and p.createtime = #{createtime}
+            </if>
+            <if test="status != null and status != ''">
+                and p.status = #{status}
+            </if>
+            <if test="updatetime != null">
+                and p.updatetime = #{updatetime}
+            </if>
+            <if test="producttype != null and producttype != ''">
+                and p.producttype = #{producttype}
+            </if>
+            <if test="spare1 != null and spare1 != ''">
+                and p.spare1 = #{spare1}
+            </if>
+            <if test="spare2 != null and spare2 != ''">
+                and p.spare2 = #{spare2}
+            </if>
+            <!-- 时间段筛选 - 修改逻辑让全天服务也能在各时间段显示 -->
+            <if test="serviceStartTime != null and serviceStartTime != '' and serviceEndTime != null and serviceEndTime != ''">
+                and (
+                    <!-- 服务时间段与筛选时间段有重叠 -->
+                    (p.service_start_time &lt;= #{serviceEndTime} and p.service_end_time &gt;= #{serviceStartTime})
+                    or
+                    <!-- 全天服务 (08:00-22:00) 包含在所有时间段中 -->
+                    (p.service_start_time = '08:00' and p.service_end_time = '22:00')
+                )
+            </if>
+            <!-- 评分筛选 -->
+            <if test="companyRating != null">
+                and c.avg_rating &gt;= #{companyRating}
+            </if>
+            <!-- 价格区间筛选 -->
+            <if test="minPrice != null">
+                and CAST(p.kedanjia AS DECIMAL(10,2)) &gt;= #{minPrice}
+            </if>
+            <if test="maxPrice != null">
+                and CAST(p.kedanjia AS DECIMAL(10,2)) &lt;= #{maxPrice}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into product(productname, productdes, img,detailimg, chengben, kedanjia, kucun, fahuotianshu, chandi, guige, companyid, createtime, status, updatetime, producttype, spare1, spare2, service_start_time, service_end_time)
+        values (#{productname}, #{productdes}, #{img},#{detailimg}, #{chengben}, #{kedanjia}, #{kucun}, #{fahuotianshu}, #{chandi}, #{guige}, #{companyid}, now(), #{status}, now(), #{producttype}, #{spare1}, #{spare2}, #{serviceStartTime}, #{serviceEndTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into product(productname, productdes, img, chengben, kedanjia, kucun, fahuotianshu, chandi, guige, companyid, createtime, status, updatetime, producttype, spare1, spare2)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.productname}, #{entity.productdes}, #{entity.img}, #{entity.chengben}, #{entity.kedanjia}, #{entity.kucun}, #{entity.fahuotianshu}, #{entity.chandi}, #{entity.guige}, #{entity.companyid}, #{entity.createtime}, #{entity.status}, #{entity.updatetime}, #{entity.producttype}, #{entity.spare1}, #{entity.spare2})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into product(productname, productdes, img, chengben, kedanjia, kucun, fahuotianshu, chandi, guige, companyid, createtime, status, updatetime, producttype, spare1, spare2)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.productname}, #{entity.productdes}, #{entity.img}, #{entity.chengben}, #{entity.kedanjia}, #{entity.kucun}, #{entity.fahuotianshu}, #{entity.chandi}, #{entity.guige}, #{entity.companyid}, #{entity.createtime}, #{entity.status}, #{entity.updatetime}, #{entity.producttype}, #{entity.spare1}, #{entity.spare2})
+        </foreach>
+        on duplicate key update
+        productname = values(productname),
+        productdes = values(productdes),
+        img = values(img),
+        chengben = values(chengben),
+        kedanjia = values(kedanjia),
+        kucun = values(kucun),
+        fahuotianshu = values(fahuotianshu),
+        chandi = values(chandi),
+        guige = values(guige),
+        companyid = values(companyid),
+        createtime = values(createtime),
+        status = values(status),
+        updatetime = values(updatetime),
+        producttype = values(producttype),
+        spare1 = values(spare1),
+        spare2 = values(spare2)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update product
+        <set>
+            <if test="productname != null and productname != ''">
+                productname = #{productname},
+            </if>
+            <if test="productdes != null and productdes != ''">
+                productdes = #{productdes},
+            </if>
+            <if test="img != null and img != ''">
+                img = #{img},
+            </if>
+            <if test="detailimg != null and detailimg != ''">
+                detailimg = #{detailimg},
+            </if>
+            <if test="chengben != null and chengben != ''">
+                chengben = #{chengben},
+            </if>
+            <if test="kedanjia != null and kedanjia != ''">
+                kedanjia = #{kedanjia},
+            </if>
+            <if test="kucun != null and kucun != ''">
+                kucun = #{kucun},
+            </if>
+            <if test="fahuotianshu != null and fahuotianshu != ''">
+                fahuotianshu = #{fahuotianshu},
+            </if>
+            <if test="chandi != null and chandi != ''">
+                chandi = #{chandi},
+            </if>
+            <if test="guige != null and guige != ''">
+                guige = #{guige},
+            </if>
+            <if test="companyid != null">
+                companyid = #{companyid},
+            </if>
+            <if test="createtime != null">
+                createtime = #{createtime},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+
+                updatetime = now(),
+
+            <if test="producttype != null and producttype != ''">
+                producttype = #{producttype},
+            </if>
+            <if test="spare1 != null and spare1 != ''">
+                spare1 = #{spare1},
+            </if>
+            <if test="spare2 != null and spare2 != ''">
+                spare2 = #{spare2},
+            </if>
+            <if test="serviceStartTime != null and serviceStartTime != ''">
+                service_start_time = #{serviceStartTime},
+            </if>
+            <if test="serviceEndTime != null and serviceEndTime != ''">
+                service_end_time = #{serviceEndTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from product where id = #{id}
+    </delete>
+
+    <!-- 根据服务商ID统计产品数量 -->
+    <select id="countByCompanyId" resultType="java.lang.Long">
+        select count(1)
+        from product
+        where companyid = #{companyId}
+    </select>
+
+    <!-- 根据服务商ID获取产品类型统计 -->
+    <select id="getProductTypeStatsByCompanyId" resultType="java.util.Map">
+        select
+            pt.type_name,
+            count(p.id) as count
+        from product p
+        left join producttype pt on pt.id = p.producttype
+        where p.companyid = #{companyId}
+        group by p.producttype, pt.type_name
+        order by count desc
+    </select>
+
+    <!-- 更新产品服务时间段数据（用于测试） -->
+    <update id="updateServiceTimeForTesting">
+        UPDATE product
+        SET
+            service_start_time = CASE
+                WHEN (id % 4) = 0 THEN TIME '08:00:00'
+                WHEN (id % 4) = 1 THEN TIME '12:00:00'
+                WHEN (id % 4) = 2 THEN TIME '18:00:00'
+                ELSE TIME '08:00:00'
+            END,
+            service_end_time = CASE
+                WHEN (id % 4) = 0 THEN TIME '12:00:00'
+                WHEN (id % 4) = 1 THEN TIME '18:00:00'
+                WHEN (id % 4) = 2 THEN TIME '22:00:00'
+                ELSE TIME '22:00:00'
+            END
+        WHERE service_start_time IS NULL OR service_end_time IS NULL
+    </update>
+
+</mapper>
