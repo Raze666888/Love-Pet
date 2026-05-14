@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: '部署环境'
+        description: 'Deploy Environment'
         required: true
         default: 'staging'
         type: choice
@@ -40,8 +40,28 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Configure Maven mirror (Aliyun)
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0
+                    https://maven.apache.org/xsd/settings-1.2.0.xsd">
+            <mirrors>
+              <mirror>
+                <id>aliyunmaven</id>
+                <mirrorOf>*</mirrorOf>
+                <name>Aliyun Maven Mirror</name>
+                <url>https://maven.aliyun.com/repository/public</url>
+              </mirror>
+            </mirrors>
+          </settings>
+          EOF
+
       - name: Build project
-        run: mvn clean package -DskipTests
+        run: mvn clean package -DskipTests -U
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -74,4 +94,3 @@ jobs:
           cache-to: type=gha,mode=max
           platforms: linux/amd64
 
- 
