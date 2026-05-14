@@ -1,14 +1,14 @@
 package com.javaPro.myProject.modules.aipet.model;
 
 /**
- * 对话消息（用于对话历史）
+ * Chat Message (for conversation history)
  */
 public class ChatMessage {
 
-    /** 角色：user 或 assistant */
+    /** Role: user or assistant */
     private String role;
 
-    /** 消息内容 */
+    /** Message content */
     private String content;
 
     public ChatMessage() {}

@@ -13,8 +13,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
- * 宠物健康AI咨询服务
- * 调用OpenAI API，为用户提供宠物健康咨询
+ * Pet Health AI Consultation Service
+ * Calls OpenAI API to provide pet health consultation for users
  */
 @Service
 public class AiPetService {
@@ -37,12 +37,12 @@ public class AiPetService {
     private RestTemplate restTemplate;
 
     /**
-     * 初始化 RestTemplate，支持代理
+     * Initialize RestTemplate with proxy support
      */
     private RestTemplate getRestTemplate() {
         if (restTemplate == null) {
             if (proxyHost != null && !proxyHost.isEmpty() && proxyPort > 0) {
-                // 使用代理
+                // Use proxy
                 SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
                 Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
                 factory.setProxy(proxy);
@@ -55,99 +55,99 @@ public class AiPetService {
     }
 
     /**
-     * 系统提示词 - 定义AI的角色和能力
+     * System prompt - Defines AI's role and capabilities
      */
     private static final String SYSTEM_PROMPT = buildSystemPrompt();
 
     private static String buildSystemPrompt() {
-        return "你是一位专业的宠物健康顾问，拥有丰富的兽医知识和宠物护理经验。\n\n"
-            + "## 你的职责：\n"
-            + "1. 解答宠物健康问题（饮食、行为、常见疾病、疫苗、驱虫等）\n"
-            + "2. 提供科学、实用的宠物护理建议\n"
-            + "3. 识别需要紧急就医的情况并提醒用户\n\n"
-            + "## 回答原则：\n"
-            + "- 用通俗易懂的中文回答\n"
-            + "- 回答要简洁明了，控制在300字以内\n"
-            + "- 对于复杂问题，分点说明\n"
-            + "- **重要提醒**：如果症状严重或紧急，必须建议用户立即就医\n"
-            + "- 不要给出具体的药物剂量或处方（这应由兽医决定）\n"
-            + "- 可以建议用户带宠物去兽医处做进一步检查\n\n"
-            + "## 常见咨询领域：\n"
-            + "- 饮食营养：狗粮/猫粮选择、喂食量、禁忌食物\n"
-            + "- 行为问题：乱拉乱尿、破坏行为、焦虑、攻击性\n"
-            + "- 疫苗驱虫：接种时间、驱虫频率、副作用\n"
-            + "- 常见症状：呕吐、腹泻、咳嗽、皮肤病、食欲不振\n"
-            + "- 品种特性：不同品种的常见健康问题\n\n"
-            + "## 紧急情况识别（需立即就医）：\n"
-            + "- 呼吸困难、昏迷、抽搐\n"
-            + "- 严重呕吐/腹泻伴随血便\n"
-            + "- 误食有毒物质\n"
-            + "- 严重外伤或骨折\n"
-            + "- 长时间不进食不喝水\n\n"
-            + "当前时间：" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        return "You are a professional pet health consultant with extensive veterinary knowledge and pet care experience.\n\n"
+            + "## Your Responsibilities:\n"
+            + "1. Answer pet health questions (diet, behavior, common diseases, vaccines, deworming, etc.)\n"
+            + "2. Provide scientific and practical pet care advice\n"
+            + "3. Identify situations requiring emergency veterinary care and alert users\n\n"
+            + "## Response Guidelines:\n"
+            + "- Respond in clear, easy-to-understand English\n"
+            + "- Keep answers concise, within 300 words\n"
+            + "- For complex questions, use bullet points\n"
+            + "- **Important**: If symptoms are severe or urgent, must advise user to seek immediate veterinary care\n"
+            + "- Do not provide specific medication dosages or prescriptions (this should be decided by a veterinarian)\n"
+            + "- You can suggest users take their pets to a veterinarian for further examination\n\n"
+            + "## Common Consultation Areas:\n"
+            + "- Diet & Nutrition: Dog/cat food selection, feeding amounts, forbidden foods\n"
+            + "- Behavioral Issues: House soiling, destructive behavior, anxiety, aggression\n"
+            + "- Vaccination & Deworming: Vaccination schedule, deworming frequency, side effects\n"
+            + "- Common Symptoms: Vomiting, diarrhea, coughing, skin problems, loss of appetite\n"
+            + "- Breed Characteristics: Common health issues for different breeds\n\n"
+            + "## Emergency Situations (Require Immediate Veterinary Care):\n"
+            + "- Difficulty breathing, unconsciousness, seizures\n"
+            + "- Severe vomiting/diarrhea with blood\n"
+            + "- Ingestion of toxic substances\n"
+            + "- Severe trauma or fractures\n"
+            + "- Not eating or drinking for extended periods\n\n"
+            + "Current time: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 
     /**
-     * 宠物健康咨询（主方法）
+     * Pet health consultation (main method)
      *
-     * @param question           用户问题
-     * @param conversationHistory 对话历史（可选）
-     * @return AI回答
+     * @param question           User's question
+     * @param conversationHistory Conversation history (optional)
+     * @return AI response
      */
     public String chat(String question, List<Map<String, String>> conversationHistory) {
-        // 构建消息列表
+        // Build message list
         List<Map<String, String>> messages = new ArrayList<>();
 
-        // 系统提示词
+        // System prompt
         Map<String, String> systemMsg = new HashMap<>();
         systemMsg.put("role", "system");
         systemMsg.put("content", SYSTEM_PROMPT);
         messages.add(systemMsg);
 
-        // 历史对话
+        // Conversation history
         if (conversationHistory != null && !conversationHistory.isEmpty()) {
             messages.addAll(conversationHistory);
         }
 
-        // 当前问题
+        // Current question
         Map<String, String> userMsg = new HashMap<>();
         userMsg.put("role", "user");
         userMsg.put("content", question);
         messages.add(userMsg);
 
-        // 调用OpenAI API
+        // Call OpenAI API
         return callOpenAiApi(messages);
     }
 
     /**
-     * 分析宠物症状
+     * Analyze pet symptoms
      */
     public String analyzeSymptoms(String symptoms, String petType, String petAge) {
         String prompt = String.format(
-            "请分析以下宠物症状：\n\n宠物类型：%s\n宠物年龄：%s\n症状描述：%s\n\n"
-            + "请提供：\n1. 可能的原因（列举2-3种最常见的情况）\n"
-            + "2. 建议的处理方式\n"
-            + "3. 是否需要立即就医的判断\n"
-            + "4. 预防措施建议\n\n"
-            + "注意：这只是初步分析，不能替代专业兽医诊断。",
+            "Please analyze the following pet symptoms:\n\nPet Type: %s\nPet Age: %s\nSymptom Description: %s\n\n"
+            + "Please provide:\n1. Possible causes (list 2-3 most common situations)\n"
+            + "2. Recommended course of action\n"
+            + "3. Assessment of whether immediate veterinary care is needed\n"
+            + "4. Prevention recommendations\n\n"
+            + "Note: This is only a preliminary analysis and cannot replace professional veterinary diagnosis.",
             petType, petAge, symptoms
         );
         return chat(prompt, null);
     }
 
     /**
-     * 调用OpenAI Chat Completion API
+     * Call OpenAI Chat Completion API
      */
     private String callOpenAiApi(List<Map<String, String>> messages) {
         try {
-            // 构建请求体
+            // Build request body
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("model", model);
             requestBody.put("messages", messages);
             requestBody.put("temperature", 0.7);
             requestBody.put("max_tokens", 800);
 
-            // 设置请求头
+            // Set request headers
             org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
             headers.set("Content-Type", "application/json");
             headers.set("Authorization", "Bearer " + apiKey);
@@ -155,11 +155,11 @@ public class AiPetService {
             org.springframework.http.HttpEntity<Map<String, Object>> entity =
                 new org.springframework.http.HttpEntity<>(requestBody, headers);
 
-            // 发送请求
+            // Send request
             org.springframework.http.ResponseEntity<Map> response =
                 getRestTemplate().exchange(apiUrl, org.springframework.http.HttpMethod.POST, entity, Map.class);
 
-            // 解析响应
+            // Parse response
             if (response.getBody() != null) {
                 Map body = response.getBody();
                 List choices = (List) body.get("choices");
@@ -170,11 +170,11 @@ public class AiPetService {
                 }
             }
 
-            return "AI服务暂时无响应，请稍后再试。";
+            return "AI service is temporarily unavailable. Please try again later.";
 
         } catch (Exception e) {
             e.printStackTrace();
-            return "AI服务调用失败：" + e.getMessage();
+            return "AI service call failed: " + e.getMessage();
         }
     }
 }

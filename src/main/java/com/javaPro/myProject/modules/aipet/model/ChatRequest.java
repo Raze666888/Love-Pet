@@ -3,14 +3,14 @@ package com.javaPro.myProject.modules.aipet.model;
 import java.util.List;
 
 /**
- * AI聊天请求
+ * AI Chat Request
  */
 public class ChatRequest {
 
-    /** 用户问题 */
+    /** User's question */
     private String question;
 
-    /** 对话历史（可选） */
+    /** Conversation history (optional) */
     private List<ChatMessage> conversationHistory;
 
     public ChatRequest() {}

@@ -21,9 +21,286 @@
     <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
     <link href="/static/element/element.css" rel="stylesheet">
 
-    <!-- 高德地图配置 -->
+    <style>
+        /* ===== User Avatar in Navbar ===== */
+        header .user-nav-link {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 6px 12px !important;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        header .user-nav-link:hover {
+            background: var(--bs-primary) !important;
+            border-color: var(--bs-primary) !important;
+            color: #fff !important;
+        }
+        header .user-nav-link .user-avatar {
+            width: 28px !important;
+            height: 28px !important;
+            border-radius: 50% !important;
+            object-fit: cover !important;
+            border: 2px solid rgba(255,255,255,0.5) !important;
+            max-width: 28px !important;
+            max-height: 28px !important;
+        }
+        header .user-nav-link .user-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--bs-secondary);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+        }
+        header .user-nav-link .username {
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ===== WeChat Style Chat Dialog ===== */
+        body .el-dialog.wechat-chat-dialog {
+            border-radius: 12px !important;
+            overflow: hidden !important;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.15) !important;
+            background: transparent !important;
+        }
+        body .el-dialog.wechat-chat-dialog .el-dialog__header {
+            display: none !important;
+            padding: 0 !important;
+        }
+        body .el-dialog.wechat-chat-dialog .el-dialog__headerbtn {
+            display: none !important;
+        }
+        body .el-dialog.wechat-chat-dialog .el-dialog__body {
+            padding: 0 !important;
+            color: #333 !important;
+            background: transparent !important;
+        }
+        body .el-dialog.wechat-chat-dialog .el-dialog__footer {
+            display: none !important;
+        }
+
+        /* WeChat Chat Container */
+        .provider-chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 480px;
+            background: #ededed;
+        }
+
+        /* WeChat Header */
+        .provider-chat-header {
+            background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+            color: #fff;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .provider-chat-header .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .provider-chat-header .back-btn {
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 5px;
+        }
+        .provider-chat-header .provider-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .provider-chat-header .provider-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .provider-chat-header .provider-role {
+            font-size: 12px;
+            opacity: 0.85;
+        }
+
+        /* Messages Area */
+        .provider-chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            background: #ededed;
+        }
+        .provider-chat-messages::-webkit-scrollbar {
+            width: 5px;
+        }
+        .provider-chat-messages::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        /* Message Row */
+        .provider-msg-row {
+            display: flex;
+            margin-bottom: 14px;
+            align-items: flex-start;
+        }
+        .provider-msg-row.sent {
+            flex-direction: row-reverse;
+        }
+        .provider-msg-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .provider-msg-row.received .provider-msg-avatar {
+            background: #07c160;
+            margin-right: 10px;
+        }
+        .provider-msg-row.sent .provider-msg-avatar {
+            background: #576b95;
+            margin-left: 10px;
+        }
+
+        /* Message Bubble */
+        .provider-msg-bubble {
+            max-width: 65%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            position: relative;
+        }
+        .provider-msg-row.received .provider-msg-bubble {
+            background: #fff;
+            color: #333;
+            border-top-left-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .provider-msg-row.sent .provider-msg-bubble {
+            background: #95ec69;
+            color: #333;
+            border-top-right-radius: 4px;
+        }
+
+        /* Bubble Arrow */
+        .provider-msg-bubble::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            width: 0;
+            height: 0;
+            border: 6px solid transparent;
+        }
+        .provider-msg-row.received .provider-msg-bubble::before {
+            left: -10px;
+            border-right-color: #fff;
+        }
+        .provider-msg-row.sent .provider-msg-bubble::before {
+            right: -10px;
+            border-left-color: #95ec69;
+        }
+
+        /* Message Time */
+        .provider-msg-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+        }
+        .provider-msg-row.sent .provider-msg-time {
+            text-align: right;
+        }
+
+        /* Input Area */
+        .provider-chat-input-area {
+            background: #f7f7f7;
+            border-top: 1px solid #e0e0e0;
+            padding: 14px 16px;
+        }
+        .provider-chat-input-area .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        .provider-chat-input-area textarea {
+            flex: 1;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            background: #fff;
+            min-height: 42px;
+            max-height: 100px;
+            line-height: 1.4;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .provider-chat-input-area textarea:focus {
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05), 0 0 0 2px rgba(7, 193, 96, 0.2);
+        }
+        .provider-chat-input-area textarea::placeholder {
+            color: #bbb;
+        }
+        .provider-chat-send-btn {
+            background: #07c160;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .provider-chat-send-btn:hover {
+            background: #06ad56;
+        }
+        .provider-chat-send-btn:disabled {
+            background: #c0c4cc;
+            cursor: not-allowed;
+        }
+
+        /* Empty State */
+        .provider-empty-chat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #999;
+        }
+        .provider-empty-chat i {
+            font-size: 48px;
+            margin-bottom: 12px;
+            color: #ddd;
+        }
+        .provider-empty-chat p {
+            margin: 0;
+        }
+    </style>
+
+    <!-- AMap Configuration -->
     <script src="/static/js/map-config.js"></script>
-    <!-- 高德地图API - 请在map-config.js中配置你的API Key -->
+    <!-- AMap API - Please configure your API Key in map-config.js -->
     <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=e4ba17441f45301a0d054097d3e9b933"></script>
 
   </head>
@@ -33,58 +310,85 @@
     <header>
 
       <div class="container-fluid">
-        <div class="row py-3 border-bottom">
+        <div class="row py-2">
 
-          <div class="col-sm-4 col-lg-2 text-center text-sm-start d-flex gap-3 justify-content-center justify-content-md-start">
-            <div class="d-flex align-items-center my-3 my-sm-0">
-              <a href="/web/userindex">
-                <img src="/static/webSite/images/logo.png" style="width: 50px;height: 50px;" alt="logo" class="img-fluid">
-              </a>
-            </div>
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
-                    aria-controls="offcanvasNavbar">
-              <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
+          <!-- Logo Area -->
+          <div class="col-6 col-md-3 col-lg-2 d-flex align-items-center">
+            <a href="/web/userindex" class="logo-area">
+              <span class="platform-title d-none d-md-block">Pet Service Platform</span>
+            </a>
+            <button aria-controls="offcanvasNavbar" class="navbar-toggler ms-auto d-lg-none" data-bs-target="#offcanvasNavbar"
+                    data-bs-toggle="offcanvas" type="button">
+              <svg height="24" viewBox="0 0 24 24" width="24">
+                <use xlink:href="#menu"></use>
+              </svg>
             </button>
           </div>
 
-          <div class="col-md-2 ">
-            <div class="search-bar row bg-light p-2 rounded-4">
-
-              <div class="col-11 col-md-10" style="text-align: center">
-                Pet Service Booking Platform
-              </div>
-
+          <!-- Search Bar -->
+          <div class="col-md-2 d-none d-md-block">
+            <div class="search-bar h-100 d-flex align-items-center justify-content-center">
+              <span class="search-bar-content">
+                <i class="fa fa-paw me-1"></i> Pet Services
+              </span>
             </div>
           </div>
 
-          <div class="col-md-8">
-            <ul class="navbar-nav list-unstyled d-flex flex-row gap-3 gap-lg-5 justify-content-center flex-wrap align-items-center mb-0 fw-bold text-uppercase text-dark">
-              <li class="nav-item ">
-                <a href="/web/userindex" class="nav-link">Home</a>
-              </li>
-
+          <!-- Navigation Menu -->
+          <div class="col-md-7 col-lg-8">
+            <ul class="navbar-nav list-unstyled d-flex flex-row gap-1 gap-lg-2 justify-content-end align-items-center mb-0">
               <li class="nav-item">
-                <a href="/web/userproductlist"  class="nav-link  ">Pet Service List</a>
+                <a class="nav-link" href="/web/userindex">
+                  <i class="fa fa-home"></i>
+                  <span>Home</span>
+                </a>
               </li>
-              <li class="nav-item ">
-                <a href="/web/usercart"  class="nav-link ">Shopping Cart</a>
-              </li>
-              <li class="nav-item">
-                <a href="/web/usercontact"  class="nav-link ">Contact Us</a>
-              </li>
-              <li class="nav-item">
-                <a href="/web/userblog"  class="nav-link ">News/Announcements</a>
+              <li class="nav-item active">
+                <a class="nav-link" href="/web/userproductlist">
+                  <i class="fa fa-list"></i>
+                  <span>Pet Services</span>
+                </a>
               </li>
               <li class="nav-item">
-                <a href="/web/chongzhi"  class="nav-link " title="Recharge">Recharge Center</a>
+                <a class="nav-link" href="/web/usercart">
+                  <i class="fa fa-shopping-cart"></i>
+                  <span>Cart</span>
+                </a>
               </li>
               <li class="nav-item">
-                <a href="/web/personal"  class="nav-link " title="Personal Center"><i class="fa fa-user"></i></a>
+                <a class="nav-link" href="/web/usercontact">
+                  <i class="fa fa-envelope"></i>
+                  <span>Contact</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/web/userblog">
+                  <i class="fa fa-bullhorn"></i>
+                  <span>News</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/web/chongzhi">
+                  <i class="fa fa-credit-card"></i>
+                  <span>Recharge</span>
+                </a>
+              </li>
+              <li class="nav-item ai-health">
+                <a class="nav-link" href="/web/aipet">
+                  <i class="fa fa-robot"></i>
+                  <span>AI Pet Health</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link user-nav-link" href="/web/personal">
+                  <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar" class="user-avatar" style="width: 28px !important; height: 28px !important; border-radius: 50% !important; object-fit: cover !important;">
+                  <i v-else class="user-icon fa fa-user"></i>
+                  <span v-if="userInfo && userInfo.username" class="username">{{userInfo.username}}</span>
+                  <span v-else class="username">Account</span>
+                </a>
               </li>
             </ul>
           </div>
-
-
 
         </div>
       </div>
@@ -104,8 +408,8 @@
     <section id="selling-product" class="single-product mt-0 mt-md-5">
       <div class="container-lg">
         <nav class="breadcrumb">
-          <a class="breadcrumb-item" href="/web/userproductlist">上一页</a>
-          <span class="breadcrumb-item active" aria-current="page">宠物服务详情</span>
+          <a class="breadcrumb-item" href="/web/userproductlist">Previous Page</a>
+          <span class="breadcrumb-item active" aria-current="page">Pet Service Details</span>
         </nav>
         <div class="row g-5">
           <div class="col-lg-7">
@@ -149,10 +453,10 @@
                 <h2 itemprop="name">{{productInfo.productname}}</h2>
                 <div class="rating-container d-flex gap-0 align-items-center">
                   <span class="rating-count" v-if="productInfo.spare2 && !isNaN(parseFloat(productInfo.spare2)) && parseFloat(productInfo.spare2) < 10">
-                    折扣： <strong style="color: red"> {{productInfo.spare2}}</strong>  折
+                    Discount: <strong style="color: red"> {{productInfo.spare2}}</strong>  off
                   </span>
                   <span class="rating-count" v-else>
-                    <strong style="color: green">原价销售</strong>
+                    <strong style="color: green">Original Price</strong>
                   </span>
                 </div>
               </div>
@@ -164,7 +468,7 @@
               <div class="cart-wrap py-4">
                 <div class="color-options pb-3">
                   <div class="color-toggle" data-option-index="0">
-                    <h6 class="item-title text-uppercase text-dark">服务质量:</h6>
+                    <h6 class="item-title text-uppercase text-dark">Service Quality:</h6>
 
                     <input type="radio" class="btn-check" name="options-color" id="option5" autocomplete="off" checked>
                     <label class="btn" for="option5">{{productInfo.guige}}</label>
@@ -172,13 +476,13 @@
                   </div>
                 </div>
                 <div class="swatch" data-option-index="1">
-                  <h6 class="item-title text-uppercase text-dark">当日可约数量:</h6>
+                  <h6 class="item-title text-uppercase text-dark">Available Daily Quantity:</h6>
                     <input type="radio" class="btn-check" name="options-size" id="option9" autocomplete="off" checked>
                     <label class="btn" for="option9">{{productInfo.kucun}}</label>
 
                 </div>
                 <div class="product-quantity pt-3">
-                  <div class="stock-number text-dark"><em>数量</em></div>
+                  <div class="stock-number text-dark"><em>Quantity</em></div>
                   <div class="stock-button-wrap">
 
                     <div class="input-group product-qty" style="max-width: 150px;">
@@ -186,14 +490,14 @@
                       <el-form :model="form" >
                         <el-form-item prop="number">
 
-                          <el-input-number v-model="form.number"  :min="1" :max="10" label="数量"></el-input-number>
+                          <el-input-number v-model="form.number"  :min="1" :max="10" label="Quantity"></el-input-number>
                         </el-form-item>
                       </el-form>
 
 
                     </div>
                     <div class="qty-button d-flex flex-wrap pt-3">
-                      <button type="submit"  @click="handleAddCart" name="add-to-cart" value="1269" class="btn btn-dark py-3 px-4 text-uppercase mt-3">+ 购物车</button>
+                      <button type="submit"  @click="handleAddCart" name="add-to-cart" value="1269" class="btn btn-dark py-3 px-4 text-uppercase mt-3">+ Add to Cart</button>
                     </div>
                   </div>
                 </div>
@@ -208,44 +512,44 @@
                   <span>{{productInfo.fahuotianshu}}</span>
                 </div>
                 <div class="meta-item d-flex align-items-baseline">
-                  <h6 class="item-title no-margin pe-2">服务时间:</h6>
+                  <h6 class="item-title no-margin pe-2">Service Time:</h6>
                   <span class="text-success">
                     <i class="fa fa-clock-o me-1"></i>
                     {{productInfo.serviceStartTime && productInfo.serviceEndTime ?
                       productInfo.serviceStartTime + ' - ' + productInfo.serviceEndTime :
-                      '时间待定'}}
+                      'To be determined'}}
                   </span>
                 </div>
                 <div class="meta-item d-flex align-items-baseline">
-                  <h6 class="item-title no-margin pe-2">商品分类:</h6>
+                  <h6 class="item-title no-margin pe-2">Product Category:</h6>
                   <span>{{productInfo.typeName}}</span>
                 </div>
 
               </div>
 
-              <!-- 服务商信息 -->
+              <!-- Service Provider Info -->
               <div class="service-provider-info py-4 border-top">
-                <h5 class="text-dark mb-3">服务商信息</h5>
+                <h5 class="text-dark mb-3">Service Provider Info</h5>
                 <div class="provider-details">
                   <div class="meta-item d-flex align-items-baseline mb-2">
-                    <h6 class="item-title no-margin pe-2">服务商名称:</h6>
-                    <span class="text-primary fw-bold">{{productInfo.companyName || '暂无信息'}}</span>
-                    <button v-if="productInfo.companyName" @click="showProviderDetail" class="btn btn-sm btn-outline-primary ms-2">查看详情</button>
+                    <h6 class="item-title no-margin pe-2">Provider Name:</h6>
+                    <span class="text-primary fw-bold">{{productInfo.companyName || 'No info'}}</span>
+                    <button v-if="productInfo.companyName" @click="showProviderDetail" class="btn btn-sm btn-outline-primary ms-2">View Details</button>
                   </div>
                   <div class="meta-item d-flex align-items-baseline mb-2">
-                    <h6 class="item-title no-margin pe-2">服务评分:</h6>
+                    <h6 class="item-title no-margin pe-2">Service Rating:</h6>
                     <span class="text-warning">
                       <i v-for="n in 5" :key="n" class="fa" :class="n <= Math.floor(productInfo.companyRating || 0) ? 'fa-star' : 'fa-star-o'"></i>
-                      {{(productInfo.companyRating || 0).toFixed(1)}}分 ({{productInfo.companyRatingCount || 0}}条评价)
+                      {{(productInfo.companyRating || 0).toFixed(1)}} points ({{productInfo.companyRatingCount || 0}} reviews)
                     </span>
                   </div>
                   <div class="meta-item d-flex align-items-baseline mb-2">
-                    <h6 class="item-title no-margin pe-2">服务区域:</h6>
-                    <span>{{productInfo.companyServiceArea || '暂无信息'}}</span>
+                    <h6 class="item-title no-margin pe-2">Service Area:</h6>
+                    <span>{{productInfo.companyServiceArea || 'No info'}}</span>
                   </div>
                   <div class="meta-item d-flex align-items-baseline mb-2">
-                    <h6 class="item-title no-margin pe-2">服务时间:</h6>
-                    <span>{{productInfo.serviceStartTime || '暂无'}} - {{productInfo.serviceEndTime || '暂无'}}</span>
+                    <h6 class="item-title no-margin pe-2">Service Time:</h6>
+                    <span>{{productInfo.serviceStartTime || 'None'}} - {{productInfo.serviceEndTime || 'None'}}</span>
                   </div>
 
                 </div>
@@ -263,7 +567,7 @@
 
             <div class="tab-content py-4" id="v-pills-tabContent">
               <div class="tab-pane fade show active" id="v-pills-description" role="tabpanel" aria-labelledby="v-pills-description-tab" tabindex="0">
-                <h5>宠物服务描述</h5>
+                <h5>Pet Service Description</h5>
                 <p>{{productInfo.productdes}}</p>
               </div>
 
@@ -282,7 +586,7 @@
 
             <div class="section-header d-flex flex-wrap justify-content-between my-4">
 
-              <h2 class="section-title">评论</h2>
+              <h2 class="section-title">Reviews</h2>
 
               <div class="d-flex align-items-center">
 
@@ -349,11 +653,11 @@
           <div class="container" style="background-image: url('/static/webSite/images/bottomBanner.jpg')">
             <div class="row justify-content-center align-items-center">
               <div class="col-md-4">
-                <h2 class="mt-5">加入购物车进行购买</h2>
-                <p>如果遇到问题，请联系我们留言</p>
+                <h2 class="mt-5">Add to Cart to Purchase</h2>
+                <p>If you have any questions, please contact us</p>
                 <div class="d-flex gap-2 flex-wrap mb-5">
-                  <a class="btn btn-danger" href="/web/usercart" title="前往购物车">前往购物车 <i class="fa fa-shopping-cart"></i></a>
-                  <a class="btn btn-primary" href="/web/personal?activeName=third" title="前往订单">前往订单 <i class="fa fa-list"></i></a>
+                  <a class="btn btn-danger" href="/web/usercart" title="Go to Cart">Go to Cart <i class="fa fa-shopping-cart"></i></a>
+                  <a class="btn btn-primary" href="/web/personal?activeName=third" title="Go to Orders">Go to Orders <i class="fa fa-list"></i></a>
                 </div>
               </div>
 
@@ -372,8 +676,8 @@
                 <i class="fa fa-battery-4"></i>
               </div>
               <div class="card-body p-0">
-                <h5>宠物服务保证</h5>
-                <p class="card-text">渠道正规，审核合格.</p>
+                <h5>Pet Service Guarantee</h5>
+                <p class="card-text">Regular channels, qualified review.</p>
               </div>
             </div>
           </div>
@@ -382,8 +686,8 @@
               <div class="text-dark mb-3">
                 <i class="fa fa-bell"></i>              </div>
               <div class="card-body p-0">
-                <h5>100% 真实</h5>
-                <p class="card-text">活动与折扣真实有效.</p>
+                <h5>100% Authentic</h5>
+                <p class="card-text">Promotions and discounts are genuine.</p>
               </div>
             </div>
           </div>
@@ -393,8 +697,8 @@
                 <i class="fa fa-shopping-cart"></i>
               </div>
               <div class="card-body p-0">
-                <h5>购物车一件选购</h5>
-                <p class="card-text">灵活自如，快捷下单.</p>
+                <h5>One-click Shopping</h5>
+                <p class="card-text">Flexible and quick ordering.</p>
               </div>
             </div>
           </div>
@@ -404,8 +708,8 @@
                 <i class="fa fa-bar-chart"></i>
               </div>
               <div class="card-body p-0">
-                <h5>遇到问题请留言</h5>
-                <p class="card-text">后台全天回复.</p>
+                <h5>Contact Us for Issues</h5>
+                <p class="card-text">We reply throughout the day.</p>
               </div>
             </div>
           </div>
@@ -415,8 +719,8 @@
                 <i class="fa fa-user"></i>
               </div>
               <div class="card-body p-0">
-                <h5>个性展示</h5>
-                <p class="card-text">更改个人信息，彰显个性.</p>
+                <h5>Personal Display</h5>
+                <p class="card-text">Update personal info to show your style.</p>
               </div>
             </div>
           </div>
@@ -428,7 +732,7 @@
       <div class="container-lg">
         <div class="row">
           <div class="col-md-6 copyright">
-            <p>@  2024 - 宠物服务订购平台.</p>
+            <p>@ 2024 - Pet Service Ordering Platform.</p>
           </div>
 
         </div>
@@ -437,109 +741,129 @@
 
 
 
-    <!-- 服务商详情弹窗 -->
-    <el-dialog title="服务商详情" :visible.sync="providerDialogVisible" width="70%" @opened="initProviderMap">
+    <!-- Provider Details Popup -->
+    <el-dialog title="Provider Details" :visible.sync="providerDialogVisible" width="70%" @opened="initProviderMap">
       <div v-if="providerInfo">
-        <el-descriptions :column="2" title="基本信息" border>
-          <el-descriptions-item label="服务商名称">{{providerInfo.username || '服务商' + providerInfo.id}}</el-descriptions-item>
-          <el-descriptions-item label="联系电话">{{providerInfo.phonenumber}}</el-descriptions-item>
-          <el-descriptions-item label="服务地址" :span="2">{{providerInfo.address}}</el-descriptions-item>
-          <el-descriptions-item label="服务区域">{{providerInfo.serviceArea || '暂无信息'}}</el-descriptions-item>
-          <el-descriptions-item label="服务时间">{{providerInfo.serviceTime || '暂无信息'}}</el-descriptions-item>
-          <el-descriptions-item label="平均评分">
+        <el-descriptions :column="2" title="Basic Info" border>
+          <el-descriptions-item label="Provider Name">{{providerInfo.username || 'Provider' + providerInfo.id}}</el-descriptions-item>
+          <el-descriptions-item label="Phone">{{providerInfo.phonenumber}}</el-descriptions-item>
+          <el-descriptions-item label="Service Address" :span="2">{{providerInfo.address}}</el-descriptions-item>
+          <el-descriptions-item label="Service Area">{{providerInfo.serviceArea || 'No info'}}</el-descriptions-item>
+          <el-descriptions-item label="Service Time">{{providerInfo.serviceTime || 'No info'}}</el-descriptions-item>
+          <el-descriptions-item label="Average Rating">
             <span class="text-warning">
               <i v-for="n in 5" :key="n" class="fa" :class="n <= Math.floor(providerInfo.avgRating || 0) ? 'fa-star' : 'fa-star-o'"></i>
-              {{(providerInfo.avgRating || 0).toFixed(1)}}分
+              {{(providerInfo.avgRating || 0).toFixed(1)}} points
             </span>
           </el-descriptions-item>
-          <el-descriptions-item label="评价总数">{{providerInfo.ratingCount || 0}}条</el-descriptions-item>
-          <el-descriptions-item label="注册时间">{{providerInfo.zhuceshijian}}</el-descriptions-item>
-          <el-descriptions-item label="状态">
+          <el-descriptions-item label="Total Reviews">{{providerInfo.ratingCount || 0}}</el-descriptions-item>
+          <el-descriptions-item label="Registration Time">{{providerInfo.zhuceshijian}}</el-descriptions-item>
+          <el-descriptions-item label="Status">
             <el-tag :type="providerInfo.status === '1' ? 'success' : 'danger'">
-              {{providerInfo.status === '1' ? '正常营业' : '暂停服务'}}
+              {{providerInfo.status === '1' ? 'Open' : 'Closed'}}
             </el-tag>
           </el-descriptions-item>
         </el-descriptions>
 
-        <!-- 地图显示 -->
+        <!-- Map Display -->
         <div class="mt-4" v-if="providerInfo.address">
-          <h5>服务商位置</h5>
+          <h5>Provider Location</h5>
           <div id="providerMapContainer" style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 4px;"></div>
           <div class="mt-2 text-muted" style="font-size: 14px;">
             <i class="fa fa-map-marker"></i> {{providerInfo.address}}
           </div>
         </div>
 
-        <!-- 用户评价列表 -->
+        <!-- Customer Reviews List -->
         <div class="mt-4">
-          <h5>用户评价</h5>
+          <h5>Customer Reviews</h5>
           <el-table :data="providerEvaluations" style="width: 100%" v-loading="evaluationLoading">
-            <el-table-column prop="sysuser.username" label="用户" width="120"></el-table-column>
-            <el-table-column prop="rating" label="评分" width="100">
+            <el-table-column prop="sysuser.username" label="User" width="120"></el-table-column>
+            <el-table-column prop="rating" label="Rating" width="100">
               <template slot-scope="scope">
                 <span class="text-warning">
                   <i v-for="n in 5" :key="n" class="fa fa-star" :class="n <= scope.row.rating ? 'text-warning' : 'text-muted'"></i>
                 </span>
               </template>
             </el-table-column>
-            <el-table-column prop="content" label="评价内容"></el-table-column>
-            <el-table-column prop="createtime" label="评价时间" width="180">
+            <el-table-column prop="content" label="Review Content"></el-table-column>
+            <el-table-column prop="createtime" label="Review Time" width="180">
               <template slot-scope="scope">
                 {{new Date(scope.row.createtime).toLocaleString()}}
               </template>
             </el-table-column>
           </el-table>
           <div v-if="!providerEvaluations || providerEvaluations.length === 0" class="text-center py-4 text-muted">
-            暂无评价
+            No reviews yet
           </div>
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="providerDialogVisible = false">关闭</el-button>
-        <el-button v-if="userId && role === '2'" type="primary" @click="contactProvider">联系服务商</el-button>
+        <el-button @click="providerDialogVisible = false">Close</el-button>
+        <el-button v-if="userId && role === '2'" type="primary" @click="contactProvider">Contact Provider</el-button>
       </div>
     </el-dialog>
 
-    <!-- 联系服务商对话框 -->
-    <el-dialog title="联系服务商" :visible.sync="contactDialogVisible" width="50%">
-      <div v-if="providerInfo">
-        <div class="mb-3">
-          <strong>服务商：</strong>{{providerInfo.username || '服务商' + providerInfo.id}}
-        </div>
-
-        <!-- 聊天消息区域 -->
-        <div class="chat-messages" ref="chatMessages" style="height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 15px; background-color: #f9f9f9;">
-          <div v-for="msg in chatMessages" :key="msg.id" class="message-item" :class="msg.senderid == userId ? 'sent' : 'received'" style="margin-bottom: 10px;">
-            <div class="message-header" style="font-size: 12px; color: #666; margin-bottom: 5px;">
-              <span>{{msg.senderid == userId ? '我' : (providerInfo.username || '服务商' + providerInfo.id)}}</span>
-              <span style="float: right;">{{new Date(msg.createtime).toLocaleString()}}</span>
+    <!-- Contact Provider Popup - WeChat Style -->
+    <el-dialog 
+        :visible.sync="contactDialogVisible" 
+        width="500px" 
+        custom-class="wechat-chat-dialog"
+        :close-on-click-modal="false"
+        :show-close="false">
+        <div class="provider-chat-container" v-if="providerInfo">
+            <!-- WeChat Header -->
+            <div class="provider-chat-header">
+                <div class="header-left">
+                    <i class="fa fa-angle-left back-btn" @click="contactDialogVisible = false"></i>
+                    <div class="provider-avatar">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div>
+                        <div class="provider-name">{{providerInfo.username || 'Provider' + providerInfo.id}}</div>
+                        <div class="provider-role">Service Provider</div>
+                    </div>
+                </div>
             </div>
-            <div class="message-content" :style="msg.senderid == userId ? 'background-color: #007bff; color: white; padding: 8px 12px; border-radius: 10px; display: inline-block; max-width: 70%; float: right; clear: both;' : 'background-color: white; color: #333; padding: 8px 12px; border-radius: 10px; display: inline-block; max-width: 70%; float: left; clear: both;'">
-              {{msg.content}}
-            </div>
-            <div style="clear: both;"></div>
-          </div>
-          <div v-if="!chatMessages || chatMessages.length === 0" class="text-center text-muted py-4">
-            暂无聊天记录，开始对话吧！
-          </div>
-        </div>
 
-        <!-- 消息输入区域 -->
-        <div class="message-input">
-          <el-input
-            type="textarea"
-            :rows="3"
-            placeholder="请输入您要发送的消息..."
-            v-model="newMessage"
-            maxlength="500"
-            show-word-limit>
-          </el-input>
+            <!-- Messages Area -->
+            <div class="provider-chat-messages" ref="chatMessages">
+                <!-- Empty State -->
+                <div v-if="!chatMessages || chatMessages.length === 0" class="provider-empty-chat">
+                    <i class="fa fa-comments"></i>
+                    <p>No messages yet</p>
+                    <p style="font-size: 12px;">Start a conversation</p>
+                </div>
+
+                <!-- Message List -->
+                <div v-for="msg in chatMessages" :key="msg.id" 
+                     :class="['provider-msg-row', String(msg.senderid) == String(userId) ? 'sent' : 'received']">
+                    <div class="provider-msg-avatar">
+                        <i class="fa fa-user"></i>
+                    </div>
+                    <div>
+                        <div class="provider-msg-bubble">{{msg.content}}</div>
+                        <div class="provider-msg-time">{{formatChatTime(msg.createtime)}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="provider-chat-input-area">
+                <div class="input-row">
+                    <textarea 
+                        v-model="newMessage"
+                        placeholder="Type a message..."
+                        @keyup.enter="sendMessageToProvider"
+                        maxlength="500"
+                        rows="1">
+                    </textarea>
+                    <button class="provider-chat-send-btn" @click="sendMessageToProvider" :disabled="!newMessage.trim()">
+                        Send
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="contactDialogVisible = false">关闭</el-button>
-        <el-button type="primary" @click="sendMessageToProvider" :disabled="!newMessage.trim()">发送消息</el-button>
-      </div>
     </el-dialog>
 
   </div>
@@ -571,6 +895,7 @@
           loading: true,
           userId: localStorage.getItem("userId"),
           role: localStorage.getItem("role"),
+          userInfo: null,
           form: {
             number:1
           },
@@ -592,7 +917,7 @@
           title: "",
           rules: {
             title: [
-              {required: true, message: '请输入', trigger: 'blur'},
+              {required: true, message: 'Please enter', trigger: 'blur'},
 
             ],
 
@@ -600,11 +925,34 @@
         }
       },
       methods: {
-        //添加购物车
+        // Get user info
+        getUserInfo() {
+          let that = this;
+          let userId = localStorage.getItem("userId");
+          if (!userId) {
+            that.userInfo = null;
+            return;
+          }
+          $.ajax({
+            url: that.baseUrl + "/sysuser/detail",
+            type: "GET",
+            data: {id: userId},
+            success: function (data) {
+              if (data.code !== 500 && data.data) {
+                that.userInfo = data.data;
+              }
+            },
+            error: function () {
+              console.log("Failed to get user info");
+            }
+          });
+        },
+
+// Add to cart
         handleAddCart(){
           let that = this
           if (that.form.number === null || that.form.number === 0 || that.form.number == undefined){
-            toastr.error("数量不能为空", '提示')
+            toastr.error("Quantity cannot be empty", 'Notice')
             return false
           }
 
@@ -622,23 +970,23 @@
             success: function (data) {
               that.open = false
               if (data.code === 200) {
-                toastr.success(data.msg, '提示')
+                toastr.success(data.msg, 'Notice')
 
               } else {
 
-                toastr.error(data.msg, '提示')
+                toastr.error(data.msg, 'Notice')
               }
 
             },
             error: function () {
-              alert("服务器异常！network error！")
+              toastr.error("Server error! network error!", 'Notice')
             }
           })
         },
         currentImg(item){
           this.currentImgInfo = item
         },
-        // 获取
+        // Get product details
         getDetail() {
           let that = this;
           $.ajax({
@@ -652,28 +1000,28 @@
               if (data.code !== 500) {
                 that.productInfo = data.data
                 console.log("Product Info:", that.productInfo);
-                // 安全检查detailImgList是否存在且不为空
+                // Check if detailImgList exists and is not empty
                 if (data.data.detailImgList && data.data.detailImgList.length > 0) {
                   that.currentImgInfo = data.data.detailImgList[0]
                 } else {
-                  // 如果detailImgList为空，使用主图片
+                  // If detailImgList is empty, use the main image
                   that.currentImgInfo = data.data.img
                 }
                 that.getList()
 
-                // 获取最新的服务商评分统计
+                // Get the latest provider rating statistics
                 that.updateCompanyRating();
               } else {
                 console.error("Product Detail API returned error:", data.msg);
               }
             },
             error: function () {
-              windowsAuto(500, "服务器异常！network error！")
+              windowsAuto(500, "Server error! network error!")
             }
           });
         },
 
-        // 更新服务商评分统计
+        // Get the latest provider rating statistics
         updateCompanyRating() {
           let that = this;
           if (that.productInfo && that.productInfo.companyid) {
@@ -685,18 +1033,18 @@
               },
               success: function (data) {
                 if (data.code === 200) {
-                  // 更新产品信息中的评分数据
+                  // Update rating data in product info
                   that.productInfo.companyRating = data.avgRating;
                   that.productInfo.companyRatingCount = data.ratingCount;
                 }
               },
               error: function () {
-                console.error("获取评分统计失败");
+                console.error("Failed to get rating statistics");
               }
             });
           }
         },
-        // 获取列表
+        // Get list
         getList() {
           let that = this;
           that.loading = true
@@ -716,22 +1064,22 @@
               }
             },
             error: function () {
-              windowsAuto(500, "服务器异常！network error！")
+              windowsAuto(500, "Server error! network error!")
             }
           });
         },
-        // 显示服务商详情
+        // Show provider details
         showProviderDetail() {
           let that = this;
           if (!that.productInfo.companyid) {
-            toastr.error("服务商信息不完整", '提示');
+            toastr.error("Provider info incomplete", 'Notice');
             return;
           }
 
           that.providerDialogVisible = true;
           that.evaluationLoading = true;
 
-          // 获取服务商详细信息
+          // Get provider detailed info
           $.ajax({
             url: that.baseUrl + "/company/detail",
             type: "GET",
@@ -742,15 +1090,15 @@
               if (data.code === 200) {
                 that.providerInfo = data.data;
               } else {
-                toastr.error("获取服务商信息失败", '提示');
+                toastr.error("Failed to get provider info", 'Notice');
               }
             },
             error: function () {
-              toastr.error("服务器异常", '提示');
+              toastr.error("Server error", 'Notice');
             }
           });
 
-          // 获取服务商评价
+          // Get provider reviews
           $.ajax({
             url: that.baseUrl + "/orderEvalute",
             type: "GET",
@@ -770,21 +1118,21 @@
             error: function () {
               that.evaluationLoading = false;
               that.providerEvaluations = [];
-              toastr.error("获取评价信息失败", '提示');
+              toastr.error("Failed to get review info", 'Notice');
             }
           });
         },
 
-        // 联系服务商
+        // Contact provider
         contactProvider() {
           let that = this;
           if (!that.userId) {
-            toastr.error("请先登录", '提示');
+            toastr.error("Please login first", 'Notice');
             return;
           }
 
           if (that.role !== '2') {
-            toastr.error("只有用户可以联系服务商", '提示');
+            toastr.error("Only users can contact providers", 'Notice');
             return;
           }
 
@@ -792,43 +1140,43 @@
           that.loadChatWithProvider();
         },
 
-        // 初始化服务商地图
+        // Initialize provider map
         initProviderMap() {
           let that = this;
           if (!that.providerInfo || !that.providerInfo.address) {
             return;
           }
 
-          // 延迟执行以确保DOM已渲染
+          // Delay execution to ensure DOM is rendered
           setTimeout(() => {
-            // 创建地图实例
+            // Create map instance
             const map = new AMap.Map('providerMapContainer', {
               zoom: 15,
               resizeEnable: true
             });
 
-            // 使用地理编码服务将地址转换为坐标
+            // Use geocoder service to convert address to coordinates
             AMap.plugin('AMap.Geocoder', function() {
               const geocoder = new AMap.Geocoder();
 
-              // 如果有经纬度，直接使用
+              // If longitude and latitude exist, use them directly
               if (that.providerInfo.longitude && that.providerInfo.latitude) {
                 const position = [that.providerInfo.longitude, that.providerInfo.latitude];
                 map.setCenter(position);
 
-                // 添加标记
+                // Add marker
                 const marker = new AMap.Marker({
                   position: position,
-                  title: that.providerInfo.username || '服务商位置'
+                  title: that.providerInfo.username || 'Provider Location'
                 });
                 map.add(marker);
 
-                // 添加信息窗体
+                // Add info window
                 const infoWindow = new AMap.InfoWindow({
                   content: `<div style="padding: 10px;">
-                    <h6>${that.providerInfo.username || '服务商'}</h6>
+                    <h6>${that.providerInfo.username || 'Provider'}</h6>
                     <p style="margin: 5px 0;">${that.providerInfo.address}</p>
-                    <p style="margin: 5px 0;">电话: ${that.providerInfo.phonenumber || '暂无'}</p>
+                    <p style="margin: 5px 0;">Phone: ${that.providerInfo.phonenumber || 'No info'}</p>
                   </div>`
                 });
 
@@ -836,25 +1184,25 @@
                   infoWindow.open(map, position);
                 });
               } else {
-                // 使用地址进行地理编码
+                // Use address for geocoding
                 geocoder.getLocation(that.providerInfo.address, function(status, result) {
                   if (status === 'complete' && result.info === 'OK') {
                     const location = result.geocodes[0].location;
                     map.setCenter([location.lng, location.lat]);
 
-                    // 添加标记
+                    // Add marker
                     const marker = new AMap.Marker({
                       position: [location.lng, location.lat],
-                      title: that.providerInfo.username || '服务商位置'
+                      title: that.providerInfo.username || 'Provider Location'
                     });
                     map.add(marker);
 
-                    // 添加信息窗体
+                    // Add info window
                     const infoWindow = new AMap.InfoWindow({
                       content: `<div style="padding: 10px;">
-                        <h6>${that.providerInfo.username || '服务商'}</h6>
+                        <h6>${that.providerInfo.username || 'Provider'}</h6>
                         <p style="margin: 5px 0;">${that.providerInfo.address}</p>
-                        <p style="margin: 5px 0;">电话: ${that.providerInfo.phonenumber || '暂无'}</p>
+                        <p style="margin: 5px 0;">Phone: ${that.providerInfo.phonenumber || 'No info'}</p>
                       </div>`
                     });
 
@@ -862,7 +1210,7 @@
                       infoWindow.open(map, [location.lng, location.lat]);
                     });
                   } else {
-                    console.error('地理编码失败:', result);
+                    console.error('Geocoding failed:', result);
                   }
                 });
               }
@@ -870,15 +1218,15 @@
           }, 300);
         },
 
-        // 加载与服务商的聊天记录
+        // Load chat history with provider
         loadChatWithProvider() {
           let that = this;
           if (!that.providerInfo || !that.providerInfo.createid) {
-            toastr.error("服务商信息不完整", '提示');
+            toastr.error("Provider info incomplete", 'Notice');
             return;
           }
 
-          console.log("加载聊天记录 - 用户ID:", that.userId, "服务商用户ID:", that.providerInfo.createid);
+          console.log("Loading chat - User ID:", that.userId, "Provider user ID:", that.providerInfo.createid);
 
           $.ajax({
             url: that.baseUrl + "/message/chat",
@@ -888,39 +1236,39 @@
               partnerId: parseInt(that.providerInfo.createid)
             },
             success: function (data) {
-              console.log("聊天记录响应:", data);
+              console.log("Chat response:", data);
               if (data.code === 200) {
                 that.chatMessages = data.list || [];
                 that.$nextTick(() => {
                   that.scrollChatToBottom();
                 });
               } else {
-                console.error("获取聊天记录失败:", data.msg);
+                console.error("Failed to get chat history:", data.msg);
                 that.chatMessages = [];
               }
             },
             error: function (xhr, status, error) {
-              console.error("加载聊天记录失败:", error);
-              toastr.error("加载聊天记录失败", '提示');
+              console.error("Failed to load chat:", error);
+              toastr.error("Failed to load chat", 'Notice');
               that.chatMessages = [];
             }
           });
         },
 
-        // 发送消息给服务商
+        // Send message to provider
         sendMessageToProvider() {
           let that = this;
           if (!that.newMessage.trim()) {
-            toastr.warning("请输入消息内容", '提示');
+            toastr.warning("Please enter message content", 'Notice');
             return;
           }
 
           if (!that.providerInfo || !that.providerInfo.createid) {
-            toastr.error("服务商信息不完整", '提示');
+            toastr.error("Provider info incomplete", 'Notice');
             return;
           }
 
-          console.log("发送消息 - 发送者ID:", that.userId, "接收者ID:", that.providerInfo.createid, "内容:", that.newMessage);
+          console.log("Sending message - Sender ID:", that.userId, "Receiver ID:", that.providerInfo.createid, "Content:", that.newMessage);
 
           $.ajax({
             url: that.baseUrl + "/message/form",
@@ -932,31 +1280,44 @@
               status: "0"
             },
             success: function (data) {
-              console.log("发送消息响应:", data);
+              console.log("Send response:", data);
               if (data.code === 200) {
                 that.newMessage = '';
-                that.loadChatWithProvider(); // 重新加载消息
-                toastr.success("消息发送成功", '提示');
+                that.loadChatWithProvider(); // Reload messages
+                toastr.success("Message sent successfully", 'Notice');
               } else {
-                console.error("发送消息失败:", data.msg);
-                toastr.error(data.msg || "发送失败", '提示');
+                console.error("Send failed:", data.msg);
+                toastr.error(data.msg || "Send failed", 'Notice');
               }
             },
             error: function (xhr, status, error) {
-              console.error("发送消息网络错误:", error);
-              toastr.error("发送消息失败", '提示');
+              console.error("Send message network error:", error);
+              toastr.error("Failed to send message", 'Notice');
             }
           });
         },
 
-        // 滚动聊天区域到底部
+        // Scroll chat area to bottom
         scrollChatToBottom() {
           if (this.$refs.chatMessages) {
             this.$refs.chatMessages.scrollTop = this.$refs.chatMessages.scrollHeight;
           }
         },
 
-        // 计算折扣价格
+        // Format chat time for display
+        formatChatTime(time) {
+          if (!time) return '';
+          try {
+            const date = new Date(time);
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return hours + ':' + minutes;
+          } catch (e) {
+            return time;
+          }
+        },
+
+        // Calculate discount price
         calculateDiscountPrice() {
           if (!this.productInfo || !this.productInfo.kedanjia) {
             return '0.00';
@@ -967,7 +1328,7 @@
             return '0.00';
           }
 
-          // 如果有折扣且折扣有效
+          // If there is a discount and the discount is valid
           if (this.productInfo.spare2 && !isNaN(parseFloat(this.productInfo.spare2))) {
             const discount = parseFloat(this.productInfo.spare2);
             if (discount > 0 && discount < 10) {
@@ -975,7 +1336,7 @@
             }
           }
 
-          // 没有折扣或折扣无效时，返回原价
+          // When there is no discount or the discount is invalid, return the original price
           return originalPrice.toFixed(2);
         },
 
@@ -984,37 +1345,40 @@
       mounted() {
         let that = this;
 
+        // Load user info
+        that.getUserInfo();
+
         let id = new URLSearchParams(window.location.search).get('id')
         if (id){
           that.id = id
           that.getDetail()
         }
 
-        // 监听评分更新事件
+        // Listen for rating update events
         window.addEventListener('storage', function(e) {
           if (e.key === 'ratingUpdate' && e.newValue) {
             try {
               const ratingData = JSON.parse(e.newValue);
-              // 如果更新的是当前产品的服务商，则更新评分显示
+              // If the updated product's provider is the current provider, update the rating display
               if (that.productInfo && that.productInfo.companyid === ratingData.companyid) {
                 that.productInfo.companyRating = ratingData.avgRating;
                 that.productInfo.companyRatingCount = ratingData.ratingCount;
 
-                // 如果服务商详情对话框是打开的，也更新对话框中的评分
+                // If the provider details dialog is open, also update the rating in the dialog
                 if (that.providerDialogVisible && that.providerInfo) {
                   that.providerInfo.avgRating = ratingData.avgRating;
                   that.providerInfo.ratingCount = ratingData.ratingCount;
                 }
 
-                console.log('评分已实时更新:', ratingData);
+                console.log('Rating updated in real time:', ratingData);
               }
             } catch (error) {
-              console.error('解析评分更新数据失败:', error);
+              console.error('Failed to parse rating update data:', error);
             }
           }
         });
 
-        // 监听同页面内的评分更新（用于处理同一页面内的评分更新）
+        // Listen for rating updates within the same page
         window.addEventListener('ratingUpdated', function(e) {
           if (that.productInfo && that.productInfo.companyid === e.detail.companyid) {
             that.productInfo.companyRating = e.detail.avgRating;

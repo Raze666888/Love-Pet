@@ -28,6 +28,8 @@
         <result property="companyRating" column="company_rating" jdbcType="DOUBLE"/>
         <result property="companyRatingCount" column="company_rating_count" jdbcType="INTEGER"/>
         <result property="companyServiceArea" column="company_service_area" jdbcType="VARCHAR"/>
+        <result property="companyLongitude" column="company_longitude" jdbcType="DOUBLE"/>
+        <result property="companyLatitude" column="company_latitude" jdbcType="DOUBLE"/>
     </resultMap>
 
     <!--查询单个-->
@@ -38,7 +40,8 @@
             p.service_start_time, p.service_end_time,
             t.type_name,
             c.companyname as company_name, c.avg_rating as company_rating,
-            c.rating_count as company_rating_count, c.service_area as company_service_area
+            c.rating_count as company_rating_count, c.service_area as company_service_area,
+            c.longitude as company_longitude, c.latitude as company_latitude
         from product p
                  left join producttype t on t.id = p.producttype
                  left join company c on c.id = p.companyid
@@ -53,7 +56,8 @@
                p.service_start_time, p.service_end_time,
                t.type_name,
                c.companyname as company_name, c.avg_rating as company_rating,
-               c.rating_count as company_rating_count, c.service_area as company_service_area
+               c.rating_count as company_rating_count, c.service_area as company_service_area,
+               c.longitude as company_longitude, c.latitude as company_latitude
         from product p
         left join producttype t on t.id = p.producttype
         left join company c on c.id = p.companyid

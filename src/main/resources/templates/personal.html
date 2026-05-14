@@ -31,11 +31,699 @@
             margin-top: 3px;
         }
 
+        /* ===== Navigation Bar Styles ===== */
+        header {
+            background: #fff !important;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        /* Logo Area */
+        header .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        header .logo-img {
+            width: 48px !important;
+            height: 48px !important;
+            border-radius: 12px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            max-width: 48px !important;
+            max-height: 48px !important;
+        }
+        header .logo-img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Platform Title */
+        header .platform-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--bs-secondary);
+            line-height: 1.2;
+        }
+
+        /* Navigation Menu */
+        header .navbar-nav {
+            gap: 4px;
+        }
+
+        header .nav-item {
+            position: relative;
+        }
+
+        header .nav-link {
+            color: #555 !important;
+            font-size: 0.88rem;
+            font-weight: 500;
+            padding: 10px 14px !important;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        header .nav-link:hover {
+            color: var(--bs-primary) !important;
+            background: rgba(107, 178, 82, 0.08);
+        }
+
+        /* Active Navigation Item */
+        header .nav-item.active .nav-link {
+            color: var(--bs-primary) !important;
+            background: rgba(107, 178, 82, 0.12);
+            font-weight: 600;
+        }
+
+        /* AI Pet Health Special Style */
+        header .nav-item.ai-health .nav-link {
+            background: linear-gradient(135deg, var(--bs-primary), #5a9a45);
+            color: #fff !important;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(107, 178, 82, 0.3);
+            transition: all 0.3s ease;
+        }
+        header .nav-item.ai-health .nav-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(107, 178, 82, 0.4);
+            background: linear-gradient(135deg, #5a9a45, var(--bs-primary));
+            color: #fff !important;
+        }
+
+        /* User Avatar Area */
+        header .user-nav-link {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 6px 12px !important;
+            border-radius: 25px;
+        }
+        header .user-nav-link:hover {
+            background: var(--bs-primary) !important;
+            border-color: var(--bs-primary) !important;
+            color: #fff !important;
+        }
+        header .user-nav-link .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+        header .user-nav-link .user-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--bs-secondary);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        header .user-nav-link .username {
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Search Bar */
+        header .search-bar {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 25px;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+        }
+        header .search-bar:hover,
+        header .search-bar:focus-within {
+            border-color: var(--bs-primary);
+            box-shadow: 0 0 0 3px rgba(107, 178, 82, 0.15);
+        }
+        header .search-bar-content {
+            color: var(--bs-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Toggle Button */
+        header .navbar-toggler {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 8px 12px;
+        }
+        header .navbar-toggler:focus {
+            box-shadow: 0 0 0 3px rgba(107, 178, 82, 0.2);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 991px) {
+            header .nav-link {
+                padding: 12px 16px !important;
+                border-radius: 8px;
+            }
+            header .user-nav-link {
+                border-radius: 8px;
+                margin-top: 4px;
+            }
+        }
+
+        /* Navigation Hover Effect Line */
+        header .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--bs-primary);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        header .nav-item:hover::after {
+            width: 60%;
+        }
+        header .nav-item.ai-health::after {
+            display: none;
+        }
+
+        /* Hide Vue template before compilation */
+        [v-cloak] {
+            display: none !important;
+        }
+
+        /* ===== Personal Center Beautification ===== */
+
+        /* Main Card Styling */
+        .box-card {
+            border: none !important;
+            border-radius: 16px !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+            overflow: hidden;
+            margin: 30px auto;
+            max-width: 1400px;
+        }
+
+        .box-card .el-card__body {
+            padding: 0 !important;
+        }
+
+        /* Tabs Styling */
+        .el-tabs {
+            padding: 0 20px;
+        }
+
+        .el-tabs__header {
+            margin: 0 !important;
+            background: #fafafa;
+            border-bottom: 2px solid #ebeef5;
+        }
+
+        .el-tabs__nav-wrap::after {
+            display: none !important;
+        }
+
+        .el-tabs__item {
+            height: 56px !important;
+            line-height: 56px !important;
+            padding: 0 30px !important;
+            font-size: 15px !important;
+            font-weight: 500 !important;
+            color: #666 !important;
+            transition: all 0.3s ease;
+        }
+
+        .el-tabs__item:hover {
+            color: var(--bs-primary) !important;
+        }
+
+        .el-tabs__item.is-active {
+            color: var(--bs-primary) !important;
+            font-weight: 600 !important;
+        }
+
+        .el-tabs__active-bar {
+            height: 3px !important;
+            background: linear-gradient(90deg, var(--bs-primary), #5a9a45) !important;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .el-tabs__content {
+            padding: 25px !important;
+        }
+
+        /* Descriptions (User Info) Styling */
+        .el-descriptions {
+            padding: 20px;
+        }
+
+        .el-descriptions__title {
+            font-size: 18px !important;
+            font-weight: 600 !important;
+            color: #333 !important;
+            margin-bottom: 20px !important;
+            padding-bottom: 12px !important;
+            border-bottom: 2px solid var(--bs-primary) !important;
+        }
+
+        .el-descriptions__body {
+            background: #fff !important;
+        }
+
+        .el-descriptions-item__label {
+            font-weight: 600 !important;
+            color: #555 !important;
+            background: #fafafa !important;
+            padding: 14px 16px !important;
+            min-width: 140px !important;
+        }
+
+        .el-descriptions-item__content {
+            padding: 14px 16px !important;
+            color: #333 !important;
+        }
+
+        .el-descriptions-item:hover .el-descriptions-item__label {
+            background: rgba(107, 178, 82, 0.08) !important;
+        }
+
+        /* User Avatar in Descriptions */
+        .el-descriptions-item .el-image {
+            border-radius: 12px !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+            transition: transform 0.3s ease;
+        }
+
+        .el-descriptions-item .el-image:hover {
+            transform: scale(1.05);
+        }
+
+        /* Table Styling */
+        .el-table {
+            border-radius: 12px !important;
+            overflow: hidden;
+        }
+
+        .el-table__header-wrapper th {
+            background: linear-gradient(135deg, var(--bs-primary), #5a9a45) !important;
+            color: #fff !important;
+            font-weight: 600 !important;
+            font-size: 14px !important;
+            padding: 16px 12px !important;
+        }
+
+        .el-table__header-wrapper th .cell {
+            padding: 0 !important;
+        }
+
+        .el-table__body-wrapper tr {
+            transition: all 0.2s ease;
+        }
+
+        .el-table__body-wrapper tr:hover > td {
+            background: rgba(107, 178, 82, 0.06) !important;
+        }
+
+        .el-table__body-wrapper td {
+            padding: 16px 12px !important;
+            border-bottom: 1px solid #f0f0f0 !important;
+            font-size: 14px;
+        }
+
+        .el-table__body-wrapper td .cell {
+            padding: 0 8px !important;
+        }
+
+        /* Table Image Styling */
+        .el-table .el-image {
+            border-radius: 8px !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        /* Action Buttons in Tables */
+        .el-table .el-button {
+            margin: 3px !important;
+            transition: all 0.2s ease;
+        }
+
+        .el-table .el-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .el-table .el-button--small {
+            padding: 8px 16px !important;
+        }
+
+        /* Status Tags */
+        .el-tag {
+            border-radius: 20px !important;
+            padding: 0 12px !important;
+            font-weight: 500 !important;
+        }
+
+        .el-tag--success {
+            background: rgba(107, 178, 82, 0.15) !important;
+            border-color: var(--bs-primary) !important;
+            color: var(--bs-primary) !important;
+        }
+
+        .el-tag--warning {
+            background: rgba(230, 162, 60, 0.15) !important;
+            border-color: #e6a23c !important;
+            color: #e6a23c !important;
+        }
+
+        .el-tag--danger {
+            background: rgba(245, 108, 108, 0.15) !important;
+            border-color: #f56c6c !important;
+            color: #f56c6c !important;
+        }
+
+        .el-tag--info {
+            background: rgba(144, 147, 153, 0.15) !important;
+            border-color: #909399 !important;
+            color: #909399 !important;
+        }
+
+        /* Section Title Styling */
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--bs-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--bs-primary);
+        }
+
+        /* Action Buttons Container */
+        .action-buttons {
+            width: 100%;
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #ebeef5;
+        }
+
+        .action-buttons .el-button {
+            margin: 0 10px !important;
+            padding: 12px 30px !important;
+            border-radius: 25px !important;
+            font-weight: 500 !important;
+            transition: all 0.3s ease;
+        }
+
+        .action-buttons .el-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Loading State */
+        .el-loading-mask {
+            border-radius: 12px;
+        }
+
+        /* Empty State */
+        .el-table__empty-block {
+            padding: 60px 20px !important;
+        }
+
+        .el-table__empty-text {
+            color: #999 !important;
+            font-size: 15px !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .el-tabs__item {
+                padding: 0 15px !important;
+                font-size: 13px !important;
+            }
+
+            .el-descriptions-item__label {
+                min-width: 100px !important;
+                padding: 10px 12px !important;
+            }
+
+            .box-card {
+                margin: 15px;
+                border-radius: 12px !important;
+            }
+
+            .el-tabs__content {
+                padding: 15px !important;
+            }
+        }
+
+        /* ===== WeChat Style Chat Dialog ===== */
+        body .el-dialog.wechat-chat-dialog {
+            border-radius: 12px !important;
+            overflow: hidden !important;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.15) !important;
+            background: transparent !important;
+        }
+        body .el-dialog.wechat-chat-dialog .el-dialog__header {
+            display: none !important;
+            padding: 0 !important;
+            height: 0 !important;
+            min-height: 0 !important;
+        }
+        body .el-dialog.wechat-chat-dialog .el-dialog__headerbtn {
+            display: none !important;
+        }
+        body .el-dialog.wechat-chat-dialog .el-dialog__body {
+            padding: 0 !important;
+            color: #333 !important;
+            background: transparent !important;
+        }
+
+        /* WeChat Chat Container */
+        .wechat-chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 550px;
+            background: #ededed;
+        }
+
+        /* WeChat Header */
+        .wechat-header {
+            background: linear-gradient(135deg, #07c160 0%, #06ad56 100%);
+            color: #fff;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .wechat-header .header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .wechat-header .back-btn {
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+        }
+        .wechat-header .partner-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        .wechat-header .partner-name {
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .wechat-header .partner-role {
+            font-size: 11px;
+            opacity: 0.85;
+        }
+
+        /* Messages Area */
+        .wechat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            background: #ededed;
+        }
+        .wechat-messages::-webkit-scrollbar {
+            width: 5px;
+        }
+        .wechat-messages::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        /* Message Row */
+        .msg-row {
+            display: flex;
+            margin-bottom: 14px;
+            align-items: flex-start;
+        }
+        .msg-row.sent {
+            flex-direction: row-reverse;
+        }
+        .msg-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .msg-row.received .msg-avatar {
+            background: #07c160;
+            margin-right: 8px;
+        }
+        .msg-row.sent .msg-avatar {
+            background: #576b95;
+            margin-left: 8px;
+        }
+
+        /* Message Bubble */
+        .msg-bubble {
+            max-width: 65%;
+            padding: 9px 13px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            position: relative;
+        }
+        .msg-row.received .msg-bubble {
+            background: #fff;
+            color: #333;
+            border-top-left-radius: 2px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+        }
+        .msg-row.sent .msg-bubble {
+            background: #95ec69;
+            color: #333;
+            border-top-right-radius: 2px;
+        }
+
+        /* Bubble Arrow */
+        .msg-bubble::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            width: 0;
+            height: 0;
+            border: 5px solid transparent;
+        }
+        .msg-row.received .msg-bubble::before {
+            left: -8px;
+            border-right-color: #fff;
+        }
+        .msg-row.sent .msg-bubble::before {
+            right: -8px;
+            border-left-color: #95ec69;
+        }
+
+        /* Message Time */
+        .msg-time {
+            font-size: 11px;
+            color: #999;
+            margin-top: 4px;
+        }
+        .msg-row.sent .msg-time {
+            text-align: right;
+        }
+
+        /* Input Area */
+        .wechat-input-area {
+            background: #f7f7f7;
+            border-top: 1px solid #e0e0e0;
+            padding: 12px 16px;
+        }
+        .wechat-input-area .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        .wechat-input-area textarea {
+            flex: 1;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            background: #fff;
+            min-height: 38px;
+            max-height: 100px;
+            line-height: 1.4;
+        }
+        .wechat-input-area textarea:focus {
+            box-shadow: 0 0 0 2px rgba(7, 193, 96, 0.2);
+        }
+        .wechat-input-area textarea::placeholder {
+            color: #bbb;
+        }
+        .wechat-send-btn {
+            background: #07c160;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 22px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .wechat-send-btn:hover {
+            background: #06ad56;
+        }
+        .wechat-send-btn:disabled {
+            background: #c0c4cc;
+            cursor: not-allowed;
+        }
+
+        /* Empty State */
+        .empty-chat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #999;
+        }
+        .empty-chat i {
+            font-size: 48px;
+            margin-bottom: 12px;
+            color: #ddd;
+        }
+        .empty-chat p {
+            margin: 0;
+        }
+
     </style>
 </head>
 
 <body class="gray-bg">
- <div id="app">
+ <div id="app" v-cloak>
 
      <div class="preloader-wrapper">
          <div class="preloader">
@@ -45,92 +733,113 @@
 
      <header v-if="role == '2' || role == '3'">
          <div class="container-fluid">
-             <div class="row py-3 border-bottom">
+             <div class="row py-2">
 
-                 <div class="col-sm-4 col-lg-2 text-center text-sm-start d-flex gap-3 justify-content-center justify-content-md-start">
-                     <div class="d-flex align-items-center my-3 my-sm-0">
-                         <a href="/web/userindex">
-                             <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar" class="img-fluid"
-                                  style="width: 50px;height: 50px; border-radius: 50%; border: 2px solid #007bff;">
-                             <img v-else alt="logo" class="img-fluid" src="/static/webSite/images/logo.png"
-                                  style="width: 50px;height: 50px;">
-                         </a>
-                     </div>
-                     <button aria-controls="offcanvasNavbar" class="navbar-toggler" data-bs-target="#offcanvasNavbar"
-                             data-bs-toggle="offcanvas"
-                             type="button">
+                 <!-- Logo Area -->
+                 <div class="col-6 col-md-3 col-lg-2 d-flex align-items-center">
+                     <a href="/web/userindex" class="logo-area">
+                         <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar" class="logo-img"
+                              style="border: 2px solid var(--bs-primary);">
+                         <img v-else alt="logo" class="logo-img" src="/static/webSite/images/logo.png">
+                         <span class="platform-title d-none d-md-block">Pet Service Platform</span>
+                     </a>
+                     <button aria-controls="offcanvasNavbar" class="navbar-toggler ms-auto d-lg-none" data-bs-target="#offcanvasNavbar"
+                             data-bs-toggle="offcanvas" type="button">
                          <svg height="24" viewBox="0 0 24 24" width="24">
                              <use xlink:href="#menu"></use>
                          </svg>
                      </button>
                  </div>
 
-                 <div class="col-md-2 ">
-                     <div class="search-bar row bg-light p-2 rounded-4">
-
-                         <div class="col-11 col-md-10" style="text-align: center">
-                             Pet Service Booking Platform
-                         </div>
-
+                 <!-- Search Bar (Hidden on small screens) -->
+                 <div class="col-md-2 d-none d-md-block">
+                     <div class="search-bar h-100 d-flex align-items-center justify-content-center">
+                         <span class="search-bar-content">
+                             <i class="fa fa-paw me-1"></i> Pet Services
+                         </span>
                      </div>
                  </div>
 
-                 <div class="col-md-8">
+                 <!-- Navigation Menu -->
+                 <div class="col-md-7 col-lg-8">
                      <!-- Regular User Navigation -->
-                     <ul v-if="role == '2'" class="navbar-nav list-unstyled d-flex flex-row gap-3 gap-lg-5 justify-content-center flex-wrap align-items-center mb-0 fw-bold text-uppercase text-dark">
-                         <li class="nav-item ">
-                             <a class="nav-link" href="/web/userindex">Home</a>
+                     <ul v-if="role == '2'" class="navbar-nav list-unstyled d-flex flex-row gap-1 gap-lg-2 justify-content-end align-items-center mb-0">
+                         <li class="nav-item">
+                             <a class="nav-link" href="/web/userindex">
+                                 <i class="fa fa-home"></i>
+                                 <span>Home</span>
+                             </a>
                          </li>
                          <li class="nav-item">
-                             <a class="nav-link  " href="/web/userproductlist">Pet Service List</a>
+                             <a class="nav-link" href="/web/userproductlist">
+                                 <i class="fa fa-list"></i>
+                                 <span>Pet Services</span>
+                             </a>
                          </li>
                          <li class="nav-item">
-                             <a class="nav-link " href="/web/usercart">Shopping Cart</a>
+                             <a class="nav-link" href="/web/usercart">
+                                 <i class="fa fa-shopping-cart"></i>
+                                 <span>Cart</span>
+                             </a>
                          </li>
                          <li class="nav-item">
-                             <a class="nav-link " href="/web/usercontact">Contact Us</a>
+                             <a class="nav-link" href="/web/usercontact">
+                                 <i class="fa fa-envelope"></i>
+                                 <span>Contact</span>
+                             </a>
                          </li>
                          <li class="nav-item">
-                             <a class="nav-link " href="/web/userblog">News/Announcements</a>
+                             <a class="nav-link" href="/web/userblog">
+                                 <i class="fa fa-bullhorn"></i>
+                                 <span>News</span>
+                             </a>
                          </li>
-                         <li class="nav-item text-primary" >
-                             <a class="nav-link d-flex align-items-center" href="/web/personal" title="Personal Center">
-                                 <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar"
-                                      style="width: 30px; height: 30px; border-radius: 50%; margin-right: 5px; border: 2px solid #007bff;">
-                                 <i v-else class="fa fa-user"></i>
-                                 <span v-if="userInfo && userInfo.username" style="margin-left: 5px;">{{userInfo.username}}</span>
+                         <li class="nav-item active">
+                             <a class="nav-link user-nav-link" href="/web/personal">
+                                 <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar" class="user-avatar">
+                                 <i v-else class="user-icon fa fa-user"></i>
+                                 <span v-if="userInfo && userInfo.username" class="username">{{userInfo.username}}</span>
+                                 <span v-else class="username">Account</span>
                              </a>
                          </li>
                      </ul>
 
                      <!-- Service Provider Navigation -->
-                     <ul v-if="role == '3'" class="navbar-nav list-unstyled d-flex flex-row gap-3 gap-lg-5 justify-content-center flex-wrap align-items-center mb-0 fw-bold text-uppercase text-dark">
+                     <ul v-if="role == '3'" class="navbar-nav list-unstyled d-flex flex-row gap-1 gap-lg-2 justify-content-end align-items-center mb-0">
                          <li class="nav-item">
-                             <a class="nav-link  " href="/web/product">My Services</a>
-                         </li>
-                         <li class="nav-item">
-                             <a class="nav-link" href="/web/provider/dashboard" target="_blank">
-                                 <i class="fa fa-bar-chart"></i> Data Statistics
+                             <a class="nav-link" href="/web/product">
+                                 <i class="fa fa-briefcase"></i>
+                                 <span>My Services</span>
                              </a>
                          </li>
                          <li class="nav-item">
-                             <a class="nav-link " href="/web/order">Order Management</a>
+                             <a class="nav-link" href="/web/provider/dashboard" target="_blank">
+                                 <i class="fa fa-bar-chart"></i>
+                                 <span>Statistics</span>
+                             </a>
                          </li>
                          <li class="nav-item">
-                             <a class="nav-link " href="/web/message">Message Center</a>
+                             <a class="nav-link" href="/web/order">
+                                 <i class="fa fa-file-text"></i>
+                                 <span>Orders</span>
+                             </a>
                          </li>
-                         <li class="nav-item text-primary" >
-                             <a class="nav-link d-flex align-items-center" href="/web/personal" title="Personal Center">
-                                 <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar"
-                                      style="width: 30px; height: 30px; border-radius: 50%; margin-right: 5px; border: 2px solid #007bff;">
-                                 <i v-else class="fa fa-user"></i>
-                                 <span v-if="userInfo && userInfo.username" style="margin-left: 5px;">{{userInfo.username}}</span>
+                         <li class="nav-item">
+                             <a class="nav-link" href="/web/message">
+                                 <i class="fa fa-comments"></i>
+                                 <span>Messages</span>
+                             </a>
+                         </li>
+                         <li class="nav-item active">
+                             <a class="nav-link user-nav-link" href="/web/personal">
+                                 <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar" class="user-avatar">
+                                 <i v-else class="user-icon fa fa-user"></i>
+                                 <span v-if="userInfo && userInfo.username" class="username">{{userInfo.username}}</span>
+                                 <span v-else class="username">Account</span>
                              </a>
                          </li>
                      </ul>
                  </div>
-
-
              </div>
          </div>
      </header>
@@ -139,11 +848,13 @@
          <el-tab-pane :label="role == '1' ? 'Administrator Info' : (role == '2' ? 'User Info' : 'Service Provider Info')" name="first">
              <!-- Administrator Info -->
              <el-descriptions v-if="role == '1'" :column="4" title="Administrator Info" border>
-                 <el-descriptions-item :span="4" label="Avatar">
-                     <el-image :src="userInfo.img || '/static/webSite/images/default-avatar.png'"
-                               style="width: 100px;height: 100px;"></el-image>
-                 </el-descriptions-item>
-                 <el-descriptions-item :span="2" label="Administrator Name">{{userInfo.username}}</el-descriptions-item>
+                 <el-descriptions-item :span="4" label="Image">
+                   <el-image :src="userInfo.img || '/static/webSite/images/default-avatar.png'"
+                             style="width: 100px;height: 100px;"
+                             :preview-src-list="[userInfo.img || '/static/webSite/images/default-avatar.png']">
+                   </el-image>
+               </el-descriptions-item>
+                <el-descriptions-item :span="4" label="Administrator Name">{{userInfo.username}}</el-descriptions-item>
                  <el-descriptions-item :span="2" label="Gender">{{userInfo.sex}}</el-descriptions-item>
                  <el-descriptions-item :span="2" label="Contact">{{userInfo.phonenumber}}</el-descriptions-item>
                  <el-descriptions-item :span="2" label="Account">{{userInfo.account}}</el-descriptions-item>
@@ -157,9 +868,11 @@
              <!-- Regular User Info -->
              <el-descriptions v-if="role == '2'" :column="4" title="User Info" border>
                  <el-descriptions-item :span="4" label="Image">
-                     <el-image :src="userInfo.img"
-                               style="width: 100px;height: 100px;"></el-image>
-                 </el-descriptions-item>
+                    <el-image :src="userInfo.img || '/static/webSite/images/default-avatar.png'"
+                              style="width: 100px;height: 100px;"
+                              :preview-src-list="[userInfo.img || '/static/webSite/images/default-avatar.png']">
+                    </el-image>
+                </el-descriptions-item>
                  <el-descriptions-item :span="2" label="Username">{{userInfo.username}}</el-descriptions-item>
                  <el-descriptions-item :span="2" label="Gender">{{userInfo.sex}}</el-descriptions-item>
                  <el-descriptions-item :span="2" label="Contact">{{userInfo.phonenumber}}</el-descriptions-item>
@@ -181,9 +894,11 @@
              <div v-if="role == '3'">
                  <el-descriptions :column="4" title="Basic Information" border style="margin-bottom: 20px;">
                      <el-descriptions-item :span="4" label="Avatar">
-                         <el-image :src="userInfo.img"
-                                   style="width: 100px;height: 100px;"></el-image>
-                     </el-descriptions-item>
+                        <el-image :src="userInfo.img || '/static/webSite/images/default-avatar.png'"
+                                  style="width: 100px;height: 100px;"
+                                  :preview-src-list="[userInfo.img || '/static/webSite/images/default-avatar.png']">
+                        </el-image>
+                    </el-descriptions-item>
                      <el-descriptions-item :span="2" label="Name">{{userInfo.username}}</el-descriptions-item>
                      <el-descriptions-item :span="2" label="Gender">{{userInfo.sex}}</el-descriptions-item>
                      <el-descriptions-item :span="2" label="Contact">{{userInfo.phonenumber}}</el-descriptions-item>
@@ -201,17 +916,18 @@
                      <el-descriptions-item :span="2" label="Total Reviews">{{companyInfo.ratingCount || 0}}</el-descriptions-item>
                  </el-descriptions>
              </div>
-             <div style="width: 100%;text-align: center;margin-top: 50px">
-                 <el-button type="danger" @click="handleLogout">Logout</el-button>
-                 <el-button type="warning" v-if="role == '1'" @click="handleEditAdminInfo">Edit Administrator Info</el-button>
-                 <el-button type="primary" v-if="role == '1'" @click="goToAdminPanel">Admin Panel</el-button>
-                 <el-button type="warning" v-if="role == '2'" @click="handleEditUserInfo">Edit Info</el-button>
-                 <el-button type="primary" v-if="role == '2'" @click="goToChongzhi">Recharge Center</el-button>
-                 <el-button type="success" v-if="role == '3'" @click="handleEditCompanyInfo">Edit Service Provider Info</el-button>
-             </div>
+             <div class="action-buttons">
+                <el-button type="danger" @click="handleLogout">Logout</el-button>
+                <el-button type="warning" v-if="role == '1'" @click="handleEditAdminInfo">Edit Administrator Info</el-button>
+                <el-button type="primary" v-if="role == '1'" @click="goToAdminPanel">Admin Panel</el-button>
+                <el-button type="warning" v-if="role == '2'" @click="handleEditUserInfo">Edit Info</el-button>
+                <el-button type="success" v-if="role == '2'" @click="goToChongzhi">Recharge Center</el-button>
+                <el-button type="success" v-if="role == '3'" @click="handleEditCompanyInfo">Edit Service Provider Info</el-button>
+            </div>
          </el-tab-pane>
          <el-tab-pane label="My Favorites" v-if="role == '2'" name="second">
-             <el-table
+            <h3 class="section-title"><i class="fa fa-heart"></i> My Favorites</h3>
+            <el-table
                      :data="likeList"
                      style="width: 100%"
                      v-loading="loading">
@@ -261,7 +977,8 @@
              </el-table>
          </el-tab-pane>
          <el-tab-pane label="My Orders" v-if="role == '2'" name="third">
-             <!--            List          -->
+            <h3 class="section-title"><i class="fa fa-file-text"></i> My Orders</h3>
+            <!--            List          -->
              <div class="project-list">
                  <div class="ibox-content">
                      <el-table
@@ -269,17 +986,15 @@
                              style="width: 100%"
                              v-loading="loading">
                          <el-table-column
-                                 align="center"
-                                 label="Order ID"
-                                 prop="id"
-                         >
-
-
-                         <el-table-column
-                                 align="center"
-                                 label="Order User"
-                                 prop="username">
-                         </el-table-column>
+                                align="center"
+                                label="Order ID"
+                                prop="id">
+                        </el-table-column>
+                        <el-table-column
+                                align="center"
+                                label="Order User"
+                                prop="username">
+                        </el-table-column>
                          <el-table-column
                                  align="center"
                                  label="Order Time"
@@ -329,7 +1044,8 @@
 
          </el-tab-pane>
          <el-tab-pane label="My Messages" v-if="role == '2'" name="fourth">
-             <!--            List          -->
+            <h3 class="section-title"><i class="fa fa-envelope"></i> My Messages</h3>
+            <!--            List          -->
              <div class="project-list">
                  <div class="ibox-content">
                      <el-table
@@ -532,64 +1248,66 @@
          </el-form>
      </el-dialog>
 
-     <!-- Chat Dialog -->
-     <el-dialog title="Chat Conversation" :visible.sync="chatVisible" width="60%" :before-close="handleChatClose">
-         <div class="chat-container" style="height: 500px; display: flex; flex-direction: column;">
-             <!-- Chat Header Info -->
-             <div class="chat-header" style="padding: 10px; border-bottom: 1px solid #ebeef5; background: #f5f7fa;">
-                 <div style="display: flex; align-items: center; gap: 10px;">
-                     <i class="fa fa-user-circle" style="font-size: 24px; color: #409eff;"></i>
+     <!-- WeChat Style Chat Dialog -->
+     <el-dialog 
+         :visible.sync="chatVisible" 
+         width="500px" 
+         :before-close="handleChatClose"
+         custom-class="wechat-chat-dialog"
+         :close-on-click-modal="false"
+         :show-close="false">
+         <div class="wechat-chat-container">
+             <!-- WeChat Header -->
+             <div class="wechat-header">
+                 <div class="header-left">
+                     <i class="fa fa-angle-left back-btn" @click="handleChatClose"></i>
+                     <div class="partner-avatar">
+                         <i class="fa fa-user"></i>
+                     </div>
                      <div>
-                         <div style="font-weight: bold;">{{chatPartner.name}}</div>
-                         <div style="font-size: 12px; color: #909399;">
+                         <div class="partner-name">{{chatPartner.name || 'User'}}</div>
+                         <div class="partner-role">
                              {{chatPartner.role == '3' ? 'Service Provider' : (chatPartner.role == '1' ? 'Administrator' : 'User')}}
                          </div>
                      </div>
                  </div>
              </div>
 
-             <!-- Chat Messages Area -->
-             <div class="chat-messages" ref="chatMessages" style="flex: 1; overflow-y: auto; padding: 15px; background: #fff;">
-                 <div v-if="chatMessages.length === 0" style="text-align: center; color: #909399; margin-top: 50px;">
-                     <i class="fa fa-comments-o" style="font-size: 48px; margin-bottom: 10px;"></i>
-                     <div>Start your conversation here</div>
+             <!-- Messages Area -->
+             <div class="wechat-messages" ref="chatMessages">
+                 <!-- Empty State -->
+                 <div v-if="chatMessages.length === 0" class="empty-chat">
+                     <i class="fa fa-comments"></i>
+                     <p>No messages yet</p>
+                     <p style="font-size: 12px;">Start a conversation</p>
                  </div>
 
-                 <div v-for="msg in chatMessages" :key="msg.id" class="message-item"
-                      :style="{marginBottom: '15px', display: 'flex', justifyContent: msg.senderId == userId ? 'flex-end' : 'flex-start'}">
-                     <div :style="{
-                         maxWidth: '70%',
-                         padding: '10px 15px',
-                         borderRadius: '18px',
-                         backgroundColor: msg.senderId == userId ? '#409eff' : '#f0f0f0',
-                         color: msg.senderId == userId ? '#fff' : '#333'
-                     }">
-                         <div>{{msg.content}}</div>
-                         <div :style="{
-                             fontSize: '12px',
-                             marginTop: '5px',
-                             opacity: '0.8'
-                         }">
-                             {{formatTime(msg.createtime)}}
-                         </div>
-                     </div>
-                 </div>
+                 <!-- Message List -->
+                  <div v-for="msg in chatMessages" :key="msg.id" 
+                       :class="['msg-row', String(msg.senderid) == String(userId) ? 'sent' : 'received']">
+                      <div class="msg-avatar">
+                          <i class="fa fa-user"></i>
+                      </div>
+                      <div>
+                          <div class="msg-bubble">{{msg.content}}</div>
+                          <div class="msg-time">{{formatTime(msg.createtime)}}</div>
+                      </div>
+                  </div>
              </div>
 
-             <!-- Message Input Area -->
-             <div class="chat-input" style="padding: 15px; border-top: 1px solid #ebeef5; background: #fafafa;">
-                 <div style="display: flex; gap: 10px;">
-                     <el-input
+             <!-- Input Area -->
+             <div class="wechat-input-area">
+                 <div class="input-row">
+                     <textarea 
                          v-model="newMessage"
-                         placeholder="Enter message..."
-                         @keyup.enter.native="sendMessage"
-                         :maxlength="500"
-                         show-word-limit
-                         style="flex: 1;">
-                     </el-input>
-                     <el-button type="primary" @click="sendMessage" :disabled="!newMessage.trim()">
-                         <i class="fa fa-send"></i> Send
-                     </el-button>
+                         placeholder="Type a message..."
+                         @keyup.enter="sendMessage"
+                         maxlength="500"
+                         rows="1">
+                     </textarea>
+                     <button class="wechat-send-btn" @click="sendMessage" :disabled="!newMessage.trim()">
+                         Send
+                     </button>
                  </div>
              </div>
          </div>
@@ -718,7 +1436,7 @@
                  likeList: [],
                  fileList: [],
                  fileStr: [],
-                 userInfo: {},
+                 userInfo: {img: '/static/webSite/images/default-avatar.png'},
                  companyInfo: {},
                  total: 0,
                  searchKey: "",

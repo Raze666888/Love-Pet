@@ -161,7 +161,7 @@ private MessageDao messageDao;
                         Message message = new Message();
                         message.setSenderid(order.getUserid()); // 发送人是下单用户
                         message.setReceiveid(companyId); // 接收人是服务商
-                        message.setContent("您有新的订单，订单用户：" + order.getUsername() + "，联系方式：" + sysuser.getPhonenumber());
+                        message.setContent("您有新的订单，订单用户：" + sysuser.getUsername() + "，联系方式：" + sysuser.getPhonenumber());
                         message.setStatus("0"); // 未处理状态
                         message.setCreatetime(new Date());
                         messageDao.insert(message);

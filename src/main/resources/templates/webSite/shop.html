@@ -22,9 +22,240 @@
     <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
 
     <!-- 高德地图API -->
-    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=e4ba17441f45301a0d054097d3e9b933"></script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=e4ba17441f45301a0d054097d3e9b933&plugin=AMap.Geolocation,AMap.Geocoder"></script>
 
     <style>
+        /* ===== Beautified Navigation Bar ===== */
+        header {
+            background: #fff !important;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        /* Logo Area */
+        header .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        header .logo-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        header .logo-img:hover {
+            transform: scale(1.05);
+        }
+
+        /* Platform Title */
+        header .platform-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--bs-secondary);
+            line-height: 1.2;
+        }
+
+        /* Navigation Menu */
+        header .navbar-nav {
+            gap: 4px;
+        }
+
+        header .nav-item {
+            position: relative;
+        }
+
+        header .nav-link {
+            color: #555 !important;
+            font-size: 0.88rem;
+            font-weight: 500;
+            padding: 10px 14px !important;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        header .nav-link:hover {
+            color: var(--bs-primary) !important;
+            background: rgba(107, 178, 82, 0.08);
+        }
+
+        /* Active Navigation Item */
+        header .nav-item.active .nav-link {
+            color: var(--bs-primary) !important;
+            background: rgba(107, 178, 82, 0.12);
+            font-weight: 600;
+        }
+
+        /* AI Pet Health Special Style */
+        header .nav-item.ai-health .nav-link {
+            background: linear-gradient(135deg, var(--bs-primary), #5a9a45);
+            color: #fff !important;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(107, 178, 82, 0.3);
+            transition: all 0.3s ease;
+        }
+        header .nav-item.ai-health .nav-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(107, 178, 82, 0.4);
+            background: linear-gradient(135deg, #5a9a45, var(--bs-primary));
+            color: #fff !important;
+        }
+
+        /* User Avatar Area */
+        header .user-nav-link {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 6px 12px !important;
+            border-radius: 25px;
+        }
+        header .user-nav-link:hover {
+            background: var(--bs-primary) !important;
+            border-color: var(--bs-primary) !important;
+            color: #fff !important;
+        }
+        header .user-nav-link .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255,255,255,0.5);
+        }
+        header .user-nav-link .user-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--bs-secondary);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        header .user-nav-link .username {
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Dropdown Menu */
+        header .dropdown-menu {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            padding: 8px;
+            min-width: 200px;
+        }
+        header .dropdown-item {
+            border-radius: 8px;
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            color: #555;
+            transition: all 0.2s ease;
+        }
+        header .dropdown-item:hover {
+            background: rgba(107, 178, 82, 0.1);
+            color: var(--bs-primary);
+        }
+        header .dropdown-item i {
+            width: 20px;
+            color: var(--bs-primary);
+        }
+
+        /* Mobile Toggle Button */
+        header .navbar-toggler {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 8px 12px;
+        }
+        header .navbar-toggler:focus {
+            box-shadow: 0 0 0 3px rgba(107, 178, 82, 0.2);
+        }
+        header .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2878, 115, 129, 1.29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* Search Bar */
+        header .search-bar {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 25px;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+        }
+        header .search-bar:hover,
+        header .search-bar:focus-within {
+            border-color: var(--bs-primary);
+            box-shadow: 0 0 0 3px rgba(107, 178, 82, 0.15);
+        }
+        header .search-bar-content {
+            color: var(--bs-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        /* Notification Badge */
+        header .notification-badge {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            background: var(--bs-danger);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 991px) {
+            header .nav-link {
+                padding: 12px 16px !important;
+                border-radius: 8px;
+            }
+            header .user-nav-link {
+                border-radius: 8px;
+                margin-top: 4px;
+            }
+            header .dropdown-menu {
+                border-radius: 8px;
+            }
+        }
+
+        /* Navigation Hover Effect Line */
+        header .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--bs-primary);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+        header .nav-item:hover::after {
+            width: 60%;
+        }
+        header .nav-item.ai-health::after {
+            display: none;
+        }
+
+      /* ============================================
+         ORIGINAL STYLES PRESERVED
+         ============================================ */
+      
       /* 种类导航悬停效果 */
       .cat-item {
         transition: all 0.3s ease;
@@ -353,69 +584,92 @@
     </div>
 
     <header>
-      <div class="container-fluid">
-        <div class="row py-3 border-bottom">
+        <div class="container-fluid">
+            <div class="row py-2">
 
-          <div class="col-sm-4 col-lg-2 text-center text-sm-start d-flex gap-3 justify-content-center justify-content-md-start">
-            <div class="d-flex align-items-center my-3 my-sm-0">
-              <a href="/web/userindex">
-                <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar" class="img-fluid"
-                     style="width: 50px;height: 50px; border-radius: 50%; border: 2px solid #007bff;">
-                <img v-else src="/static/webSite/images/logo.png" style="width: 50px;height: 50px;" alt="logo" class="img-fluid">
-              </a>
+                <!-- Logo Area -->
+                <div class="col-6 col-md-3 col-lg-2 d-flex align-items-center">
+                    <a href="/web/userindex" class="logo-area">
+                        <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar" class="logo-img"
+                             style="border: 2px solid var(--bs-primary);">
+                        <img v-else alt="logo" class="logo-img" src="/static/webSite/images/logo.png">
+                        <span class="platform-title d-none d-md-block">Pet Service Platform</span>
+                    </a>
+                    <button aria-controls="offcanvasNavbar" class="navbar-toggler ms-auto d-lg-none" data-bs-target="#offcanvasNavbar"
+                            data-bs-toggle="offcanvas" type="button">
+                        <svg height="24" viewBox="0 0 24 24" width="24">
+                            <use xlink:href="#menu"></use>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Search Bar (Hidden on small screens) -->
+                <div class="col-md-2 d-none d-md-block">
+                    <div class="search-bar h-100 d-flex align-items-center justify-content-center">
+                        <span class="search-bar-content">
+                            <i class="fa fa-paw me-1"></i> Pet Services
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Navigation Menu -->
+                <div class="col-md-7 col-lg-8">
+                    <ul class="navbar-nav list-unstyled d-flex flex-row gap-1 gap-lg-2 justify-content-end align-items-center mb-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/web/userindex">
+                                <i class="fa fa-home"></i>
+                                <span>Home</span>
+                            </a>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/web/userproductlist">
+                                <i class="fa fa-list"></i>
+                                <span>Pet Services</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/web/usercart">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span>Cart</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/web/usercontact">
+                                <i class="fa fa-envelope"></i>
+                                <span>Contact</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/web/userblog">
+                                <i class="fa fa-bullhorn"></i>
+                                <span>News</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/web/chongzhi">
+                                <i class="fa fa-credit-card"></i>
+                                <span>Recharge</span>
+                            </a>
+                        </li>
+                        <li class="nav-item ai-health">
+                            <a class="nav-link" href="/web/aipet">
+                                <i class="fa fa-robot"></i>
+                                <span>AI Pet Health</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link user-nav-link" href="/web/personal">
+                                <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar" class="user-avatar">
+                                <i v-else class="user-icon fa fa-user"></i>
+                                <span v-if="userInfo && userInfo.username" class="username">{{userInfo.username}}</span>
+                                <span v-else class="username">Account</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
             </div>
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
-                    aria-controls="offcanvasNavbar">
-              <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#menu"></use></svg>
-            </button>
-          </div>
-
-          <div class="col-md-2 ">
-            <div class="search-bar row bg-light p-2 rounded-4">
-
-              <div class="col-11 col-md-10" style="text-align: center">
-                Pet Service Booking Platform
-              </div>
-
-            </div>
-          </div>
-
-          <div class="col-md-8">
-            <ul class="navbar-nav list-unstyled d-flex flex-row gap-3 gap-lg-5 justify-content-center flex-wrap align-items-center mb-0 fw-bold text-uppercase text-dark">
-              <li class="nav-item ">
-                <a href="/web/userindex" class="nav-link">Home</a>
-              </li>
-
-              <li class="nav-item text-primary" >
-                <a href="/web/userproductlist"  class="nav-link  ">Pet Service List</a>
-              </li>
-              <li class="nav-item">
-                <a href="/web/usercart"  class="nav-link ">Shopping Cart</a>
-              </li>
-              <li class="nav-item">
-                <a href="/web/usercontact"  class="nav-link ">Contact Us</a>
-              </li>
-              <li class="nav-item">
-                <a href="/web/userblog"  class="nav-link ">News/Announcements</a>
-              </li>
-              <li class="nav-item">
-                <a href="/web/chongzhi"  class="nav-link " title="Recharge">Recharge Center</a>
-              </li>
-              <li class="nav-item">
-                <a href="/web/personal" class="nav-link d-flex align-items-center" title="Personal Center">
-                  <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar"
-                       style="width: 30px; height: 30px; border-radius: 50%; margin-right: 5px; border: 2px solid #007bff;">
-                  <i v-else class="fa fa-user"></i>
-                  <span v-if="userInfo && userInfo.username" style="margin-left: 5px;">{{userInfo.username}}</span>
-                </a>
-              </li>
-            </ul>
-          </div>
-
-
-
         </div>
-      </div>
     </header>
     <section class="jarallax py-5">
       <img src="/static/webSite/images/banner-1.jpg" class="jarallax-img">
@@ -1885,50 +2139,67 @@
       getUserLocation() {
         const that = this;
 
-        if (!navigator.geolocation) {
-          toastr.error('Your browser does not support location services', 'Notice');
-          return;
-        }
-
         toastr.info('Getting your location...', 'Notice');
 
-        navigator.geolocation.getCurrentPosition(
-          function(position) {
-            that.userLocation.longitude = position.coords.longitude;
-            that.userLocation.latitude = position.coords.latitude;
-
-            // Use reverse geocoding to get address
-            AMap.plugin('AMap.Geocoder', function() {
-              const geocoder = new AMap.Geocoder();
-              geocoder.getAddress([that.userLocation.longitude, that.userLocation.latitude], function(status, result) {
-                if (status === 'complete' && result.info === 'OK') {
-                  that.userLocation.address = result.regeocode.formattedAddress;
-                  toastr.success('Location obtained successfully: ' + that.userLocation.address, 'Notice');
-                }
-              });
-            });
-          },
-          function(error) {
-            let errorMsg = 'Failed to get location';
-            switch(error.code) {
-              case error.PERMISSION_DENIED:
-                errorMsg = 'You denied the location permission request';
-                break;
-              case error.POSITION_UNAVAILABLE:
-                errorMsg = 'Location information is not available';
-                break;
-              case error.TIMEOUT:
-                errorMsg = 'Location request timed out';
-                break;
-            }
-            toastr.error(errorMsg, 'Notice');
-          },
-          {
+        // Use AMap (Gaode) Geolocation API instead of browser native geolocation
+        AMap.plugin('AMap.Geolocation', function() {
+          const geolocation = new AMap.Geolocation({
             enableHighAccuracy: true,
             timeout: 10000,
-            maximumAge: 0
-          }
-        );
+            zoomToAccuracy: true,
+            GeoLocationFirst: true
+          });
+
+          geolocation.getCurrentPosition(function(status, result) {
+            if (status === 'complete') {
+              that.userLocation.longitude = result.position.getLng();
+              that.userLocation.latitude = result.position.getLat();
+
+              // Use reverse geocoding to get address
+              AMap.plugin('AMap.Geocoder', function() {
+                const geocoder = new AMap.Geocoder();
+                geocoder.getAddress([that.userLocation.longitude, that.userLocation.latitude], function(geoStatus, geoResult) {
+                  if (geoStatus === 'complete' && geoResult.info === 'OK') {
+                    that.userLocation.address = geoResult.regeocode.formattedAddress;
+                    toastr.success('Location obtained successfully: ' + that.userLocation.address, 'Notice');
+                  } else {
+                    that.userLocation.address = 'Location obtained (address unavailable)';
+                    toastr.success('Location obtained successfully', 'Notice');
+                  }
+                });
+              });
+            } else {
+              let errorMsg = 'Failed to get location';
+              if (result.message) {
+                errorMsg = 'Failed to get location: ' + result.message;
+              }
+              // Fallback: try browser native geolocation
+              if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                  function(position) {
+                    that.userLocation.longitude = position.coords.longitude;
+                    that.userLocation.latitude = position.coords.latitude;
+                    AMap.plugin('AMap.Geocoder', function() {
+                      const geocoder = new AMap.Geocoder();
+                      geocoder.getAddress([that.userLocation.longitude, that.userLocation.latitude], function(geoStatus, geoResult) {
+                        if (geoStatus === 'complete' && geoResult.info === 'OK') {
+                          that.userLocation.address = geoResult.regeocode.formattedAddress;
+                        }
+                        toastr.success('Location obtained (fallback)', 'Notice');
+                      });
+                    });
+                  },
+                  function() {
+                    toastr.error(errorMsg, 'Notice');
+                  },
+                  { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+              } else {
+                toastr.error(errorMsg, 'Notice');
+              }
+            }
+          });
+        });
       },
 
       // Distance filter handling

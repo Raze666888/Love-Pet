@@ -1,7 +1,7 @@
 package com.javaPro.myProject.modules.aipet.model;
 
 /**
- * AI聊天响应
+ * AI Chat Response
  */
 public class ChatResponse {
 
@@ -23,7 +23,7 @@ public class ChatResponse {
     public static ChatResponse fail(String error) {
         ChatResponse resp = new ChatResponse();
         resp.setSuccess(false);
-        resp.setAnswer("抱歉，我暂时无法回答您的问题，请稍后再试。");
+        resp.setAnswer("Sorry, I cannot answer your question at the moment. Please try again later.");
         resp.setError(error);
         resp.setTimestamp(java.time.LocalDateTime.now().toString());
         return resp;

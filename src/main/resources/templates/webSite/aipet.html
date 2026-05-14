@@ -1,87 +1,261 @@
 <!DOCTYPE html>
-<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <title>AI Pet Health - Pet Service Platform</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>宠物健康AI助手 - 宠物服务平台</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="AI Pet Health Assistant">
+    <script src="/static/DemoBootStrap/js/vue.js"></script>
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', sans-serif;
-            background: #f0f2f5;
-            min-height: 100vh;
+    <link rel="stylesheet" href="/static/webSite/css/swiper-bundle.min.css">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/css/bootstrap.min.css"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" rel="stylesheet"
+          crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/webSite/css/vendor.css">
+    <link rel="stylesheet" type="text/css" href="/static/webSite/style.css">
+    <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
+
+    <style>
+        /* ===== Header Styles (Same as Index) ===== */
+        header {
+            background: #fff !important;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
-        /* 顶部导航栏 - 与项目其他页面保持一致 */
-        .top-bar {
-            background: #fff;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            padding: 15px 30px;
+        header .logo-area {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 12px;
         }
-        .top-bar h3 {
-            color: #333;
-            font-size: 18px;
+
+        header .logo-img {
+            width: 48px !important;
+            height: 48px !important;
+            border-radius: 12px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        header .logo-img:hover {
+            transform: scale(1.05);
+        }
+
+        header .platform-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--bs-secondary);
+            line-height: 1.2;
+        }
+
+        header .nav-link {
+            color: #555 !important;
+            font-size: 0.88rem;
+            font-weight: 500;
+            padding: 10px 14px !important;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        header .nav-link:hover {
+            color: var(--bs-primary) !important;
+            background: rgba(107, 178, 82, 0.08);
+        }
+
+        header .nav-item.active .nav-link {
+            color: var(--bs-primary) !important;
+            background: rgba(107, 178, 82, 0.12);
             font-weight: 600;
         }
-        .top-bar a {
-            color: #666;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        .top-bar a:hover { color: #1E9FFF; }
 
-        /* 聊天主体 */
-        .chat-wrapper {
-            max-width: 900px;
-            margin: 20px auto;
+        header .nav-item.ai-health .nav-link {
+            background: linear-gradient(135deg, var(--bs-primary), #5a9a45);
+            color: #fff !important;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(107, 178, 82, 0.3);
+        }
+
+        header .user-nav-link {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            padding: 6px 12px !important;
+            border-radius: 25px;
+        }
+
+        header .user-nav-link:hover {
+            background: var(--bs-primary) !important;
+            border-color: var(--bs-primary) !important;
+            color: #fff !important;
+        }
+
+        header .search-bar {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 25px;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+        }
+
+        header .search-bar-content {
+            color: var(--bs-secondary);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        header .navbar-toggler {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 8px 12px;
+        }
+
+        /* ===== Page Banner ===== */
+        .page-banner {
+            background-image: url('/static/webSite/images/banner-1.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            padding: 60px 0;
+            position: relative;
+        }
+        .page-banner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(54, 65, 39, 0.55);
+        }
+        .page-banner .container-lg {
+            position: relative;
+            z-index: 1;
+        }
+        .page-banner h1 {
+            color: #fff;
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+        .page-banner .breadcrumb {
+            margin-bottom: 12px;
+        }
+        .page-banner .breadcrumb a {
+            color: rgba(255,255,255,0.8);
+        }
+        .page-banner .breadcrumb-item.active {
+            color: var(--bs-primary);
+        }
+        .page-banner .lead {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+            max-width: 600px;
+        }
+
+        /* ===== Chat Section ===== */
+        .chat-section {
+            padding: 50px 0 60px;
+        }
+
+        .chat-container {
+            max-width: 100%;
+            margin: 0;
             background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            height: calc(100vh - 100px);
+            height: calc(100vh - 280px);
+            min-height: 600px;
         }
 
-        .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        /* Chat Header */
+        .chat-top-bar {
+            background: var(--bs-secondary);
             color: #fff;
-            padding: 20px 25px;
-            text-align: center;
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
         }
-        .chat-header h2 { margin: 0; font-size: 20px; font-weight: 600; }
-        .chat-header p { margin: 5px 0 0; font-size: 13px; opacity: 0.9; }
+        .chat-top-bar .ai-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--bs-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .chat-top-bar .ai-info h3 {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .chat-top-bar .ai-info p {
+            margin: 2px 0 0;
+            font-size: 0.78rem;
+            opacity: 0.8;
+        }
+        .chat-top-bar .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #6BB252;
+            display: inline-block;
+            margin-right: 5px;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
 
-        /* 消息区域 */
+        /* Messages Area */
         .chat-messages {
             flex: 1;
             overflow-y: auto;
-            padding: 20px;
+            padding: 24px;
             background: #f8f9fa;
+        }
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #d0d0d0;
+            border-radius: 3px;
         }
 
         .message {
-            max-width: 75%;
-            padding: 12px 18px;
-            border-radius: 18px;
-            margin-bottom: 15px;
+            max-width: 72%;
+            padding: 14px 20px;
+            border-radius: 16px;
+            margin-bottom: 16px;
             word-wrap: break-word;
-            line-height: 1.6;
-            font-size: 14px;
-            animation: msgIn 0.3s ease;
+            line-height: 1.7;
+            font-size: 0.92rem;
+            animation: msgSlideIn 0.35s ease;
+            position: relative;
         }
-        @keyframes msgIn {
-            from { opacity: 0; transform: translateY(8px); }
+        @keyframes msgSlideIn {
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .message.user {
             margin-left: auto;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: var(--bs-primary);
             color: #fff;
             border-bottom-right-radius: 4px;
         }
@@ -90,165 +264,460 @@
             background: #fff;
             color: #333;
             border-bottom-left-radius: 4px;
-            box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+        }
+        .message.ai strong {
+            color: var(--bs-secondary);
+        }
+        .message.ai ul {
+            margin: 6px 0;
+            padding-left: 20px;
+        }
+        .message.ai li {
+            margin-bottom: 4px;
         }
 
-        /* 打字指示器 */
+        /* Typing Indicator */
         .typing-indicator {
             display: none;
             margin-right: auto;
             background: #fff;
-            padding: 14px 20px;
-            border-radius: 18px;
+            padding: 16px 22px;
+            border-radius: 16px;
             border-bottom-left-radius: 4px;
-            box-shadow: 0 1px 6px rgba(0,0,0,0.06);
-            margin-bottom: 15px;
+            box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+            margin-bottom: 16px;
         }
-        .typing-indicator.active { display: flex; gap: 5px; }
+        .typing-indicator.active { display: flex; gap: 6px; align-items: center; }
         .typing-indicator span {
-            width: 7px; height: 7px;
-            background: #667eea;
+            width: 8px; height: 8px;
+            background: var(--bs-primary);
             border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out both;
+            animation: typingBounce 1.4s infinite ease-in-out both;
         }
         .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
         .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
-        @keyframes bounce {
+        @keyframes typingBounce {
             0%, 80%, 100% { transform: scale(0); }
             40% { transform: scale(1); }
         }
 
-        /* 快捷问题 */
+        /* Quick Questions */
         .quick-area {
-            padding: 12px 20px;
+            padding: 14px 24px;
             background: #fff;
-            border-top: 1px solid #eee;
+            border-top: 1px solid #f0f0f0;
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
         }
         .quick-btn {
             background: #f5f5f5;
-            border: 1px solid #e0e0e0;
-            border-radius: 18px;
-            padding: 6px 14px;
-            font-size: 13px;
+            border: 1px solid #e8e8e8;
+            border-radius: 20px;
+            padding: 7px 16px;
+            font-size: 0.82rem;
             color: #555;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.25s;
+            font-family: var(--bs-body-font-family);
         }
         .quick-btn:hover {
-            background: #667eea;
+            background: var(--bs-primary);
             color: #fff;
-            border-color: #667eea;
+            border-color: var(--bs-primary);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(107, 178, 82, 0.3);
         }
 
-        /* 输入区域 */
+        /* Input Area */
         .chat-input-area {
-            padding: 15px 20px;
+            padding: 16px 24px;
             background: #fff;
-            border-top: 1px solid #eee;
+            border-top: 1px solid #f0f0f0;
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: center;
         }
         .chat-input {
             flex: 1;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #e8e8e8;
             border-radius: 25px;
-            padding: 10px 20px;
-            font-size: 14px;
+            padding: 12px 22px;
+            font-size: 0.92rem;
             outline: none;
             transition: border-color 0.3s;
+            font-family: var(--bs-body-font-family);
+            color: #333;
         }
-        .chat-input:focus { border-color: #667eea; }
+        .chat-input:focus { border-color: var(--bs-primary); }
+        .chat-input::placeholder { color: #aaa; }
         .send-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: var(--bs-primary);
             color: #fff;
             border: none;
             border-radius: 25px;
-            padding: 10px 28px;
-            font-size: 14px;
+            padding: 12px 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.2s;
+            transition: all 0.25s;
+            font-family: var(--bs-body-font-family);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-        .send-btn:hover { opacity: 0.9; }
-        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .send-btn:hover {
+            background: #f7a422;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(107, 178, 82, 0.3);
+        }
+        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
+        /* Disclaimer */
         .disclaimer {
             text-align: center;
-            padding: 8px;
-            font-size: 12px;
+            padding: 10px;
+            font-size: 0.78rem;
             color: #999;
             background: #fafafa;
+            border-top: 1px solid #f0f0f0;
+        }
+        .disclaimer i { color: var(--bs-danger); margin-right: 4px; }
+
+        /* Feature Cards */
+        .feature-cards {
+            padding: 0 0 60px;
+        }
+        .feature-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 30px 24px;
+            text-align: center;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+            border: 1px solid #f5f5f5;
+            height: 100%;
+        }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.08);
+        }
+        .feature-card .icon-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 26px;
+        }
+        .feature-card .icon-circle.green { background: #eef5e5; color: var(--bs-primary); }
+        .feature-card .icon-circle.orange { background: #FFF9EB; color: #f7a422; }
+        .feature-card .icon-circle.red { background: #FFEADA; color: var(--bs-danger); }
+        .feature-card .icon-circle.blue { background: #EBF5FF; color: #007bff; }
+        .feature-card h5 {
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--bs-secondary);
+        }
+        .feature-card p {
+            font-size: 0.88rem;
+            color: #777;
+            margin: 0;
         }
 
-        @media (max-width: 600px) {
-            .chat-wrapper { margin: 10px; height: calc(100vh - 70px); }
+        /* Responsive */
+        @media (max-width: 768px) {
+            .chat-container {
+                height: calc(100vh - 240px);
+                min-height: 500px;
+                border-radius: 12px;
+            }
             .message { max-width: 88%; }
+            .page-banner h1 { font-size: 1.8rem; }
+            .quick-area { padding: 10px 16px; }
+            .chat-input-area { padding: 12px 16px; }
+            .chat-messages { padding: 16px; }
         }
     </style>
 </head>
 <body>
 
-<!-- 顶部导航 -->
-<div class="top-bar">
-    <h3>宠物健康AI助手</h3>
-    <a th:href="@{/web/userindex}">返回首页</a>
-</div>
+<div id="app">
 
-<!-- 聊天主体 -->
-<div class="chat-wrapper">
-    <div class="chat-header">
-        <h2>宠物健康AI助手</h2>
-        <p>随时为您解答宠物健康问题</p>
-    </div>
+    <!-- ===== Header (Beautified - Same as Index) ===== -->
+    <header>
+        <div class="container-fluid">
+            <div class="row py-2">
 
-    <div class="chat-messages" id="chatMessages">
-        <!-- 欢迎消息 -->
-        <div class="message ai">
-            <strong>您好！我是您的宠物健康助手</strong><br><br>
-            我可以帮您解答关于宠物健康、饮食、行为等方面的问题。<br><br>
-            <strong>常见咨询：</strong>
-            <ul style="margin:8px 0;padding-left:20px;">
-                <li>狗狗/猫咪的饮食建议</li>
-                <li>疫苗接种和驱虫问题</li>
-                <li>常见症状分析</li>
-                <li>行为问题解答</li>
-            </ul>
-            <strong>注意：</strong>紧急情况请立即联系兽医！
+                <!-- Logo Area -->
+                <div class="col-6 col-md-3 col-lg-2 d-flex align-items-center">
+                    <a href="/web/userindex" class="logo-area">
+                        <img v-if="userInfo && userInfo.img" :src="userInfo.img" alt="User Avatar" class="logo-img"
+                             style="border: 2px solid var(--bs-primary);">
+                        <img v-else alt="logo" class="logo-img" src="/static/webSite/images/logo.png">
+                        <span class="platform-title d-none d-md-block">Pet Service Platform</span>
+                    </a>
+                    <button aria-controls="offcanvasNavbar" class="navbar-toggler ms-auto d-lg-none" data-bs-target="#offcanvasNavbar"
+                            data-bs-toggle="offcanvas" type="button">
+                        <svg height="24" viewBox="0 0 24 24" width="24">
+                            <use xlink:href="#menu"></use>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="col-md-2 d-none d-md-block">
+                    <div class="search-bar h-100 d-flex align-items-center justify-content-center">
+                        <span class="search-bar-content">
+                            <i class="fa fa-paw me-1"></i> Pet Services
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Navigation Menu -->
+                <div class="col-md-7 col-lg-8">
+                    <ul class="navbar-nav list-unstyled d-flex flex-row gap-1 gap-lg-2 justify-content-end align-items-center mb-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/web/userindex">
+                                <i class="fa fa-home"></i>
+                                <span>Home</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/web/userproductlist">
+                                <i class="fa fa-list"></i>
+                                <span>Pet Services</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/web/usercart">
+                                <i class="fa fa-shopping-cart"></i>
+                                <span>Cart</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/web/usercontact">
+                                <i class="fa fa-envelope"></i>
+                                <span>Contact</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/web/userblog">
+                                <i class="fa fa-bullhorn"></i>
+                                <span>News</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/web/chongzhi">
+                                <i class="fa fa-credit-card"></i>
+                                <span>Recharge</span>
+                            </a>
+                        </li>
+                        <li class="nav-item ai-health active">
+                            <a class="nav-link" href="/web/aipet">
+                                <i class="fa fa-robot"></i>
+                                <span>AI Pet Health</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link user-nav-link" href="/web/personal">
+                                <i class="fa fa-user"></i>
+                                <span v-if="userInfo && userInfo.username">{{userInfo.username}}</span>
+                                <span v-else>Account</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== Page Banner ===== -->
+    <section class="page-banner">
+        <div class="container-lg">
+            <nav class="breadcrumb">
+                <a class="breadcrumb-item nav-link" href="/web/userindex">Home</a>
+                <span class="breadcrumb-item active" aria-current="page">AI Pet Health</span>
+            </nav>
+            <h1><i class="fa fa-robot"></i> AI Pet Health Assistant</h1>
+            <p class="lead">Get professional pet health advice powered by AI. Ask about diet, behavior, symptoms, vaccinations, and more.</p>
+        </div>
+    </section>
+
+    <!-- ===== Chat Section ===== -->
+    <section class="chat-section">
+        <div class="container-lg">
+            <div class="chat-container">
+                <!-- Chat Top Bar -->
+                <div class="chat-top-bar">
+                    <div class="ai-avatar">
+                        <i class="fa fa-robot"></i>
+                    </div>
+                    <div class="ai-info">
+                        <h3>Pet Health AI Assistant</h3>
+                        <p><span class="status-dot"></span>Online - Ready to help</p>
+                    </div>
+                </div>
+
+                <!-- Messages -->
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Welcome Message -->
+                    <div class="message ai">
+                        <strong><i class="fa fa-stethoscope"></i> Hello! I'm your Pet Health Assistant</strong><br><br>
+                        I can help you with questions about pet health, diet, behavior, and more.<br><br>
+                        <strong>Common consultations:</strong>
+                        <ul>
+                            <li>Diet advice for dogs/cats</li>
+                            <li>Vaccination and deworming questions</li>
+                            <li>Common symptom analysis</li>
+                            <li>Behavioral problem solutions</li>
+                        </ul>
+                        <strong><i class="fa fa-exclamation-triangle" style="color:#F95F09"></i> Note:</strong> For emergencies, please contact a veterinarian immediately!
+                    </div>
+                </div>
+
+                <!-- Typing Indicator -->
+                <div class="typing-indicator" id="typingIndicator">
+                    <span></span><span></span><span></span>
+                </div>
+
+                <!-- Quick Questions -->
+                <div class="quick-area">
+                    <button class="quick-btn" onclick="sendQuick('What should I do if my dog is vomiting?')"><i class="fa fa-question-circle"></i> Dog vomiting</button>
+                    <button class="quick-btn" onclick="sendQuick('Why is my cat not eating?')"><i class="fa fa-question-circle"></i> Cat not eating</button>
+                    <button class="quick-btn" onclick="sendQuick('Pet vaccination schedule')"><i class="fa fa-calendar"></i> Vaccine schedule</button>
+                    <button class="quick-btn" onclick="sendQuick('How to handle dog diarrhea?')"><i class="fa fa-question-circle"></i> Diarrhea</button>
+                    <button class="quick-btn" onclick="sendQuick('What fruits can dogs eat safely?')"><i class="fa fa-apple"></i> Diet advice</button>
+                    <button class="quick-btn" onclick="sendQuick('My dog keeps barking, what should I do?')"><i class="fa fa-volume-up"></i> Behavior issues</button>
+                </div>
+
+                <!-- Input Area -->
+                <div class="chat-input-area">
+                    <input type="text" class="chat-input" id="userInput"
+                           placeholder="Type your pet health question..."
+                           onkeypress="if(event.key==='Enter')sendMessage()">
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        <i class="fa fa-paper-plane"></i> Send
+                    </button>
+                </div>
+
+                <div class="disclaimer">
+                    <i class="fa fa-info-circle"></i>
+                    This AI assistant is for reference only and cannot replace professional veterinary diagnosis. Please seek immediate medical attention for emergencies!
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Feature Cards ===== -->
+    <section class="feature-cards">
+        <div class="container-lg">
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="icon-circle green">
+                            <i class="fa fa-heartbeat"></i>
+                        </div>
+                        <h5>Health Advice</h5>
+                        <p>Professional guidance on common pet health issues, symptoms, and care tips.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="icon-circle orange">
+                            <i class="fa fa-cutlery"></i>
+                        </div>
+                        <h5>Diet & Nutrition</h5>
+                        <p>Learn about safe foods, proper feeding amounts, and balanced nutrition plans.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="icon-circle blue">
+                            <i class="fa fa-shield"></i>
+                        </div>
+                        <h5>Vaccination Guide</h5>
+                        <p>Complete vaccination schedules and deworming recommendations for your pets.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card">
+                        <div class="icon-circle red">
+                            <i class="fa fa-exclamation-circle"></i>
+                        </div>
+                        <h5>Emergency Help</h5>
+                        <p>Quick identification of urgent symptoms and when to seek immediate vet care.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== Footer (consistent with platform) ===== -->
+    <div id="footer-bottom">
+        <div class="container-lg">
+            <div class="row">
+                <div class="col-md-6 copyright">
+                    <p>@ 2025 - Pet Service Ordering Platform.</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- 打字指示器 -->
-    <div class="typing-indicator" id="typingIndicator">
-        <span></span><span></span><span></span>
-    </div>
-
-    <!-- 快捷问题 -->
-    <div class="quick-area">
-        <button class="quick-btn" onclick="sendQuick('狗狗呕吐怎么办？')">狗狗呕吐</button>
-        <button class="quick-btn" onclick="sendQuick('猫咪不吃东西是什么原因？')">猫咪不吃东西</button>
-        <button class="quick-btn" onclick="sendQuick('宠物疫苗接种时间表')">疫苗时间</button>
-        <button class="quick-btn" onclick="sendQuick('狗狗拉肚子怎么处理？')">拉肚子</button>
-        <button class="quick-btn" onclick="sendQuick('狗狗可以吃什么水果？')">饮食建议</button>
-        <button class="quick-btn" onclick="sendQuick('狗狗总是乱叫怎么办？')">行为问题</button>
-    </div>
-
-    <!-- 输入区域 -->
-    <div class="chat-input-area">
-        <input type="text" class="chat-input" id="userInput"
-               placeholder="请输入您的宠物健康问题..."
-               onkeypress="if(event.key==='Enter')sendMessage()">
-        <button class="send-btn" id="sendBtn" onclick="sendMessage()">发送</button>
-    </div>
-
-    <div class="disclaimer">
-        本AI助手仅供参考，不能替代专业兽医诊断。紧急情况请立即就医！
-    </div>
 </div>
 
+<!-- Scripts -->
+<script src="/static/webSite/js/jquery-1.11.0.min.js"></script>
+<script src="/static/webSite/js/swiper-bundle.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0-alpha3/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+<script src="/static/webSite/js/plugins.js"></script>
+<script src="/static/webSite/js/script.js"></script>
+<script src="/static/js/GloJs.js"></script>
+<script src="/static/hAdmin/js/plugins/toastr/toastr.min.js"></script>
+
 <script>
+    // ===== Vue App (for header user info) =====
+    new Vue({
+        el: "#app",
+        data() {
+            return {
+                userInfo: {},
+                userId: localStorage.getItem("userId"),
+            }
+        },
+        methods: {
+            getUserInfo() {
+                let that = this;
+                if (that.userId) {
+                    $.ajax({
+                        url: gloRequestUrl + "/sysuser/detail",
+                        type: "GET",
+                        data: { id: that.userId },
+                        success: function (data) {
+                            if (data.code !== 500) {
+                                that.userInfo = data.data;
+                            }
+                        },
+                        error: function () {
+                            console.log("Failed to get user info");
+                        }
+                    });
+                }
+            }
+        },
+        mounted() {
+            this.getUserInfo();
+        }
+    });
+
+    // ===== Chat Logic =====
     var conversationHistory = [];
     var chatMessages = document.getElementById('chatMessages');
     var userInput = document.getElementById('userInput');
@@ -265,7 +734,6 @@
         showTyping();
         sendBtn.disabled = true;
 
-        // 调用后端API
         fetch('/aipet/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -274,8 +742,8 @@
                 conversationHistory: conversationHistory
             })
         })
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
             hideTyping();
             sendBtn.disabled = false;
 
@@ -285,18 +753,17 @@
                     { role: 'user', content: message },
                     { role: 'assistant', content: data.answer }
                 );
-                // 保留最近10轮对话
                 if (conversationHistory.length > 20) {
                     conversationHistory = conversationHistory.slice(-20);
                 }
             } else {
-                addMessage('抱歉，我暂时无法回答您的问题，请稍后再试。', 'ai');
+                addMessage('Sorry, I cannot answer your question at the moment. Please try again later.', 'ai');
             }
         })
-        .catch(function(err) {
+        .catch(function (err) {
             hideTyping();
             sendBtn.disabled = false;
-            addMessage('网络错误，请检查连接后重试。', 'ai');
+            addMessage('Network error. Please check your connection and try again.', 'ai');
             console.error('Error:', err);
         });
     }
@@ -309,7 +776,6 @@
     function addMessage(text, sender) {
         var div = document.createElement('div');
         div.className = 'message ' + sender;
-        // 简单Markdown处理
         div.innerHTML = text
             .replace(/\n\n/g, '<br><br>')
             .replace(/\n/g, '<br>')
@@ -329,7 +795,8 @@
         typingIndicator.classList.remove('active');
     }
 
-    window.onload = function() { userInput.focus(); };
+    window.onload = function () { userInput.focus(); };
 </script>
+
 </body>
 </html>

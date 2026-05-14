@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * AI宠物健康咨询 - API接口
- * 提供REST API供前端AJAX调用
+ * AI Pet Health Consultation - API Controller
+ * Provides REST API for frontend AJAX calls
  */
 @Controller
 @RequestMapping("/aipet")
@@ -24,16 +24,16 @@ public class AiPetApiController {
     private AiPetService aiPetService;
 
     /**
-     * AI聊天接口
-     * 前端通过AJAX POST调用此接口
+     * AI Chat API
+     * Frontend calls this endpoint via AJAX POST
      *
-     * 请求示例：
+     * Request example:
      * POST /aipet/chat
      * {
-     *   "question": "狗狗呕吐怎么办？",
+     *   "question": "What should I do if my dog is vomiting?",
      *   "conversationHistory": [
-     *     {"role": "user", "content": "之前的问题"},
-     *     {"role": "assistant", "content": "之前的回答"}
+     *     {"role": "user", "content": "Previous question"},
+     *     {"role": "assistant", "content": "Previous answer"}
      *   ]
      * }
      */
@@ -42,10 +42,10 @@ public class AiPetApiController {
     public ChatResponse chat(@RequestBody ChatRequest request) {
         try {
             if (request.getQuestion() == null || request.getQuestion().trim().isEmpty()) {
-                return ChatResponse.fail("问题不能为空");
+                return ChatResponse.fail("Question cannot be empty");
             }
 
-            // 将ChatMessage列表转换为Map列表
+            // Convert ChatMessage list to Map list
             List<Map<String, String>> history = null;
             if (request.getConversationHistory() != null) {
                 history = new java.util.ArrayList<>();
@@ -67,14 +67,14 @@ public class AiPetApiController {
     }
 
     /**
-     * 症状分析接口
+     * Symptom Analysis API
      *
-     * 请求示例：
+     * Request example:
      * POST /aipet/analyze
      * {
-     *   "symptoms": "呕吐、腹泻、精神萎靡",
-     *   "petType": "狗",
-     *   "petAge": "3岁"
+     *   "symptoms": "vomiting, diarrhea, lethargy",
+     *   "petType": "dog",
+     *   "petAge": "3 years"
      * }
      */
     @PostMapping("/analyze")
@@ -82,11 +82,11 @@ public class AiPetApiController {
     public ChatResponse analyzeSymptoms(@RequestBody Map<String, String> params) {
         try {
             String symptoms = params.get("symptoms");
-            String petType = params.getOrDefault("petType", "未知");
-            String petAge = params.getOrDefault("petAge", "未知");
+            String petType = params.getOrDefault("petType", "unknown");
+            String petAge = params.getOrDefault("petAge", "unknown");
 
             if (symptoms == null || symptoms.trim().isEmpty()) {
-                return ChatResponse.fail("症状描述不能为空");
+                return ChatResponse.fail("Symptom description cannot be empty");
             }
 
             String answer = aiPetService.analyzeSymptoms(symptoms, petType, petAge);

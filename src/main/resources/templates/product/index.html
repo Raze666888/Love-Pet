@@ -18,7 +18,7 @@
     <!-- Sweet Alert -->
     <link href="/static/hAdmin/css/plugins/sweetalert/sweetalert.css" rel="stylesheet">
     <link href="/static/hAdmin/css/animate.css" rel="stylesheet">
-    <link href="/static/hAdmin/css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="/static/hAdmin/css/style.css?v=5.0.0" rel="stylesheet">
     <link href="/static/hAdmin/css/plugins/toastr/toastr.min.css" rel="stylesheet">
     <link href="/static/element/element.css" rel="stylesheet">
     <style>
@@ -336,7 +336,7 @@
                 queryParams: {
                     pageSize: 3,
                     pageNum: 1,
-                    companyid:  localStorage.getItem("userId"),
+                    companyid:  localStorage.getItem("role") === '1' ? null : localStorage.getItem("userId"),
                 },
                 title: "",
                 rules: {

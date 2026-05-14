@@ -16,12 +16,100 @@
   <link href="/static/hAdmin/css/font-awesome.css?v=4.4.0" rel="stylesheet">
   <link href="/static/hAdmin/css/animate.css" rel="stylesheet">
   <link href="/static/hAdmin/css/style.css?v=4.1.0" rel="stylesheet">
+  <style>
+    .welcome-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .welcome-icon {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #6BB252 0%, #4a8a35 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 30px;
+      box-shadow: 0 8px 30px rgba(107, 178, 82, 0.3);
+      animation: float 3s ease-in-out infinite;
+    }
+    .welcome-icon i {
+      font-size: 45px;
+      color: #fff;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .welcome-container h2 {
+      color: #333;
+      font-weight: 700;
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+    .welcome-container p {
+      color: #888;
+      font-size: 16px;
+      margin: 0;
+    }
+    .welcome-stats {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      margin-top: 40px;
+    }
+    .welcome-stat-item {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      min-width: 140px;
+      transition: transform 0.3s ease;
+    }
+    .welcome-stat-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+    .welcome-stat-item i {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .welcome-stat-item .stat-label {
+      color: #999;
+      font-size: 13px;
+    }
+  </style>
 
 </head>
 
 <body class="gray-bg">
-<div class="col-xs-10 col-xs-offset-1 text-center" style="position: absolute;top: 50%">
-  <h2>Welcome to Pet Service Order Platform</h2>
+<div class="welcome-container">
+  <div class="welcome-icon">
+    <i class="fa fa-paw"></i>
+  </div>
+  <h2>Welcome to Pet Service Booking Platform</h2>
+  <p>Admin Management Dashboard</p>
+  <div class="welcome-stats">
+    <div class="welcome-stat-item">
+      <i class="fa fa-users" style="color: #6BB252;"></i>
+      <div class="stat-label">User Management</div>
+    </div>
+    <div class="welcome-stat-item">
+      <i class="fa fa-bars" style="color: #409EFF;"></i>
+      <div class="stat-label">Service Management</div>
+    </div>
+    <div class="welcome-stat-item">
+      <i class="fa fa-book" style="color: #E6A23C;"></i>
+      <div class="stat-label">Order Management</div>
+    </div>
+    <div class="welcome-stat-item">
+      <i class="fa fa-bar-chart" style="color: #F56C6C;"></i>
+      <div class="stat-label">Data Visualization</div>
+    </div>
+  </div>
 </div>
 <!-- Global JS -->
 <script src="/static/hAdmin/js/jquery.min.js?v=2.1.4"></script>
