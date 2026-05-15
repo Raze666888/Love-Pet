@@ -1,5 +1,8 @@
 package com.javaPro.myProject.modules.aipet.model;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * AI Chat Response
  */
@@ -9,6 +12,8 @@ public class ChatResponse {
     private String answer;
     private String timestamp;
     private String error;
+    private boolean searchUsed;          // Tavily搜索是否成功
+    private List<Map<String, String>> sources;  // 信息来源列表
 
     public ChatResponse() {}
 
@@ -16,6 +21,16 @@ public class ChatResponse {
         ChatResponse resp = new ChatResponse();
         resp.setSuccess(true);
         resp.setAnswer(answer);
+        resp.setTimestamp(java.time.LocalDateTime.now().toString());
+        return resp;
+    }
+
+    public static ChatResponse successWithSources(String answer, boolean searchUsed, List<Map<String, String>> sources) {
+        ChatResponse resp = new ChatResponse();
+        resp.setSuccess(true);
+        resp.setAnswer(answer);
+        resp.setSearchUsed(searchUsed);
+        resp.setSources(sources);
         resp.setTimestamp(java.time.LocalDateTime.now().toString());
         return resp;
     }
@@ -59,5 +74,21 @@ public class ChatResponse {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public boolean isSearchUsed() {
+        return searchUsed;
+    }
+
+    public void setSearchUsed(boolean searchUsed) {
+        this.searchUsed = searchUsed;
+    }
+
+    public List<Map<String, String>> getSources() {
+        return sources;
+    }
+
+    public void setSources(List<Map<String, String>> sources) {
+        this.sources = sources;
     }
 }

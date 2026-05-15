@@ -1,16 +1,15 @@
 package com.javaPro.myProject.modules.aipet.controller;
 
-import com.javaPro.myProject.common.model.AjaxResult;
 import com.javaPro.myProject.modules.aipet.model.ChatRequest;
 import com.javaPro.myProject.modules.aipet.model.ChatResponse;
+import com.javaPro.myProject.modules.aipet.model.TavilyResult;
 import com.javaPro.myProject.modules.aipet.service.AiPetService;
+import com.javaPro.myProject.modules.aipet.service.TavilySearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * AI Pet Health Consultation - API Controller
@@ -23,19 +22,11 @@ public class AiPetApiController {
     @Autowired
     private AiPetService aiPetService;
 
+    @Autowired
+    private TavilySearchService tavilySearchService;
+
     /**
-     * AI Chat API
-     * Frontend calls this endpoint via AJAX POST
-     *
-     * Request example:
-     * POST /aipet/chat
-     * {
-     *   "question": "What should I do if my dog is vomiting?",
-     *   "conversationHistory": [
-     *     {"role": "user", "content": "Previous question"},
-     *     {"role": "assistant", "content": "Previous answer"}
-     *   ]
-     * }
+     * AI Chat API (with Tavily search + DeepSeek generation)
      */
     @PostMapping("/chat")
     @ResponseBody
@@ -48,7 +39,7 @@ public class AiPetApiController {
             // Convert ChatMessage list to Map list
             List<Map<String, String>> history = null;
             if (request.getConversationHistory() != null) {
-                history = new java.util.ArrayList<>();
+                history = new ArrayList<>();
                 for (com.javaPro.myProject.modules.aipet.model.ChatMessage msg : request.getConversationHistory()) {
                     Map<String, String> map = new HashMap<>();
                     map.put("role", msg.getRole());
@@ -57,8 +48,18 @@ public class AiPetApiController {
                 }
             }
 
+            // Step 1: Tavily search
+            TavilyResult searchResult = tavilySearchService.search(request.getQuestion());
+
+            // Step 2: Extract sources from search results
+            List<Map<String, String>> sources = extractSources(searchResult);
+            boolean searchUsed = (searchResult.getResults() != null && !searchResult.getResults().isEmpty());
+
+            // Step 3: DeepSeek generates answer (internally uses Tavily results)
             String answer = aiPetService.chat(request.getQuestion(), history);
-            return ChatResponse.success(answer);
+
+            // Step 4: Return answer with sources
+            return ChatResponse.successWithSources(answer, searchUsed, sources);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,14 +69,6 @@ public class AiPetApiController {
 
     /**
      * Symptom Analysis API
-     *
-     * Request example:
-     * POST /aipet/analyze
-     * {
-     *   "symptoms": "vomiting, diarrhea, lethargy",
-     *   "petType": "dog",
-     *   "petAge": "3 years"
-     * }
      */
     @PostMapping("/analyze")
     @ResponseBody
@@ -89,12 +82,48 @@ public class AiPetApiController {
                 return ChatResponse.fail("Symptom description cannot be empty");
             }
 
+            // Tavily search
+            TavilyResult searchResult = tavilySearchService.search(
+                petType + " " + symptoms + " treatment"
+            );
+            List<Map<String, String>> sources = extractSources(searchResult);
+            boolean searchUsed = (searchResult.getResults() != null && !searchResult.getResults().isEmpty());
+
             String answer = aiPetService.analyzeSymptoms(symptoms, petType, petAge);
-            return ChatResponse.success(answer);
+            return ChatResponse.successWithSources(answer, searchUsed, sources);
 
         } catch (Exception e) {
             e.printStackTrace();
             return ChatResponse.fail(e.getMessage());
         }
+    }
+
+    /**
+     * Extract source information from Tavily results
+     */
+    @SuppressWarnings("unchecked")
+    private List<Map<String, String>> extractSources(TavilyResult searchResult) {
+        List<Map<String, String>> sources = new ArrayList<>();
+
+        if (searchResult == null || searchResult.getResults() == null) {
+            return sources;
+        }
+
+        for (Map<String, Object> result : searchResult.getResults()) {
+            Map<String, String> source = new HashMap<>();
+            source.put("title", (String) result.getOrDefault("title", ""));
+            source.put("url", (String) result.getOrDefault("url", ""));
+            // Extract domain name from URL
+            String url = (String) result.getOrDefault("url", "");
+            try {
+                String domain = url.replaceFirst("^https?://", "").split("/")[0];
+                source.put("domain", domain);
+            } catch (Exception e) {
+                source.put("domain", url);
+            }
+            sources.add(source);
+        }
+
+        return sources;
     }
 }

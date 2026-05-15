@@ -278,6 +278,65 @@
             margin-bottom: 4px;
         }
 
+        /* Search Sources Display */
+        .search-sources {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #e8e8e8;
+        }
+        .sources-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #fff;
+            background: linear-gradient(135deg, #5CB85C, #4CAF50);
+            padding: 3px 10px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+        .sources-badge.offline {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+        }
+        .sources-badge i {
+            font-size: 11px;
+        }
+        .sources-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .source-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #666;
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .source-item:hover {
+            background: #f0f7f0;
+            color: #333;
+        }
+        .source-item i {
+            font-size: 10px;
+            color: #5CB85C;
+        }
+        .source-domain {
+            font-weight: 600;
+            color: #5CB85C;
+        }
+        .source-title {
+            color: #888;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 250px;
+        }
+
         /* Typing Indicator */
         .typing-indicator {
             display: none;
@@ -748,7 +807,7 @@
             sendBtn.disabled = false;
 
             if (data.success) {
-                addMessage(data.answer, 'ai');
+                addMessage(data.answer, 'ai', data.searchUsed, data.sources);
                 conversationHistory.push(
                     { role: 'user', content: message },
                     { role: 'assistant', content: data.answer }
@@ -773,14 +832,40 @@
         sendMessage();
     }
 
-    function addMessage(text, sender) {
+    function addMessage(text, sender, searchUsed, sources) {
         var div = document.createElement('div');
         div.className = 'message ' + sender;
-        div.innerHTML = text
+
+        // Format markdown-like text
+        var formattedText = text
             .replace(/\n\n/g, '<br><br>')
             .replace(/\n/g, '<br>')
             .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+        var html = formattedText;
+
+        // Add search badge and sources for AI messages
+        if (sender === 'ai' && searchUsed && sources && sources.length > 0) {
+            html += '<div class="search-sources">';
+            html += '  <div class="sources-badge"><i class="fa fa-search"></i> Real-time Search Results</div>';
+            html += '  <div class="sources-list">';
+            for (var i = 0; i < Math.min(sources.length, 3); i++) {
+                html += '<a href="' + sources[i].url + '" target="_blank" class="source-item">';
+                html += '  <i class="fa fa-external-link-alt"></i> ';
+                html += '  <span class="source-domain">' + sources[i].domain + '</span>';
+                html += '  <span class="source-title"> - ' + sources[i].title + '</span>';
+                html += '</a>';
+            }
+            html += '  </div>';
+            html += '</div>';
+        } else if (sender === 'ai' && !searchUsed) {
+            html += '<div class="search-sources">';
+            html += '  <div class="sources-badge offline"><i class="fa fa-book"></i> AI Knowledge Base</div>';
+            html += '</div>';
+        }
+
+        div.innerHTML = html;
         chatMessages.appendChild(div);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
