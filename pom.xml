@@ -286,7 +286,10 @@
                         <include>**/*Tests.java</include>
                     </includes>
                     <excludes>
+                        <!-- 排除集成测试 -->
+                        <exclude>**/*IntegrationTest.java</exclude>
                         <exclude>**/LoginTest.java</exclude>
+                        <exclude>**/LoadTestRunner.java</exclude>
                     </excludes>
                     <systemPropertyVariables>
                         <spring.profiles.active>test</spring.profiles.active>
@@ -297,8 +300,6 @@
                     <parallel>none</parallel>
                     <forkCount>1</forkCount>
                     <reuseForks>true</reuseForks>
-                    <!-- 快速失败 -->
-                    <skipAfterFailureCount>1</skipAfterFailureCount>
                 </configuration>
             </plugin>
 
