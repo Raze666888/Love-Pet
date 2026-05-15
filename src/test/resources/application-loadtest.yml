@@ -10,7 +10,7 @@ spring:
     url: jdbc:mysql://localhost:3306/chongwufuwu?serverTimezone=GMT%2B8&useSSL=false&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: Acx20050624
+    password: 632048
     hikari:
       maximum-pool-size: 50
       minimum-idle: 10
